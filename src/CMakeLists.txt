@@ -1,4 +1,9 @@
-add_executable(${PROJECT_NAME})
+# Projects output dir
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# add sgui library
+add_library(${PROJECT_NAME})
+add_library(SmolGui::${PROJECT_NAME} ALIAS SmolGui)
 
 ####
 #include all subdirectories
@@ -7,10 +12,6 @@ add_subdirectory (serialization)
 add_subdirectory (resources)
 add_subdirectory (render)
 add_subdirectory (gui)
-
-####
-# Add source files
-target_sources (${PROJECT_NAME} PRIVATE main.cpp)
 
 ####
 # Add src as public directory
@@ -30,3 +31,6 @@ target_link_libraries (${PROJECT_NAME} PRIVATE
   spdlog
 )
 
+####
+# Add source files
+target_sources (${PROJECT_NAME} PRIVATE main.cpp)

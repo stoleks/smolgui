@@ -13,9 +13,6 @@ project (SmolGui
 set (PROJECT_AUTHOR "Alexandre Jedrecy")
 set (PROJECT_IDENTIFIER "stoleks.sgui")
 
-# Projects output dir
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
 ####
 # Third party libraries
 include (FetchContent)
@@ -45,6 +42,10 @@ FetchContent_MakeAvailable (
   nlohmann-json
   spdlog
 )
+
+####
+# set library output directory
+set (LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
 
 ####
 # get sources from subdirectories
