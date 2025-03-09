@@ -14,7 +14,7 @@ set (PROJECT_AUTHOR "Alexandre Jedrecy")
 set (PROJECT_IDENTIFIER "stoleks.sgui")
 
 ####
-# Third party libraries
+# Third party libraries, SFML for input/rendering, json for serialization, spdlog for logging
 include (FetchContent)
 
 FetchContent_Declare (SFML
@@ -27,7 +27,7 @@ FetchContent_Declare (SFML
 
 FetchContent_Declare (nlohmann-json
   GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG 9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03 # v3.11.3
+  GIT_TAG v3.11.3
   GIT_PROGRESS TRUE
 )
 
@@ -46,6 +46,14 @@ FetchContent_MakeAvailable (
 ####
 # set library output directory
 set (LIBRARY_OUTPUT_PATH "${PROJECT_BINARY_DIR}/lib")
+
+# add sgui library
+add_library(${PROJECT_NAME})
+add_library(SmolGui::${PROJECT_NAME} ALIAS SmolGui)
+
+####
+# Add src as public directory
+target_include_directories (${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/src")
 
 ####
 # get sources from subdirectories
