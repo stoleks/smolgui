@@ -94,7 +94,7 @@ private:
   using MutexType = std::shared_timed_mutex;
   using ReadLock  = std::shared_lock <MutexType>;
   using WriteLock = std::unique_lock <MutexType>;
-	mutable MutexType mMutex;
+  mutable MutexType mMutex;
   std::unordered_map <ObjectId, size_t> mIdToSlot;
   std::vector <ObjectId> mSlotToId;
   std::vector <Object> mObjects;

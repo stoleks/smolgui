@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 #include "core/ObjectPool.h"
 #include "core/LookupTable.h"

@@ -1,9 +1,10 @@
 #include "GuiRender.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <spdlog/spdlog.h>
+
 #include "resources/LoadTextureAtlas.h"
 #include "core/Interpolation.h"
-#include "spdlog/spdlog.h"
 
 namespace sgui
 {

@@ -6,8 +6,7 @@
 
 #pragma once
 
-#include "nlohmann/json.hpp"
-
+#include <nlohmann/json.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 
