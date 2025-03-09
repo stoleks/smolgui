@@ -11,6 +11,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 #include <unordered_map>
 #include <SFML/Graphics/Rect.hpp>
 
@@ -26,6 +27,8 @@ struct Frames {
 class TextureAtlas
 {
 public:
+  TextureAtlas () = default;
+  TextureAtlas (const std::string& filename);
   /**
    * load texture atlas from file
    */
@@ -48,9 +51,9 @@ public:
    */
   uint32_t texturesCount () const { return mTexturesCount; }
   /**
-   * get texture rect of an entry
+   * get texture rect of an entry, if the entry exist
    */
-  sf::IntRect textureRect (
+  std::optional <sf::IntRect> textureRect (
          const std::string& entry,
          const uint32_t frame = 0) const;
   /**
@@ -62,7 +65,7 @@ public:
   auto end ()   const { return std::cend (mAtlas); }
 private:
   uint32_t mTexturesCount = { 0 };
-  sf::Vector2u mTextureDimension;
+  sf::Vector2u mTextureDimension = {};
   std::unordered_map <std::string, Frames> mAtlas;
 };
 

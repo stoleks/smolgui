@@ -1,13 +1,21 @@
 #include "TextureAtlas.h"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
+
 #include "LoadTextureAtlas.h"
 
 namespace sgui
 {
 /////////////////////////////////////////////////
-bool TextureAtlas::loadFromFile (
-  const std::string& filename)
+TextureAtlas::TextureAtlas (const std::string& filename)
+{
+  if (loadFromFile (filename)) {
+    spdlog::error ("TextureAtlas: unable to load {}", filename);
+  }
+}
+
+/////////////////////////////////////////////////
+bool TextureAtlas::loadFromFile (const std::string& filename)
 {
   return sgui::loadFromFile (*this, filename);
 }
@@ -48,8 +56,7 @@ const sf::Vector2u& TextureAtlas::textureDimension () const
 }
 
 /////////////////////////////////////////////////
-void TextureAtlas::setTextureDimension (
-  const sf::Vector2u& dim)
+void TextureAtlas::setTextureDimension (const sf::Vector2u& dim)
 {
   mTextureDimension = dim;
 }
@@ -58,7 +65,7 @@ void TextureAtlas::setTextureDimension (
  * get entry information
  */
 /////////////////////////////////////////////////
-sf::IntRect TextureAtlas::textureRect (
+std::optional <sf::IntRect> TextureAtlas::textureRect (
   const std::string& entry,
   const uint32_t frame) const
 {
@@ -67,19 +74,18 @@ sf::IntRect TextureAtlas::textureRect (
   const auto tex = mAtlas.find (entry);
   if (tex == std::end (mAtlas)) {
     spdlog::error ("{} {} is not a valid entry in the atlas, will return null texture", func, entry);
-    return sf::IntRect {{0, 0}, {16, 16}};
+    return std::nullopt;
   }
-  // check that frame is in range
+  // check that frame is in range, return first frame if not
   const auto frames = tex->second;
   if (frame >= frames.count) {
     spdlog::warn ("{} Trying to access frame out of the animation, will return frame 0", func);
-    return frames.texture;
+    return std::optional (frames.texture);
   }
   // return asked frame
   const auto shift = sf::Vector2i (frames.texture.size.x * frame, 0);
-  return sf::IntRect (
-    sf::Vector2i (frames.texture.position) + shift,
-    sf::Vector2i (frames.texture.size)
+  return std::optional (
+    sf::IntRect (frames.texture.position + shift, frames.texture.size)
   );
 }
 

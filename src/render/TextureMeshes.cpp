@@ -1,6 +1,7 @@
 #include "TextureMeshes.h"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
+
 #include "MeshFunctions.h"
 #include "resources/TextureAtlas.h"
 
@@ -17,13 +18,15 @@ void TextureMeshes::computeTextureMapping (
     // keep track of texture index
     const auto texName = entry.first;
     const auto framesCount = entry.second.count;
-    mTexturesIndex [texName] = count;
+    mIndexAndFrames [texName] = FrameAndIndex (framesCount, count);
     // cache texture
     for (uint32_t frame = 0; frame < framesCount; frame++) {
-      computeMeshTexture (
-        mTextureMeshes [count],
-        map.textureRect (texName, frame)
-      );
+      const auto textureRect = map.textureRect (texName, frame);
+      if (textureRect.has_value ()) {
+        computeMeshTexture (mTextureMeshes [count], textureRect.value ());
+      } else {
+        computeMeshTexture (mTextureMeshes [count], sf::IntRect ({0, 0}, {16, 16}));
+      }
       count++;
     }
   }
@@ -34,12 +37,17 @@ Mesh TextureMeshes::texture (
   const std::string& texture,
   const uint32_t frame) const
 {
-  const auto idx = mTexturesIndex.find (texture);
-  if (idx == std::end (mTexturesIndex)) {
-    spdlog::warn ("TextureMeshes::texture '{}' was not found in map, will return first entry", texture);
-    return mTextureMeshes [std::begin (mTexturesIndex)->second];
+  // check that texture exist !
+  const auto idx = mIndexAndFrames.find (texture);
+  if (idx == std::end (mIndexAndFrames)) {
+    return mTextureMeshes [std::begin (mIndexAndFrames)->second.textureIndex];
   }
-  return mTextureMeshes [idx->second + frame];
+  // return first frame if frame is out of bond
+  if (frame >= idx->second.framesCount) {
+    return mTextureMeshes [idx->second.textureIndex];
+  }
+  // return asked frame if everything is ok
+  return mTextureMeshes [idx->second.textureIndex + frame];
 }
 
 } // namespace sgui

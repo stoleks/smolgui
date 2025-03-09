@@ -32,8 +32,18 @@ public:
          const std::string& textureID,
          const uint32_t frame = 0) const;
 private:
+  // For a clearer internal interface
+  struct FrameAndIndex {
+    FrameAndIndex () = default;
+    FrameAndIndex (uint32_t count, uint32_t index) :
+      framesCount (count), textureIndex (index)
+    {}
+    uint32_t framesCount = 0u;
+    uint32_t textureIndex = 0u;
+  };
+private:
   std::vector <Mesh> mTextureMeshes;
-  std::unordered_map <std::string, uint32_t> mTexturesIndex;
+  std::unordered_map <std::string, FrameAndIndex> mIndexAndFrames;
 };
 
 } // namespace sgui
