@@ -10,11 +10,11 @@
 
 #include <stack>
 #include <string>
+#include <spdlog/spdlog.h>
 
 #include "Style.h"
 #include "ScrollerInformation.h"
 
-#include "spdlog/spdlog.h"
 #include "core/ObjectPool.h"
 #include "core/Interpolation.h"
 #include "render/Plotter.h"
@@ -39,6 +39,8 @@ public:
          const TextureAtlas& widgetAtlas);
   // this one can be called anytime
   void setStyle (const Style& newStyle);
+  Style& style ();
+  const Style& style () const;
 
   ///////////////////////////////////////////////
   /**
@@ -74,6 +76,7 @@ public:
    * get gui automatic button size
    */
   sf::Vector2f textSize () const;
+  sf::Vector2f titleSize () const;
   sf::Vector2f buttonSize () const;
   /**
    * get active panel or window size
@@ -94,11 +97,11 @@ public:
   /**
    * setAnchor register a position at which you can go
    * back with backToAnchor. Anchor are stacked with each
-   * call of setAnchor and removed at each call of backTo
+   * call of setAnchor and removed at each call of backToAnchor
    */
   void setAnchor ();
   void backToAnchor ();
-  sf::Vector2f cursorPosition ();
+  sf::Vector2f cursorPosition () const;
   /**
    * to simplify use of common combination of remove/add spacing
    */
@@ -108,7 +111,7 @@ public:
    * return true if at least one widget is hovered
    * or active, this have to be called before end frame
    */
-  bool isActive ();
+  bool isActive () const;
 
   ///////////////////////////////////////////////
   /**
@@ -407,6 +410,7 @@ private:
     sf::Vector2f lastItemPosition;
     sf::Vector2f menuBarPosition;
     sf::Vector2f menuBarSize;
+    sf::Vector2f innerPosition;
     sf::Vector2f position;
     sf::Vector2f size;
   };
@@ -487,12 +491,13 @@ private:
          const std::string& itemName,
          const sf::Vector2f& initialPos,
          const sf::Vector2f& itemSize);
-  // Utility function that return status of widgetn it is not clickable by default
+  // Utility function that return status of widget, it is not clickable by default
   ItemState itemStatus (
          const sf::FloatRect& boundingbox,
          const ItemID& item,
          const bool condition = false,
-         const Tooltip& tooltip = Tooltip ());
+         const Tooltip& tooltip = Tooltip (),
+         const bool forceActive = false);
   // handle all edge case and special keys
   void handleKeyInput (
          std::string& text,
@@ -545,11 +550,17 @@ private:
          const std::optional <sf::Event>& event);
   void handleKeyboardInputs (const std::optional <sf::Event>& event);
 private:
+  int testPassCount = 0;
+  // plot parameters
   bool mPlotIsBounded = false;
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   uint32_t mPlotSample = 50u;
-  // counter to keep track of gui objects
+  // counters to keep track of same line
+  int32_t mResetCount = 0;
+  int32_t mResetDifference = 0;
+  int32_t mPreviousResetCount = 0;
+  // counters to keep track of gui objects
   uint32_t mPlotCount = 0u;
   uint32_t mGroupCount = 0u;
   uint32_t mWidgetCount = 0u;

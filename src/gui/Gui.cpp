@@ -45,6 +45,19 @@ void Gui::setStyle (const Style& newStyle)
   mStyle = newStyle;
 }
 
+/////////////////////////////////////////////////
+Style& Gui::style ()
+{
+  return mStyle;
+}
+
+/////////////////////////////////////////////////
+const Style& Gui::style () const
+{
+  return mStyle;
+}
+
+
 /**
  * ----------------------------------------------
  *  to ease alignement
@@ -83,13 +96,19 @@ const FontSize& Gui::fontSize () const
 /////////////////////////////////////////////////
 sf::Vector2f Gui::buttonSize () const
 {
-  return buttonHeight () * sf::Vector2f (1, 1);
+  return buttonHeight () * sf::Vector2f (1.f, 1.f);
 }
 
 /////////////////////////////////////////////////
 sf::Vector2f Gui::textSize () const
 {
-  return 1.f*mStyle.fontSize.normal * sf::Vector2f (1, 1);
+  return 1.f*mStyle.fontSize.normal * sf::Vector2f (1.f, 1.f);
+}
+
+/////////////////////////////////////////////////
+sf::Vector2f Gui::titleSize () const
+{
+  return 1.f*mStyle.fontSize.title * sf::Vector2f (1.f, 1.f);
 }
 
 /////////////////////////////////////////////////
@@ -97,11 +116,11 @@ sf::Vector2f Gui::activePanelSize () const
 {
   const auto thickness = 0.75f * normalTextHeight ();
   if (!mGroups.empty ()) {
-    const auto& topGroup = mGroups.top ();
-    if (topGroup.horizontal) {
-      return sf::Vector2f (thickness, topGroup.size.y);
+    const auto& parent = mGroups.top ();
+    if (parent.horizontal) {
+      return sf::Vector2f (thickness, parent.size.y);
     }
-    return sf::Vector2f (topGroup.size.x, thickness);
+    return sf::Vector2f (parent.size.x, thickness);
   }
   return sf::Vector2f (mWindowSize.x, thickness);
 }
@@ -178,8 +197,7 @@ void Gui::addSpacing (const sf::Vector2f& amount)
 }
 
 /////////////////////////////////////////////////
-void Gui::addLastSpacing (
-  const float amount)
+void Gui::addLastSpacing (const float amount)
 {
   // add h/v spacing according to parent group
   if (!mGroups.empty ()) {
@@ -207,8 +225,7 @@ void Gui::addLastSpacing (
 }
 
 /////////////////////////////////////////////////
-void Gui::addLastHorizontalSpacing (
-  const float amount)
+void Gui::addLastHorizontalSpacing (const float amount)
 {
   const auto spacing = amount * sf::Vector2f (mLastSpacing.x, 0.f);
   mCursorPosition += spacing;
@@ -216,8 +233,7 @@ void Gui::addLastHorizontalSpacing (
 }
 
 /////////////////////////////////////////////////
-void Gui::addLastVerticalSpacing (
-  const float amount)
+void Gui::addLastVerticalSpacing (const float amount)
 {
   const auto spacing = amount * sf::Vector2f (0.f, mLastSpacing.y);
   mCursorPosition += spacing;
@@ -227,6 +243,7 @@ void Gui::addLastVerticalSpacing (
 /////////////////////////////////////////////////
 void Gui::sameLine ()
 {
+  mResetCount++;
   addLastVerticalSpacing (-1.f);
   addLastHorizontalSpacing ();
 }
@@ -234,12 +251,13 @@ void Gui::sameLine ()
 /////////////////////////////////////////////////
 void Gui::sameColumn ()
 {
+  mResetCount++;
   addLastHorizontalSpacing (-1.f);
   addLastVerticalSpacing ();
 }
 
 /////////////////////////////////////////////////
-sf::Vector2f Gui::cursorPosition ()
+sf::Vector2f Gui::cursorPosition () const
 {
   return mCursorPosition;
 }
@@ -251,7 +269,7 @@ sf::Vector2f Gui::cursorPosition ()
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-bool Gui::isActive ()
+bool Gui::isActive () const
 {
   return mGuiState.hoveredItem != NullItemID
     || mGuiState.activeItem != NullItemID
@@ -281,6 +299,7 @@ void Gui::beginFrame ()
 /////////////////////////////////////////////////
 void Gui::endFrame (const float tooltipDelay)
 {
+  testPassCount++;
   // display active tooltip
   tooltip (tooltipDelay);
 
@@ -295,6 +314,8 @@ void Gui::endFrame (const float tooltipDelay)
   }
 
   // reset widget count and scroll data
+  mResetCount = 0u;
+  mPreviousResetCount = 0u;
   mPlotCount = 0u;
   mGroupCount = 0u;
   mWidgetCount = 0u;
@@ -448,8 +469,8 @@ bool Gui::beginWindow (
   mBeginWindowCount++;
 
   // compute position and create a new global group
-  const auto pos = computePosition (settings, constraint);
-  beginGroup (horizontal, pos, settings.size);
+  const auto position = computePosition (settings, constraint);
+  beginGroup (horizontal, position, settings.size);
   auto& thisWindow = mGroups.top ();
 
   // if window is closed skip everything
@@ -458,8 +479,8 @@ bool Gui::beginWindow (
   // handle mouse interaction
   const auto activeSize = sf::Vector2f (settings.size.x, titleTextHeight ());
   const auto closeSize = sf::Vector2f (1.7f*(activeSize.y) + mPadding.x, 0.f);
-  const auto activeBox = sf::FloatRect (pos, activeSize - closeSize);
-  const auto drawBox = sf::FloatRect (pos, activeSize);
+  const auto activeBox = sf::FloatRect (position, activeSize - closeSize);
+  const auto drawBox = sf::FloatRect (position, activeSize);
   setClipping (drawBox, 0.f);
   const auto state = interactWithMouse (settings, activeBox, name, info);
 
@@ -468,7 +489,7 @@ bool Gui::beginWindow (
   const auto textWidth = titleSizeOf (title).x;
   const auto shiftX = (activeBox.size.x - textWidth) / 2.f;
   mRender.drawText (
-    sanitizePosition (pos + sf::Vector2f (shiftX, 0.f)),
+    sanitizePosition (position + sf::Vector2f (shiftX, 0.f)),
     title,
     mStyle.fontColor,
     mStyle.fontSize.title
@@ -478,7 +499,7 @@ bool Gui::beginWindow (
   if (settings.closable) {
     // reduce
     const auto buttonSize = activeSize.y * sf::Vector2f (1, 1);
-    mCursorPosition = pos + sf::Vector2f (activeBox.size.x, 0.f);
+    mCursorPosition = position + sf::Vector2f (activeBox.size.x, 0.f);
     if (button <Widget::TitleButton> (buttonSize)) {
       settings.reduced = !(settings.reduced);
     }
@@ -495,7 +516,7 @@ bool Gui::beginWindow (
     addLastVerticalSpacing (-1.f);
     icon ("close", buttonSize);
   }
-  mCursorPosition = pos + sf::Vector2f (0.f, activeSize.y);
+  mCursorPosition = position + sf::Vector2f (0.f, activeSize.y);
 
   // if window is reduced skip box drawing
   if (settings.reduced) return false;
@@ -503,7 +524,7 @@ bool Gui::beginWindow (
   // set clipping layer
   auto& groupLayer = thisWindow.clippingLayer;
   const auto activeShift = sf::Vector2f (0.f, activeSize.y);
-  const auto panelBox = sf::FloatRect (pos + activeShift, settings.size);
+  const auto panelBox = sf::FloatRect (position + activeShift, settings.size);
   if (hasMenu) {
     groupLayer = setClipping (panelBox, 0.f, buttonHeight ());
   } else {
@@ -528,9 +549,7 @@ bool Gui::beginWindow (
 
   // scroll through window if requested
   if (isPanelScrollable (thisWindow)) {
-    mCursorPosition -= scrollPanel (
-      thisWindow.groupId, winBox, winStatus, horizontal
-    );
+    mCursorPosition -= scrollPanel (thisWindow.groupId, winBox, winStatus, horizontal);
     // reduce group size to account scroller
     if (horizontal) {
       thisWindow.size.y -= normalTextHeight ();
@@ -538,6 +557,7 @@ bool Gui::beginWindow (
       thisWindow.size.x -= normalTextHeight ();
     }
   }
+  thisWindow.innerPosition = mCursorPosition;
   return true;
 }
 
@@ -588,27 +608,16 @@ void Gui::beginPanel (
   // add clipping layer for the panel box
   const auto panelBox = sf::FloatRect (position, settings.size);
   const auto panelStatus = itemStatus (panelBox, name);
-  const auto activeSize = sf::Vector2f (settings.size.x, normalTextHeight ());
+  auto& panel = mGroups.top ();
   if (clipped) {
-    auto& groupLayer = mGroups.top ().clippingLayer;
-    if (settings.movable) {
-      groupLayer = setClipping (panelBox, activeSize.y, 0.f, true);
-    } else {
-      groupLayer = setClipping (panelBox);
-    }
-  }
-
-  // move panel if requested
-  const auto activePos = position - sf::Vector2f (0.f, activeSize.y);
-  const auto activeBox = sf::FloatRect (activePos, activeSize);
-  const auto state = interactWithMouse (settings, activeBox, name, info);
-  if (settings.movable && settings.visible) {
-    mRender.draw <Widget::Box> (activeBox, state);
+    auto& groupLayer = panel.clippingLayer;
+    groupLayer = setClipping (panelBox);
   }
 
   // draw panel box if requested
+  const auto state = interactWithMouse (settings, panelBox, name, info);
   if (settings.visible) {
-    mRender.draw <Widget::Box> (panelBox, panelStatus);
+    mRender.draw <Widget::Box> (panelBox, state);
   }
 
   // update cursor position
@@ -616,12 +625,15 @@ void Gui::beginPanel (
   mCursorPosition.y += 1.5f * mPadding.y;
 
   // scroll through panel if requested
-  auto& panel = mGroups.top ();
   if (isPanelScrollable (panel)) {
-    mCursorPosition -= scrollPanel (
-      panel.groupId, panelBox, panelStatus, horizontal
-    );
+    mCursorPosition -= scrollPanel (panel.groupId, panelBox, state, horizontal);
+    if (horizontal) {
+      panel.size.y -= normalTextHeight ();
+    } else {
+      panel.size.x -= normalTextHeight ();
+    }
   }
+  panel.innerPosition = mCursorPosition;
 }
 
 /////////////////////////////////////////////////
@@ -652,8 +664,7 @@ void Gui::endPanel ()
 
 
 /////////////////////////////////////////////////
-bool Gui::isPanelScrollable (
-  const GroupData& panel)
+bool Gui::isPanelScrollable (const GroupData& panel)
 {
   // panel is scrollable if it possess a scroller
   if (mGroupsScrollerInformation.has (panel.groupId)) {
@@ -1281,16 +1292,14 @@ void Gui::setPlotRange (
 }
 
 /////////////////////////////////////////////////
-void Gui::setSample (
-  const uint32_t sample)
+void Gui::setSample (const uint32_t sample)
 {
   mPlotSample = sample;
   mPlotter.setSample (sample);
 }
 
 /////////////////////////////////////////////////
-void Gui::setPlotBound (
-  const sf::Vector2f& bound)
+void Gui::setPlotBound (const sf::Vector2f& bound)
 {
   mPlotBound = bound;
   mPlotIsBounded = true;
@@ -1527,7 +1536,7 @@ sf::Vector2f Gui::scroller (
 
   // get scroller status
   const auto box = sf::FloatRect (pos, size);
-  auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  auto state = itemStatus (box, name, mInputState.mouseLeftDown, Tooltip (), true);
   mRender.draw <Widget::Scroller> (box, state, horizontal);
 
   // if active, compute current scrolling
@@ -1537,8 +1546,7 @@ sf::Vector2f Gui::scroller (
   }
 
   // if parent is active and scroller is inactive, scroll with wheel
-  const auto parentIsActive = panelStatus == ItemState::Hovered
-    || panelStatus == ItemState::Active;
+  const auto parentIsActive = panelStatus == ItemState::Hovered || panelStatus == ItemState::Active;
   const auto scrollerIsInactive = state != ItemState::Active;
   const auto scrolled = mInputState.mouseDeltaWheel != 0;
   if (parentIsActive && scrollerIsInactive && scrolled) {
@@ -1777,7 +1785,8 @@ ItemState Gui::itemStatus (
   const sf::FloatRect& boundingBox,
   const ItemID& item,
   bool condition,
-  const Tooltip& info)
+  const Tooltip& info,
+  bool forceActive)
 {
   auto state = ItemState::Neutral;
 
@@ -1789,7 +1798,7 @@ ItemState Gui::itemStatus (
     mGuiState.hoveredItem = item;
 
     // if no widget is active, enter active state
-    if (mGuiState.activeItem == NullItemID && condition) {
+    if ((mGuiState.activeItem == NullItemID || forceActive) && condition) {
       // we want to store item ID to move it, but we don't want infinite click
       mGuiState.activeItem = item;
       if (mInputState.updated) {
@@ -1883,60 +1892,79 @@ std::string Gui::formatText (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-sf::Vector2f Gui::computeSpacing (
-  const sf::Vector2f& size)
+sf::Vector2f Gui::computeSpacing (const sf::Vector2f& size)
 {
-  // compute spacing
-  auto spacing = sf::Vector2f (0.f, 0.f);
+  // Compute spacing relative to the group
+  auto spacing = sf::Vector2f ();
   if (!mGroups.empty ()) {
     // if group is a menu we skip it
-    auto topGroup = mGroups.top ();
-    if (topGroup.menuItemCount != 0) {
+    auto parent = mGroups.top ();
+    if (parent.menuItemCount != 0) {
       mGroups.pop ();
       if (!mGroups.empty ()) {
-        auto menu = topGroup;
-        topGroup = mGroups.top ();
+        auto menu = parent;
+        parent = mGroups.top ();
         mGroups.emplace (std::move (menu));
       } else {
-        mGroups.push (topGroup);
+        mGroups.push (parent);
       }
     }
 
     // if group is horizontal, add along x
-    if (topGroup.horizontal) {
-      spacing.x = size.x + mStyle.itemInnerSpacing + mPadding.x;
+    const auto backToInnerPos = mResetDifference < 2;
+    const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
+    if (parent.horizontal) {
+      // update and store spacing 
+      spacing.x = size.x + padding.x;
       mLastSpacing.x = spacing.x;
-      mLastSpacing.y = size.y + mStyle.itemInnerSpacing + mPadding.y;
+      mLastSpacing.y = size.y + padding.y;
+      // get parent pos if less than two sameLine was called
+      if (backToInnerPos) {
+        mCursorPosition.y = parent.innerPosition.y;
+      }
+      mCursorPosition.x += spacing.x;
     // else update with standard spacing along y
     } else {
-      spacing.y = size.y + mStyle.itemInnerSpacing + mPadding.y;
-      mLastSpacing.x = size.x + mStyle.itemInnerSpacing + mPadding.x;
+      // update and store spacing
+      spacing.y = size.y + padding.y;
+      mLastSpacing.x = size.x + padding.x;
       mLastSpacing.y = spacing.y;
+      // get parent pos if less than two sameLine was called
+      if (backToInnerPos) {
+        mCursorPosition.x = parent.innerPosition.x;
+      }
+      mCursorPosition.y += spacing.y;
     }
+  // If no group is set, we just write vertically
   } else {
+    // update spacing and position
     spacing.y = size.y + mStyle.itemSpacing + mPadding.y;
     mLastSpacing.x = size.x + mStyle.itemSpacing + mPadding.x;
     mLastSpacing.y = spacing.y;
+    mCursorPosition += spacing;
   }
-
-  // update last spacing and return spacing
   return spacing;
 }
 
 /////////////////////////////////////////////////
-void Gui::updateSpacing (
-  const sf::Vector2f& size)
+void Gui::updateSpacing (const sf::Vector2f& size)
 {
+  // manage same line call 
+  auto difference = mResetCount - mPreviousResetCount;
+  if (mResetDifference == difference) {
+    mPreviousResetCount = mResetCount;
+  }
+  mResetDifference = difference;
+
   // update cursor position
   const auto spacing = computeSpacing (size);
-  mCursorPosition += spacing;
+
   // update scrolling size and spacing 
   updateScrolling (spacing);
 }
 
 /////////////////////////////////////////////////
-void Gui::updateScrolling (
-  const sf::Vector2f& spacing)
+void Gui::updateScrolling (const sf::Vector2f& spacing)
 {
   // update current group scrolling size
   if (!mGroups.empty ()) {
@@ -2001,18 +2029,28 @@ void Gui::computeRelativePosition (
   sf::Vector2f& position,
   const sf::Vector2f& displacement)
 {
-  // if displacement is not null we compute position
-  if (displacement.length () > 0.01f) {
-    // if there is no active group displacement = position
-    if (mGroups.empty ()) {
-      position = displacement;
-    // else add displacement to the relative group position
-    } else {
-      const auto groupPos = mGroups.top ().position;
-      position = groupPos + displacement;
+  // If there is no active group, displacement = position
+  const auto isNotNull = displacement.length () > 0.01f;
+  if (mGroups.empty () && isNotNull) {
+    position = displacement;
+  }
+
+  // If there is an active group, displace relatively to the group position
+  if (!mGroups.empty ()) {
+    const auto& parent = mGroups.top ();
+    if (isNotNull) {
+      position = parent.position + displacement;
+    // Manage sameLine/sameColumn edge case
+    } else if (mResetCount - mPreviousResetCount == 2) {
+      if (parent.horizontal) {
+        position.y += mLastSpacing.y;
+        mCursorPosition.y += mLastSpacing.y;
+      } else {
+        position.x += mLastSpacing.x;
+        mCursorPosition.x += mLastSpacing.x;
+      }
     }
   }
-  position;
 }
 
 } // namespace sgui
