@@ -10,7 +10,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "render/PrimitiveShapeRender.h"
+#include "PrimitiveShapeRender.h"
 
 namespace sgui
 {

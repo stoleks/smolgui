@@ -1,6 +1,6 @@
 # if anyday I want to separate src and include...
-set(INCROOT ${PROJECT_SOURCE_DIR}/src/render)
-set(SRCROOT ${PROJECT_SOURCE_DIR}/src/render)
+set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Render)
+set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Render)
 
 # all source files
 set (SRC

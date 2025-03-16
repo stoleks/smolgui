@@ -3,8 +3,8 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <spdlog/spdlog.h>
 
-#include "resources/LoadTextureAtlas.h"
-#include "core/Interpolation.h"
+#include "sgui/Resources/LoadTextureAtlas.h"
+#include "sgui/Core/Interpolation.h"
 
 namespace sgui
 {

@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "core/LookupTable.h"
-#include "gui/Style.h"
+#include "sgui/Core/LookupTable.h"
+#include "sgui/Widgets/Style.h"
 
 namespace sgui
 {

@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "core/LookupTable.h"
+#include "sgui/Core/LookupTable.h"
 
 namespace sgui
 {

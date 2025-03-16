@@ -1,11 +1,6 @@
 ####
 #include all subdirectories
-add_subdirectory (core)
-add_subdirectory (serialization)
-add_subdirectory (resources)
-add_subdirectory (render)
-add_subdirectory (parser)
-add_subdirectory (gui)
+add_subdirectory (sgui)
 
 ####
 # Compilation option
@@ -21,18 +16,18 @@ target_link_libraries (${PROJECT_NAME} PRIVATE
 
 ####
 # Build small demo
-add_executable (Demo main.cpp)
+add_executable (SmolguiDemo main.cpp)
 
-target_link_libraries (Demo PRIVATE
+target_link_libraries (SmolguiDemo PRIVATE
   SFML::Graphics
   nlohmann_json
   spdlog
   SmolGui
 )
 
-target_compile_features(Demo PRIVATE cxx_std_17)
+target_compile_features(SmolguiDemo PRIVATE cxx_std_17)
 
-set_target_properties(Demo
+set_target_properties(SmolguiDemo
   PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build/bin/"
 )

@@ -1,4 +1,4 @@
-set(INCROOT ${PROJECT_SOURCE_DIR}/src/core)
+set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Core)
 
 # all source files
 set (MATH_SRC

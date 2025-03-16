@@ -2,8 +2,8 @@
 #include <chrono>
 #include <thread>
 
-#include "gui/sgui.h"
-#include "parser/Formula.h"
+#include "sgui/sgui.h"
+#include "sgui/parser/Formula.h"
 
 int main()
 {

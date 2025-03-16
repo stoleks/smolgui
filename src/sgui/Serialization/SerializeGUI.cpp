@@ -1,8 +1,8 @@
 #include "SerializeGUI.h"
 
-#include "resources/Layout.h"
 #include "SerializeSFML.h"
-#include "gui/Style.h"
+#include "sgui/Resources/Layout.h"
+#include "sgui/Widgets/Style.h"
 
 namespace sgui 
 {

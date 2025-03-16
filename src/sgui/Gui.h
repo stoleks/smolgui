@@ -12,14 +12,14 @@
 #include <string>
 #include <spdlog/spdlog.h>
 
-#include "Style.h"
-#include "ScrollerInformation.h"
+#include "sgui/Widgets/Style.h"
+#include "sgui/Widgets/ScrollerInformation.h"
 
-#include "core/ObjectPool.h"
-#include "core/Interpolation.h"
-#include "render/Plotter.h"
-#include "render/GuiRender.h"
-#include "resources/TextContainer.h"
+#include "sgui/Core/ObjectPool.h"
+#include "sgui/Core/Interpolation.h"
+#include "sgui/Render/Plotter.h"
+#include "sgui/Render/GuiRender.h"
+#include "sgui/Resources/TextContainer.h"
 
 namespace sgui 
 {

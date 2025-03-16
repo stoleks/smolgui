@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "serialization/LoadJson.h"
-#include "serialization/SerializeCore.h"
+#include "sgui/Serialization/LoadJson.h"
+#include "sgui/Serialization/SerializeCore.h"
 
 namespace sgui
 {

@@ -16,9 +16,9 @@
 
 #include "TextureMeshes.h"
 #include "meshFunctions.h"
-#include "gui/Widgets.h"
-#include "core/Shapes.h"
-#include "resources/TextureAtlas.h"
+#include "sgui/Core/Shapes.h"
+#include "sgui/Widgets/Widgets.h"
+#include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui
 {

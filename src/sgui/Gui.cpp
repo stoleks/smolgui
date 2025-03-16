@@ -4,9 +4,9 @@
 #include <sstream>
 #include <iostream>
 
-#include "core/Interpolation.h"
-#include "resources/Layout.h"
-#include "resources/TextContainer.h"
+#include "sgui/Core/Interpolation.h"
+#include "sgui/Resources/Layout.h"
+#include "sgui/Resources/TextContainer.h"
 
 namespace sgui 
 {
@@ -313,9 +313,10 @@ void Gui::endFrame (const float tooltipDelay)
     mGuiState.keyboardFocus = NullItemID;
   }
 
-  // reset widget count and scroll data
+  // reset same line counter
   mResetCount = 0u;
   mPreviousResetCount = 0u;
+  // reset widget count and scroll data
   mPlotCount = 0u;
   mGroupCount = 0u;
   mWidgetCount = 0u;
@@ -1534,7 +1535,7 @@ sf::Vector2f Gui::scroller (
     extraSize -= size.y;
   }
 
-  // get scroller status
+  // get scroller status, we always steal active state over the previous widget
   const auto box = sf::FloatRect (pos, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, Tooltip (), true);
   mRender.draw <Widget::Scroller> (box, state, horizontal);
@@ -1910,7 +1911,8 @@ sf::Vector2f Gui::computeSpacing (const sf::Vector2f& size)
       }
     }
 
-    // if group is horizontal, add along x
+    // if group is horizontal, add along x. If there are more than two sameLine,
+    // we need to preserve x spacing, instead of going back to window base x pos.
     const auto backToInnerPos = mResetDifference < 2;
     const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
     if (parent.horizontal) {
@@ -1949,7 +1951,9 @@ sf::Vector2f Gui::computeSpacing (const sf::Vector2f& size)
 /////////////////////////////////////////////////
 void Gui::updateSpacing (const sf::Vector2f& size)
 {
-  // manage same line call 
+  // manage same line call, if difference > 0, a sameLine was just
+  // called and we need to go back to the previous line. If difference
+  // continue to increase, user is calling several sameLine
   auto difference = mResetCount - mPreviousResetCount;
   if (mResetDifference == difference) {
     mPreviousResetCount = mResetCount;
@@ -2040,7 +2044,9 @@ void Gui::computeRelativePosition (
     const auto& parent = mGroups.top ();
     if (isNotNull) {
       position = parent.position + displacement;
-    // Manage sameLine/sameColumn edge case
+    // Manage sameLine/sameColumn edge case, we need to add previous space,
+    // otherwise this sameLine command will send the next widget right on the
+    // previous one
     } else if (mResetCount - mPreviousResetCount == 2) {
       if (parent.horizontal) {
         position.y += mLastSpacing.y;

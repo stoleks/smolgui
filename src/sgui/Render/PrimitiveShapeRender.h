@@ -10,7 +10,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "core/Polygon.h"
+#include "sgui/Core/Polygon.h"
 
 namespace sgui
 {

@@ -2,8 +2,8 @@
 
 #include "TextureAtlas.h"
 #include "LoadLookupTable.h"
-#include "serialization/SerializeGUI.h"
-#include "serialization/SerializeSFML.h"
+#include "sgui/Serialization/SerializeGUI.h"
+#include "sgui/Serialization/SerializeSFML.h"
 
 namespace sgui
 {

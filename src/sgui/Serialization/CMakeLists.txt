@@ -1,6 +1,6 @@
 # if anyday I want to separate src and include...
-set(INCROOT ${PROJECT_SOURCE_DIR}/src/serialization)
-set(SRCROOT ${PROJECT_SOURCE_DIR}/src/serialization)
+set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Serialization)
+set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Serialization)
 
 # all source files
 set (SRC

@@ -1,5 +1,5 @@
-set(INCROOT ${PROJECT_SOURCE_DIR}/src/parser)
-set(SRCROOT ${PROJECT_SOURCE_DIR}/src/parser)
+set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Parser)
+set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Parser)
 
 # all source files
 set (MATH_SRC
@@ -8,7 +8,7 @@ set (MATH_SRC
   ${SRCROOT}/MathParser.cpp
   ${INCROOT}/Formula.h
 )
-source_group ("MathParser" FILES ${MATH_SRC})
+source_group ("math parser" FILES ${MATH_SRC})
 
 target_sources (${PROJECT_NAME}
   PRIVATE ${MATH_SRC})

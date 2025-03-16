@@ -1,6 +1,6 @@
 #include "ScrollerInformation.h"
 
-#include "core/Interpolation.h"
+#include "sgui/Core/Interpolation.h"
 
 namespace sgui
 {

@@ -1,6 +1,6 @@
-#include "render/Plotter.h"
+#include "Plotter.h"
 
-#include "core/Interpolation.h"
+#include "sgui/Core/Interpolation.h"
 
 namespace sgui
 {

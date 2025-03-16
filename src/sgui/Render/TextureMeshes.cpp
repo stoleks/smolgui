@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 
 #include "MeshFunctions.h"
-#include "resources/TextureAtlas.h"
+#include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui
 {

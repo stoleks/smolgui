@@ -8,8 +8,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "core/ObjectPool.h"
-#include "core/LookupTable.h"
+#include "sgui/Core/ObjectPool.h"
+#include "sgui/Core/LookupTable.h"
 
 // for readability
 using json = nlohmann::json;
