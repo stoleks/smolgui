@@ -85,11 +85,11 @@ struct Panel
          const bool closed = false,
          const bool reduced = false);
   // data
-  bool movable  = true;
-  bool visible  = true;
   bool closable = false;
   bool closed   = false;
+  bool movable  = true;
   bool reduced  = false;
+  bool visible  = true;
   sf::Vector2f size;
   sf::Vector2f position;
 };
@@ -121,12 +121,12 @@ struct Constraint
 {
   Constraint () = default;
   // data, zero means no constrain
-  bool centeredVerticaly   = false;
   bool centeredHorizontaly = false;
-  uint32_t pixelsFromTop    = 0u;
+  bool centeredVerticaly   = false;
   uint32_t pixelsFromBottom = 0u;
   uint32_t pixelsFromLeft   = 0u;
   uint32_t pixelsFromRight  = 0u;
+  uint32_t pixelsFromTop    = 0u;
 };
 
 } // namespace sgui

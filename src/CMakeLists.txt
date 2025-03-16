@@ -4,6 +4,7 @@ add_subdirectory (core)
 add_subdirectory (serialization)
 add_subdirectory (resources)
 add_subdirectory (render)
+add_subdirectory (parser)
 add_subdirectory (gui)
 
 ####

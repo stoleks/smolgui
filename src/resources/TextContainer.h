@@ -30,8 +30,7 @@ public:
    */
   bool loadFromFile (
          const std::string& filename,
-         const std::string& tongue,
-         const LookupTable <std::string>& paths);
+         const std::string& tongue);
   void saveInFile (const std::string& filename);
   /**
    * add or remove an entry to the container
@@ -46,7 +45,6 @@ public:
   std::string& get (const std::string& entry);
   const std::string& get (const std::string& entry) const;
 private:
-  std::string mFilename;
   std::string mActiveTongue;
   LookupTable <std::string> mPaths;
   LookupTable <std::string> mTexts;

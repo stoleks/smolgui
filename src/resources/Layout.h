@@ -16,7 +16,7 @@ namespace sgui
 {
 /////////////////////////////////////////////////
 /**
- * Data structure stored in Layout. Its a simple std::variant basically...
+ * Data structure stored in Layout. Its a dumb std::variant basically...
  */
 struct LayoutEntry
 {
@@ -31,8 +31,7 @@ struct LayoutEntry
 
 /////////////////////////////////////////////////
 /**
- * return special prefix to avoid name collision
- * and to now which type is which from file
+ * return special prefix to avoid name collision and to infer type from file
  */
 template <typename LayoutData>
 constexpr std::string layoutTypeName ()

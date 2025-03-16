@@ -1,7 +1,7 @@
 set(INCROOT ${PROJECT_SOURCE_DIR}/src/core)
 
 # all source files
-set (SRC
+set (MATH_SRC
   ${INCROOT}/Interpolation.tpp
   ${INCROOT}/Interpolation.h
 )
@@ -24,4 +24,4 @@ set (SHAPES_SRC
 source_group ("shapes" FILES ${SHAPES_SRC})
 
 target_sources (${PROJECT_NAME}
-  PRIVATE ${SRC} ${CONTAINER_SRC} ${SHAPES_SRC})
+  PRIVATE ${MATH_SRC} ${CONTAINER_SRC} ${SHAPES_SRC})

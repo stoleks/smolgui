@@ -20,24 +20,20 @@ void TextContainer::setTongue (
 /////////////////////////////////////////////////
 bool TextContainer::reload ()
 {
-  return sgui::loadFromFile (mTexts, mPaths.at (mActiveTongue) + mFilename);
+  return sgui::loadFromFile (mTexts, mPaths.at (mActiveTongue));
 }
 
 /////////////////////////////////////////////////
 bool TextContainer::loadFromFile (
   const std::string& filename,
-  const std::string& tongue,
-  const LookupTable <std::string>& languages)
+  const std::string& tongue)
 {
-  mPaths = languages;
-  mFilename = filename;
-  mActiveTongue = tongue;
+  mPaths.insert (tongue, filename);
   return reload ();
 }
 
 /////////////////////////////////////////////////
-void TextContainer::saveInFile (
-  const std::string& filename)
+void TextContainer::saveInFile (const std::string& filename)
 {
   sgui::saveInFile (mTexts, filename);
 }
@@ -51,22 +47,19 @@ void TextContainer::add (
 }
 
 /////////////////////////////////////////////////
-void TextContainer::remove (
-  const std::string& entry)
+void TextContainer::remove (const std::string& entry)
 {
   mTexts.erase (entry);
 }
 
 /////////////////////////////////////////////////
-std::string& TextContainer::get (
-  const std::string& entry)
+std::string& TextContainer::get (const std::string& entry)
 {
   return mTexts.at (entry);
 }
 
 /////////////////////////////////////////////////
-const std::string& TextContainer::get (
-  const std::string& entry) const
+const std::string& TextContainer::get (const std::string& entry) const
 {
   return mTexts.at (entry);
 }
