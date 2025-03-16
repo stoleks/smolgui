@@ -3,6 +3,7 @@
 #include <thread>
 
 #include "gui/sgui.h"
+#include "parser/Formula.h"
 
 int main()
 {
@@ -15,6 +16,12 @@ int main()
   auto font = sf::Font ();
   if (!font.openFromFile (fontFile)) {
     spdlog::error ("Unable to load {}", fontFile);
+    std::this_thread::sleep_for (std::chrono::seconds (2));
+  }
+  const std::string mathFontFile = "../../contents/latinmodern-math.otf";
+  auto mathFont = sf::Font ();
+  if (!mathFont.openFromFile (mathFontFile)) {
+    spdlog::error ("Unable to load {}", mathFontFile);
     std::this_thread::sleep_for (std::chrono::seconds (2));
   }
   const std::string atlasFile = "../../contents/atlases.json";
@@ -47,12 +54,16 @@ int main()
    * Some gui settings
    */
   auto panel = sgui::Panel ();
-  panel.position = { 128.f, 128.f};
+  panel.position = { 16.f, 256.f};
   panel.size = {640.f, 640.f};
   auto panel2 = sgui::Panel ();
-  panel2.position = panel.position + sf::Vector2f (panel.size.x + 20.f, 0.f);
+  panel2.position = panel.position + sf::Vector2f (panel.size.x + 10.f, 0.f);
   panel2.size = {520.f, 520.f};
   panel2.closable = true;
+  auto panel3 = sgui::Panel ();
+  panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, 0.f);
+  panel3.size = {128.f, 40.f};
+  panel3.movable = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
   auto text = std::string ("You can edit this text on multiple lines !");
@@ -95,13 +106,12 @@ int main()
         if (gui.textButton ("Open/Close")) {
           panel.closed = !panel.closed;
         }
-        gui.setAnchor ();
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
-        gui.backToAnchor ();
+        gui.addVerticalSpacing (1.f);
         gui.separation ();
         // Display a function
-        gui.slider (sliderValue, 0.f, 10.f, "Slider from 0 to 1, value is : " + std::to_string (sliderValue));
+        gui.slider (sliderValue, 0.f, 10.f, "Slider from 0 to 10, value is : " + std::to_string (sliderValue));
         gui.checkBox (displayFunction, "Display a function");
         if (displayFunction) {
           auto func = [t, sliderValue] (float x) {
@@ -116,7 +126,7 @@ int main()
         }
         // Change window size
         gui.separation ();
-        gui.slider (panel.size.y, 50.f, 700.f, "Slider from 0 to 700, value is : " + std::to_string (sliderValue));
+        gui.slider (panel.size.y, 50.f, 700.f, "Slider from 0 to 700, value is : " + std::to_string (panel.size.y));
       }
       gui.endWindow ();
       // second window
@@ -140,6 +150,12 @@ int main()
         gui.inputVector2 (vector);
       }
       gui.endWindow ();
+      gui.beginPanel (panel3, sgui::Constraint (), true);
+      gui.text ("Just a panel");
+      gui.text ("With text");
+      gui.addVerticalSpacing (12.f);
+      gui.text ("Scrollable");
+      gui.endPanel ();
     }
     gui.endFrame ();
     /**
@@ -147,6 +163,20 @@ int main()
      */
     window.clear ();
     gui.draw (window);
+    // TEST
+    const auto expression ("(3 * 4) / (#sin(x - 5 / #sqrt(3) + #sqrt (4 * e^(x-6)) + 4) + 5)");
+    sgui::Formula formula (mathFont);
+    formula.printFormula (expression, window, gui.style ());
+    std::wstring alphabet;
+    for (auto s : sgui::Parser::Symbols) {
+      alphabet += s.second.character;
+    }
+    sf::Text txt (mathFont);
+    txt.setPosition (gui.cursorPosition ());
+    txt.setCharacterSize (1.5f*gui.style ().fontSize.title);
+    txt.setString (alphabet);
+    window.draw (txt);
+    // TEST
     window.display ();
   }
 }
