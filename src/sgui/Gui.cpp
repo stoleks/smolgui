@@ -366,8 +366,10 @@ void Gui::handleMouseInputs (
   const auto position = sf::Vector2f (window.mapPixelToCoords (mousePos, view));
   mInputState.mousePosition = position;
   mInputState.mouseDisplacement = position - mInputState.oldMousePosition;
+  mInputState.mouseScrolled = false;
   mInputState.mouseLeftReleased = false;
   mInputState.mouseRightReleased = false;
+  mInputState.mouseDeltaWheel = 0.f;
   // is mouse released ?
   if (event->is <sf::Event::MouseButtonReleased> ()) {
     auto button = event->getIf <sf::Event::MouseButtonReleased> ()->button;
@@ -391,6 +393,12 @@ void Gui::handleMouseInputs (
       mInputState.mouseRightReleased = false;
       mInputState.mouseRightDown = true;
     }
+  }
+  // is mouse scrolled ?
+  if (const auto* scrolled = event->getIf<sf::Event::MouseWheelScrolled> ()) {
+    mInputState.mouseDeltaWheel = scrolled->delta;
+    mInputState.mouseScrolled = scrolled->wheel == sf::Mouse::Wheel::Horizontal
+      || scrolled->wheel == sf::Mouse::Wheel::Vertical;
   }
 }
 
@@ -661,45 +669,6 @@ void Gui::endPanel ()
   } else {
     spdlog::warn ("There are no panel to end");
   }
-}
-
-
-/////////////////////////////////////////////////
-bool Gui::isPanelScrollable (const GroupData& panel)
-{
-  // panel is scrollable if it possess a scroller
-  if (mGroupsScrollerInformation.has (panel.groupId)) {
-    auto& scrollData = mGroupsScrollerInformation.get (panel.groupId);
-    // and if its scroller size is greater than its size
-    if (panel.horizontal) {
-      return scrollData.size () > panel.size.x;
-    }
-    return scrollData.size () > panel.size.y;
-  }
-
-  // if panel does not posses a scroller add one
-  mGroupsScrollerInformation.emplace (panel.groupId, panel.horizontal);
-  return false;
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::scrollPanel (
-  const uint32_t id,
-  const sf::FloatRect& box,
-  const ItemState state,
-  const bool horizontal)
-{
-  // scroll through panel
-  if (mGroupsScrollerInformation.has (id)) {
-    auto& scrollData = mGroupsScrollerInformation.get (id);
-    auto percent = scrollData.percent ();
-    const auto size = scrollData.size ();
-    const auto amount = scroller (percent, box, state, size, horizontal);
-    scrollData.scroll (percent);
-    return amount;
-  }
-
-  return sf::Vector2f (0.f, 0.f);
 }
 
 
@@ -1508,6 +1477,44 @@ bool Gui::dropListItem (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
+bool Gui::isPanelScrollable (const GroupData& panel)
+{
+  // panel is scrollable if it possess a scroller
+  if (mGroupsScrollerInformation.has (panel.groupId)) {
+    auto& scrollData = mGroupsScrollerInformation.get (panel.groupId);
+    // and if its scroller size is greater than its size
+    if (panel.horizontal) {
+      return scrollData.size () > panel.size.x;
+    }
+    return scrollData.size () > panel.size.y;
+  }
+
+  // if panel does not posses a scroller add one
+  mGroupsScrollerInformation.emplace (panel.groupId, panel.horizontal);
+  return false;
+}
+
+/////////////////////////////////////////////////
+sf::Vector2f Gui::scrollPanel (
+  const uint32_t id,
+  const sf::FloatRect& box,
+  const ItemState state,
+  const bool horizontal)
+{
+  // scroll through panel
+  if (mGroupsScrollerInformation.has (id)) {
+    auto& scrollData = mGroupsScrollerInformation.get (id);
+    auto percent = scrollData.percent ();
+    const auto size = scrollData.size ();
+    const auto amount = scroller (percent, box, state, size, horizontal);
+    scrollData.scroll (percent);
+    return amount;
+  }
+
+  return sf::Vector2f (0.f, 0.f);
+}
+
+/////////////////////////////////////////////////
 sf::Vector2f Gui::scroller (
   float& percent,
   const sf::FloatRect& panelBox,
@@ -1546,20 +1553,27 @@ sf::Vector2f Gui::scroller (
     percent = sliderValue (box, 0.f, 1.f, horizontal);
   }
 
-  // if parent is active and scroller is inactive, scroll with wheel
+  // if parent is active and scroller is inactive (we can't drag and scroll), scroll with wheel
   const auto parentIsActive = panelStatus == ItemState::Hovered || panelStatus == ItemState::Active;
   const auto scrollerIsInactive = state != ItemState::Active;
-  const auto scrolled = mInputState.mouseDeltaWheel != 0;
-  if (parentIsActive && scrollerIsInactive && scrolled) {
-    const auto dx = 0.05f * mInputState.mouseDeltaWheel;
+  if (parentIsActive && scrollerIsInactive && mInputState.mouseScrolled) {
+    // move by 5 % per scroll TODO: add a function to change this percentage
+    const auto dx =  std::abs (0.05f * mInputState.mouseDeltaWheel);
+    auto gain = 0.f;
     if (horizontal) {
-      percent = sgui::remap (0.f, box.size.x, 0.f, 1.f, dx * box.size.x);
+      gain = sgui::remap (0.f, box.size.x, 0.f, 1.f, dx * box.size.x);
     } else {
-      percent = sgui::remap (0.f, box.size.y, 0.f, 1.f, dx * box.size.y);
+      gain = sgui::remap (0.f, box.size.y, 0.f, 1.f, dx * box.size.y);
+    }
+    // note that 0% is the top scrollbar, so if delta > 0 we need to subtract gain
+    if (mInputState.mouseDeltaWheel > 0.f) {
+      percent = sgui::clamp (0.f, 1.f, percent - gain);
+    } else {
+      percent = sgui::clamp (0.f, 1.f, percent + gain);
     }
   }
 
-  // compute scroll bar extra shift
+  // compute scrollbar extra shift
   const auto shift = scrollerBar (box, state, percent, extraSize, horizontal);
   if (horizontal) {
     return sf::Vector2f (-shift, 0.f);

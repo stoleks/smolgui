@@ -5,8 +5,7 @@
 namespace sgui
 {
 /////////////////////////////////////////////////
-ScrollerInformation::ScrollerInformation (
-  const bool horizontal)
+ScrollerInformation::ScrollerInformation (const bool horizontal)
   : mHorizontal (horizontal)
 {}
 
@@ -18,15 +17,13 @@ void ScrollerInformation::newCycle ()
 }
 
 /////////////////////////////////////////////////
-void ScrollerInformation::setScrollSize (
-  const float size)
+void ScrollerInformation::setScrollSize (const float size)
 {
   mTempSize = size;
 }
 
 /////////////////////////////////////////////////
-void ScrollerInformation::computeScrollSize (
-  const sf::Vector2f& spacing)
+void ScrollerInformation::computeScrollSize (const sf::Vector2f& spacing)
 {
   if (mHorizontal) {
     mTempSize += spacing.x;
@@ -36,8 +33,7 @@ void ScrollerInformation::computeScrollSize (
 }
 
 /////////////////////////////////////////////////
-void ScrollerInformation::scroll (
-  const float amount)
+void ScrollerInformation::scroll (const float amount)
 {
   mScrollPercent = sgui::clamp (0.f, 1.f, amount);
 }

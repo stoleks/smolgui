@@ -369,6 +369,7 @@ public:
    */
   void forcePlotUpdate ();
 private:
+  // TODO: Move InternalState, InputState and GroupData into separate file in Impl:: namespace
   // store ID of active/hovered item
   struct InternalItemState
   {
@@ -383,6 +384,7 @@ private:
   {
     bool updated = false;
     // mouse button state
+    bool mouseScrolled = false;
     bool mouseLeftDown = false;
     bool mouseRightDown = false;
     bool mouseMiddleDown = false;
@@ -390,7 +392,7 @@ private:
     bool mouseRightReleased = false;
     bool mouseMiddleReleased = false;
     // mouse position state
-    int mouseDeltaWheel = 0;
+    float mouseDeltaWheel = 0.f;
     sf::Vector2f mousePosition = {};
     sf::Vector2f oldMousePosition = {};
     sf::Vector2f mouseDisplacement = {};
@@ -519,6 +521,7 @@ private:
          const std::string& text,
          const sf::Vector2f& boxSize,
          const uint32_t fontSize);
+  // TODO: add a similar initialize() to begin with, every widget should have a pair of initialize() / updateSpacing()
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
