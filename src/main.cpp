@@ -108,7 +108,7 @@ int main()
         }
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
-        gui.addVerticalSpacing (1.f);
+        gui.addSpacing ({0.f, 1.f});
         gui.separation ();
         // Display a function
         gui.slider (sliderValue, 0.f, 10.f, "Slider from 0 to 10, value is : " + std::to_string (sliderValue));
@@ -153,7 +153,7 @@ int main()
       gui.beginPanel (panel3, sgui::Constraint (), true);
       gui.text ("Just a panel");
       gui.text ("With text");
-      gui.addVerticalSpacing (12.f);
+      gui.addSpacing ({0.f, 12.f});
       gui.text ("Scrollable");
       gui.endPanel ();
     }

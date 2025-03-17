@@ -16,21 +16,6 @@ namespace sgui
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-Gui::Gui ()
-  : mRender ()
-{
-  // set internal state
-  mGuiState.keyboardFocus = NullItemID;
-  mGuiState.activeItem = NullItemID;
-  mGuiState.hoveredItem = NullItemID;
-
-  // define default style
-  mStyle.itemSpacing = mStyle.fontSize.normal / 2.5f;
-  mStyle.itemInnerSpacing = mStyle.fontSize.normal / 3.f;
-  mPadding = 0.25f * mStyle.fontSize.normal * sf::Vector2f (2.f, 0.5f);
-}
-
-/////////////////////////////////////////////////
 void Gui::setResources (
   sf::Font& font,
   sf::Texture& widgetTexture,
@@ -40,9 +25,23 @@ void Gui::setResources (
 }
 
 /////////////////////////////////////////////////
-void Gui::setStyle (const Style& newStyle)
+void Gui::setStyle (
+  const Style& newStyle,
+  const bool defaultPadding)
 {
   mStyle = newStyle;
+  // define default style
+  if (defaultPadding) {
+    mStyle.itemSpacing = mStyle.fontSize.normal / 2.5f;
+    mStyle.itemInnerSpacing = mStyle.fontSize.normal / 3.f;
+    mPadding = 0.25f * mStyle.fontSize.normal * sf::Vector2f (2.f, 0.5f);
+  }
+}
+
+/////////////////////////////////////////////////
+void Gui::setPercentPerScroll (const float amount)
+{
+  mPercentPerScroll = amount;
 }
 
 /////////////////////////////////////////////////
@@ -88,41 +87,13 @@ sf::Vector2f Gui::footnoteSizeOf (const std::string& text) const
 }
 
 /////////////////////////////////////////////////
-const FontSize& Gui::fontSize () const
-{
-  return mStyle.fontSize;
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::buttonSize () const
-{
-  return buttonHeight () * sf::Vector2f (1.f, 1.f);
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::textSize () const
-{
-  return 1.f*mStyle.fontSize.normal * sf::Vector2f (1.f, 1.f);
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::titleSize () const
-{
-  return 1.f*mStyle.fontSize.title * sf::Vector2f (1.f, 1.f);
-}
-
-/////////////////////////////////////////////////
 sf::Vector2f Gui::activePanelSize () const
 {
-  const auto thickness = 0.75f * normalTextHeight ();
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
-    if (parent.horizontal) {
-      return sf::Vector2f (thickness, parent.size.y);
-    }
-    return sf::Vector2f (parent.size.x, thickness);
+    return parent.size;
   }
-  return sf::Vector2f (mWindowSize.x, thickness);
+  return mWindowSize;
 }
 
 
@@ -131,63 +102,6 @@ sf::Vector2f Gui::activePanelSize () const
  *  function to manage cursor position
  * ----------------------------------------------
  */
-/////////////////////////////////////////////////
-void Gui::setAnchor ()
-{
-  // store cursor position
-  mAnchors.push (mCursorPosition);
-
-  // store current scroll size
-  if (!mGroups.empty ()) {
-    const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerInformation.has (groupId)) {
-      const auto& scrollData = mGroupsScrollerInformation.get (groupId);
-      const auto size = scrollData.currentSize ();
-      mAnchorsScroll.push (size);
-    }
-  }
-}
-
-/////////////////////////////////////////////////
-void Gui::backToAnchor ()
-{
-  // quit if there are no anchors set
-  if (mAnchors.empty ()) {
-    spdlog::warn ("There are no anchors set !");
-    return;
-  }
-
-  // get back to anchored position
-  mCursorPosition = mAnchors.top ();
-  mAnchors.pop ();
-
-  // get back to previous scroll size
-  if (!mGroups.empty ()) {
-    const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerInformation.has (groupId)) {
-      auto& scrollData = mGroupsScrollerInformation.get (groupId);
-      scrollData.setScrollSize (mAnchorsScroll.top ());
-      mAnchorsScroll.pop ();
-    }
-  }
-}
-
-/////////////////////////////////////////////////
-void Gui::addVerticalSpacing (const float amount)
-{
-  const auto spacing = amount * sf::Vector2f (0.f, mStyle.fontSize.normal);
-  mCursorPosition += spacing;
-  updateScrolling (spacing);
-}
-
-/////////////////////////////////////////////////
-void Gui::addHorizontalSpacing (const float amount)
-{
-  const auto spacing = amount * sf::Vector2f (mStyle.fontSize.normal, 0.f);
-  mCursorPosition += spacing;
-  updateScrolling (spacing);
-}
-
 /////////////////////////////////////////////////
 void Gui::addSpacing (const sf::Vector2f& amount)
 {
@@ -257,6 +171,47 @@ void Gui::sameColumn ()
 }
 
 /////////////////////////////////////////////////
+void Gui::setAnchor ()
+{
+  // store cursor position
+  mAnchors.push (mCursorPosition);
+
+  // store current scroll size
+  if (!mGroups.empty ()) {
+    const auto groupId = mGroups.top ().groupId;
+    if (mGroupsScrollerInformation.has (groupId)) {
+      const auto& scrollData = mGroupsScrollerInformation.get (groupId);
+      const auto size = scrollData.currentSize ();
+      mAnchorsScroll.push (size);
+    }
+  }
+}
+
+/////////////////////////////////////////////////
+void Gui::backToAnchor ()
+{
+  // quit if there are no anchors set
+  if (mAnchors.empty ()) {
+    spdlog::warn ("There are no anchors set !");
+    return;
+  }
+
+  // get back to anchored position
+  mCursorPosition = mAnchors.top ();
+  mAnchors.pop ();
+
+  // get back to previous scroll size
+  if (!mGroups.empty ()) {
+    const auto groupId = mGroups.top ().groupId;
+    if (mGroupsScrollerInformation.has (groupId)) {
+      auto& scrollData = mGroupsScrollerInformation.get (groupId);
+      scrollData.setScrollSize (mAnchorsScroll.top ());
+      mAnchorsScroll.pop ();
+    }
+  }
+}
+
+/////////////////////////////////////////////////
 sf::Vector2f Gui::cursorPosition () const
 {
   return mCursorPosition;
@@ -288,10 +243,8 @@ void Gui::beginFrame ()
   // clear all widgets
   mRender.clear ();
   mPlotter.clear ();
-
   // reset cursor position
-  mCursorPosition = sf::Vector2f (0.f, 0.f);
-
+  mCursorPosition = sf::Vector2f ();
   // clear hovered item
   mGuiState.hoveredItem = NullItemID;
 }
@@ -299,7 +252,6 @@ void Gui::beginFrame ()
 /////////////////////////////////////////////////
 void Gui::endFrame (const float tooltipDelay)
 {
-  testPassCount++;
   // display active tooltip
   tooltip (tooltipDelay);
 
@@ -518,7 +470,7 @@ bool Gui::beginWindow (
     // close
     addLastVerticalSpacing (-1.f);
     addLastHorizontalSpacing ();
-    addHorizontalSpacing (-0.5f);
+    addSpacing ({-0.5f, 0.f});
     if (button <Widget::TitleButton> (buttonSize)) {
       settings.closed = true;
     }
@@ -683,7 +635,7 @@ void Gui::beginMenu ()
 {
   // menu cannot be called without parent
   if (mGroups.empty () && !mGroups.top ().hasMenuBar) {
-    spdlog::error ("Menu require a parent window or panel");
+    spdlog::error ("Menu requires a parent window or panel");
   }
 
   // assign unique id to the widget
@@ -740,7 +692,7 @@ void Gui::endMenu ()
 
 /////////////////////////////////////////////////
 bool Gui::menuItem (
-  const std::string& text,
+  const std::string& description,
   const Tooltip& info)
 {
   // assign unique id to the widget
@@ -750,12 +702,12 @@ bool Gui::menuItem (
   parentMenu.menuItemCount++;
   mWidgetCount++;
 
-  // compute text position
+  // compute description position
   const auto itemPos = parentMenu.lastItemPosition;
   const auto pos = itemPos + 1.5f*mPadding;
 
   // construct menu item box
-  const auto width = 3.f*mPadding.x + subtitleSizeOf (text).x;
+  const auto width = 3.f*mPadding.x + subtitleSizeOf (description).x;
   const auto height = subtitleTextHeight ();
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
   parentMenu.lastItemPosition =
@@ -782,10 +734,10 @@ bool Gui::menuItem (
   mRender.draw <Widget::MenuItemBox> (box, state);
   parentMenu.isActive = clicked;
 
-  // draw a text over it
+  // draw a description over it
   mRender.drawText (
     sanitizePosition (pos),
-    text,
+    description,
     mStyle.fontColor,
     mStyle.fontSize.subtitle
   );
@@ -850,8 +802,19 @@ bool Gui::tooltipNeedReset ()
 void Gui::separation ()
 {
   // compute line position and size
-  const auto position = mCursorPosition + mPadding.y*sf::Vector2f (1.f, 0.f);
-  const auto size = activePanelSize () - 3.f*mPadding;
+  auto size = sf::Vector2f ();
+  if (!mGroups.empty ()) {
+    const auto& parent = mGroups.top ();
+    const auto thickness = 0.75f * buttonHeight ();
+    if (parent.horizontal) {
+      size.x = thickness;
+      size.y = parent.size.y - 3.f*mPadding.y;
+    } else {
+      size.x = parent.size.x - 3.f*mPadding.x;
+      size.y = thickness;
+    }
+  }
+  const auto position = mCursorPosition + mPadding;
   const auto box = sf::FloatRect (position, size);
 
   // render line
@@ -923,15 +886,15 @@ bool Gui::iconTextButton (
   // construct a button adapted to the icon
   const auto height = buttonHeight ();
   const auto size = height * sf::Vector2f (6.f, 1.f);
-  const auto clicked =
-    button <Widget::IconTextButton> (size, info, position);
+  const auto clicked = button <Widget::IconTextButton> (size, info, position);
 
   // draw an icon over it
   pos.x += 0.5f * mPadding.x;
-  mRender.drawIcon (sf::FloatRect (pos, buttonSize ()), iconName);
+  const auto iconSize = sf::Vector2f (1.f, 1.f) * buttonHeight ();
+  mRender.drawIcon (sf::FloatRect (pos, iconSize), iconName);
 
   // add a shifted text besides it
-  const auto shift = sf::Vector2f (buttonSize ().x, 0);
+  const auto shift = sf::Vector2f (iconSize.x, 0);
   mRender.drawText (
     sanitizePosition (pos + shift + mPadding),
     text,
@@ -1557,8 +1520,8 @@ sf::Vector2f Gui::scroller (
   const auto parentIsActive = panelStatus == ItemState::Hovered || panelStatus == ItemState::Active;
   const auto scrollerIsInactive = state != ItemState::Active;
   if (parentIsActive && scrollerIsInactive && mInputState.mouseScrolled) {
-    // move by 5 % per scroll TODO: add a function to change this percentage
-    const auto dx =  std::abs (0.05f * mInputState.mouseDeltaWheel);
+    // move by default 5 % per scroll
+    const auto dx =  std::abs (mPercentPerScroll * mInputState.mouseDeltaWheel);
     auto gain = 0.f;
     if (horizontal) {
       gain = sgui::remap (0.f, box.size.x, 0.f, 1.f, dx * box.size.x);

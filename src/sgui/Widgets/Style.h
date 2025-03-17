@@ -39,8 +39,8 @@ struct Style
   FontSize fontSize;
   sf::Color fontColor = sf::Color::Black;
   // widget related
-  float itemSpacing;
-  float itemInnerSpacing;
+  float itemSpacing = 4.8f;
+  float itemInnerSpacing = 4.f;
 };
 
 

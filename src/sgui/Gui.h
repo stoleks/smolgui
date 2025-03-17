@@ -1,11 +1,3 @@
-/**
-  Gui.h
-  Purpose: implement gui following the immediate gui principles. You need to call 
-    setResources before any use of the gui. update and updateTimer should be 
-    called every frame, as beginFrame and endFrame.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <stack>
@@ -23,70 +15,103 @@
 
 namespace sgui 
 {
-
+/**
+ * @brief implement gui following the immediate gui principles, like dear-imgui,
+ *   but with more control over the textures used for widgets.
+ */
 class Gui
 {
 public:
-  Gui ();
+  /**
+   * @brief initialize Gui.
+   */
+  Gui () = default;
 
   ///////////////////////////////////////////////
   /**
-   * this must be called once before the event loop
+   * @brief this must be called once before the event loop to set resources
    */
   void setResources (
          sf::Font& font,
          sf::Texture& widgetTexture,
          const TextureAtlas& widgetAtlas);
-  // this one can be called anytime
-  void setStyle (const Style& newStyle);
-  Style& style ();
-  const Style& style () const;
+  /**
+   * @brief to change font size, color and item padding.
+   */
+  void setStyle (
+         const Style& newStyle,
+         const bool defaultPadding = true);
+  /**
+   * @brief set wheel scroll percent strength (should be < 0.1f)
+   */
+  void setPercentPerScroll (const float amount);
 
   ///////////////////////////////////////////////
   /**
-   * these functions must be called every step of the event loop. beginFrame()
-   * clear all widget and endFrame() clean states of the gui. update () inform
-   * the gui about current user input states, window and text related states 
-   * (font size, font color).
-   * updateTimer () is used for tooltip stuff
-   * draw () will render the Gui.
+   * @brief this function must be called at the start of every loop.
    */
   void beginFrame ();
+  /**
+   * @brief this function must be called at the end of every loop.
+   * @param tooltipDelay delay before apparition of tooltip.
+   */
   void endFrame (const float tooltipDelay = 0.5f);
+  /**
+   * @brief set-up inputs for gui interaction.
+   * @param window window on which gui is drawn.
+   * @param event obtained through pollEvent.
+   */
   void update (
          const sf::RenderWindow& window,
          const std::optional <sf::Event>& event);
+  /**
+   * @brief to allow apparition of tooltip and animation to occur.
+   * @param deltaT is the current time of the frame
+   */
   void updateTimer (const sf::Time& deltaT);
+  /**
+   * @brief draw all gui's widgets, text and plot.
+   * @param window on which gui is drawn.
+   */
   void draw (sf::RenderWindow& window);
+  /**
+   * @brief get number of drawCalls in gui
+   */
   uint32_t drawCalls () const;
 
   ///////////////////////////////////////////////
   /**
-   * get text size in gui with the set font size
+   * @brief get current style of the gui
+   */
+  Style& style ();
+  /**
+   * @brief get current style of the gui
+   */
+  const Style& style () const;
+  /**
+   * @brief get normal size of text in gui
    */
   sf::Vector2f normalSizeOf (const std::string& text) const;
+  /**
+   * @brief get title size of text in gui
+   */
   sf::Vector2f titleSizeOf (const std::string& text) const;
+  /**
+   * @brief get subtitle size of text in gui
+   */
   sf::Vector2f subtitleSizeOf (const std::string& text) const;
+  /**
+   * @brief get footnote size of text in gui
+   */
   sf::Vector2f footnoteSizeOf (const std::string& text) const;
   /**
-   * get gui font size
-   */
-  const FontSize& fontSize () const;
-  /**
-   * get gui automatic button size
-   */
-  sf::Vector2f textSize () const;
-  sf::Vector2f titleSize () const;
-  sf::Vector2f buttonSize () const;
-  /**
-   * get active panel or window size
+   * @brief get active panel or window size
    */
   sf::Vector2f activePanelSize () const;
   /**
-   * add/remove vertical or horizontal spacing
+   * @brief add vertical spacing
+   * @param amount multiply this vector by the normal font size and add it to (x, y)
    */
-  void addVerticalSpacing (const float amount);
-  void addHorizontalSpacing (const float amount);
   void addSpacing (const sf::Vector2f& amount);
   /**
    * to add or remove last widget spacing
@@ -95,29 +120,38 @@ public:
   void addLastVerticalSpacing (const float amount = 1.f);
   void addLastHorizontalSpacing (const float amount = 1.f);
   /**
-   * setAnchor register a position at which you can go
-   * back with backToAnchor. Anchor are stacked with each
-   * call of setAnchor and removed at each call of backToAnchor
+   * @brief register a position at which you can go back with backToAnchor.
    */
   void setAnchor ();
+  /**
+   * @brief go back to the _last_ setAnchor position set. 
+   */
   void backToAnchor ();
+  /**
+   * @brief get current cursor position of the gui
+   */
   sf::Vector2f cursorPosition () const;
   /**
-   * to simplify use of common combination of remove/add spacing
+   * @brief go back to previous line, next to the last widget (vertical panel)
    */
   void sameLine ();
+  /**
+   * @brief go back to previous column, beneath the last widget (horizontal panel)
+   */
   void sameColumn ();
   /**
-   * return true if at least one widget is hovered
-   * or active, this have to be called before end frame
+   * @brief to know if some part of the gui are active or hovered. It must be 
+   *   called before endFrame.
    */
   bool isActive () const;
 
   ///////////////////////////////////////////////
   /**
-   * windows in which widgets will be arranged,
-   * their position are automatically computed.
-   * Return true if it is not reduced or closed
+   * @brief windows in which widgets will be arranged, their position are 
+   *   automatically computed. Return true if it is not reduced or closed.
+   * @param settings store panel size, position and properties
+   * @param constraint store panel's constraints on position
+   * TODO: @param options store special information
    */
   bool beginWindow (
          Panel& settings,
@@ -126,10 +160,16 @@ public:
          const bool hasMenu = false,
          const bool horizontal = false,
          const Tooltip& info = Tooltip ());
+  /**
+   * @brief enWindow need to be called to clean state after beginWindow.
+   */
   void endWindow ();
 
   /**
-   * static box in which widget will be arranged
+   * @brief static box in which widget will be arranged.
+   * @param settings store panel size, position and properties
+   * @param constraint store panel's constraints on position
+   * TODO: @param options store special information
    */
   void beginPanel (
          Panel& settings,
@@ -137,35 +177,40 @@ public:
          const bool clipped = false,
          const bool horizontal = false,
          const Tooltip& info = Tooltip ());
+  /**
+   * @brief endPanel need to be called to clean state after beginPanel.
+   */
   void endPanel ();
 
   ///////////////////////////////////////////////
   /**
-   * menu bar in which menu item can be arranged.
-   * Note that it should be called in a window or
-   * box with hasMenu set to true
+   * @brief menu bar in which menu item can be arranged. Note that it need to be
+   *   called in a window or box with hasMenu set to true
    */
   void beginMenu ();
+  /**
+   * @brief endMenu need to be called to clean state after beginMenu.
+   */
   void endMenu ();
   /**
-   * menu item are clickable button aligned along menu bar
+   * @brief menu item are clickable button aligned along menu bar. It need to be
+   *   enclosed in a beginMenu; { menuItem } endMenu;
+   * @param description of the menu item.
+   * @param info optional tooltip.
    */
   bool menuItem (
-         const std::string& text,
+         const std::string& description,
          const Tooltip& info = Tooltip ());
 
   ///////////////////////////////////////////////
+  // as a general note for all widgets, position (if different from zero) will
+  // override automatic placement and are relative to group
   /**
-   * as a general note for all widgets, position (if
-   * different from null position), will override
-   * automatic placement and are relative to group
-   */
-  /**
-   * separation: draw a simple line that span the current group width
+   * @brief draw a simple line that span the current group width
    */
   void separation ();
   /**
-   * button: display a button that return true if pressed
+   * @brief display a button that return true if pressed
    */
   template <Widget ButtonType = Widget::Button>
   bool button (
@@ -173,14 +218,14 @@ public:
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * textButton: button with a text displayed over it
+   * @brief button with a text displayed over it
    */
   bool textButton (
          const std::string& text,
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * iconButton: button with an icon drawn over it
+   * @brief button with an icon drawn over it
    */
   bool iconButton (
          const IconID& iconName,
@@ -188,7 +233,7 @@ public:
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * iconTextButton: button with an icon followed by text
+   * @brief button with an icon followed by text
    */
   bool iconTextButton (
          const IconID& iconName,
@@ -196,7 +241,7 @@ public:
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * checkBox: display square box that can be checked
+   * @brief display square box that can be checked
    */
   void checkBox (
          bool& checked,
@@ -204,7 +249,7 @@ public:
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * icon: display a purely decorative icon
+   * @brief display a purely decorative icon
    */
   void icon (
          const IconID& name,
@@ -214,8 +259,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * text: display text, if a box size is given
-   * it will be formatted to fit in
+   * @brief display text, if a box size is given it will be formatted to fit in
    */
   void text (
          const std::string& text,
@@ -224,7 +268,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * inputNumber: modify a number value through text
+   * @brief modify a number value through text
    */
   template <typename Type>
   void inputNumber (
@@ -235,7 +279,7 @@ public:
          const std::string& label = "",
          const sf::Vector2f& position = {});
   /**
-   * inputVector2: modify a vector value through text
+   * @brief modify a vector value through text
    */
   template <typename Type>
   void inputVector2 (
@@ -245,7 +289,7 @@ public:
          const sf::Vector2<Type>& max = {},
          const sf::Vector2f& position = {});
   /**
-   * inputVector3: modify a vector value through text
+   * @brief modify a vector value through text
    */
   template <typename Type>
   void inputVector3 (
@@ -255,14 +299,14 @@ public:
          const sf::Vector3<Type>& max = {},
          const sf::Vector2f& position = {});
   /**
-   * inputColor: modify a color value through text
+   * @brief modify a color value through text
    */
   void inputColor (
          sf::Color& color,
          const std::string& description = "",
          const sf::Vector2f& position = {});
   /**
-   * inputText: modify text on one or multiple line
+   * @brief modify text on one or multiple line
    */
   void inputText (
          std::string& text,
@@ -270,7 +314,7 @@ public:
          const sf::Vector2f& boxSize = {},
          const sf::Vector2f& position = {});
   /**
-   * inputKey: modify a specific character
+   * @brief modify a specific character
    */
   void inputKey (
          char& key,
@@ -279,8 +323,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * progressBar: display advancement of a value
-   * between 0 and 1
+   * @brief display advancement of a value between 0 and 1
    */
   void progressBar (
          const float progress,
@@ -288,8 +331,7 @@ public:
          const Tooltip& info = Tooltip (),
          const sf::Vector2f& position = {});
   /**
-   * spinningWheel: display a small animated 'wheel'
-   * during a loading with undefined time limit
+   * @brief display an animated 'wheel' for loading with undefined time limit
    */
   void spinningWheel (
          const bool complete,
@@ -299,8 +341,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * droplist: display all item of a list and allow to
-   * select one
+   * @brief display all item of a list and allow to select one
    */
   void dropList (
          uint32_t& selected,
@@ -310,7 +351,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * slider to make value vary between min & max
+   * @brief slider to vary value between min and max
    */
   template <typename Type>
   void slider (
@@ -325,7 +366,7 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * draw a connection between two point
+   * @brief draw a connection between two point
    */
   template <Widget ConnectionType>
   void connection (
@@ -336,36 +377,47 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * set plot range and number of points sampled
+   * @brief set plot range and number of points sampled
    */
   void setPlotRange (
          const PlotRange xRange,
          const PlotRange yRange);
   void setSample (const uint32_t sample);
-  /** note that plot bound depend on the context of use. In a window/panel, plot
-   * bound will be limited to the window/panel width and height. Also a 16:9 ratio
-   * is enforced when there are no bound set.
+  /** 
+   * @brief set plot size. This depend on the context of use. In a window/panel, 
+   *   plot bound will be limited to the window/panel width and height. Also a
+   *   16:9 ratio is enforced when there are no bound set.
    */
   void setPlotBound (const sf::Vector2f& bound);
+  /**
+   * @brief remove plot bound.
+   */
   void unsetPlotBound ();
   /**
-   * plot a function or a set of point. When calling with std::function, the data
-   * will be cached and never change, except if user request an update
+   * @brief plot a function R -> R. The data is cached and not recomputed
+   *   until user request an update with forcePlotUpdate.
    */
   void plot (
          const std::function<float (float)>& slope,
          const float thickness = 1.f,
          const sf::Color& lineColor = sf::Color::White);
+  /**
+   * @brief plot a function R -> R², i.e. a set of points. The data is cached
+   *   and not recomputed until user request an update with forcePlotUpdate.
+   */
   void plot (
          const std::function<sf::Vector2f (float)>& slope,
          const float thickness = 1.f,
          const sf::Color& lineColor = sf::Color::White);
+  /**
+   * @brief plot a set of points.
+   */
   void plot (
          const std::vector<sf::Vector2f>& points,
          const float thickness = 1.f,
          const sf::Color& lineColor = sf::Color::White);
   /**
-   * force cache update
+   * @brief force cache update
    */
   void forcePlotUpdate ();
 private:
@@ -373,9 +425,9 @@ private:
   // store ID of active/hovered item
   struct InternalItemState
   {
-    ItemID hoveredItem;
-    ItemID activeItem;
-    ItemID keyboardFocus;
+    ItemID activeItem = NullItemID;
+    ItemID hoveredItem = NullItemID;
+    ItemID keyboardFocus = NullItemID;
     sf::FloatRect hoveredItemBox;
     Tooltip tooltip;
   };
@@ -553,12 +605,14 @@ private:
          const std::optional <sf::Event>& event);
   void handleKeyboardInputs (const std::optional <sf::Event>& event);
 private:
-  int testPassCount = 0;
   // plot parameters
   bool mPlotIsBounded = false;
+  uint32_t mPlotSample = 50u;
+  // Tooltip clock
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
-  uint32_t mPlotSample = 50u;
+  // Scroll intensity
+  float mPercentPerScroll = 0.01f;
   // counters to keep track of same line
   int32_t mResetCount = 0;
   int32_t mResetDifference = 0;
@@ -572,8 +626,8 @@ private:
   uint32_t mBeginWindowCount = 0u;
   // alignement data
   sf::Vector2f mCursorPosition = {};
-  sf::Vector2f mPadding;
-  sf::Vector2f mLastSpacing;
+  sf::Vector2f mPadding = {6.f, 1.5f};
+  sf::Vector2f mLastSpacing = {};
   sf::Vector2f mWindowSize;
   sf::Vector2f mPlotBound;
   std::string mActiveInputNumber;
