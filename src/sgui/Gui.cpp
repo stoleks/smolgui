@@ -424,10 +424,8 @@ bool Gui::beginWindow (
   const bool horizontal,
   const Tooltip& info)
 {
-  // assign unique id to the widget
-  const auto name = "Window" + std::to_string (mWidgetCount);
-  mWidgetCount++;
   mBeginWindowCount++;
+  const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
   const auto position = computePosition (settings, constraint);
@@ -449,12 +447,7 @@ bool Gui::beginWindow (
   mRender.draw <Widget::TitleBox> (drawBox, state);
   const auto textWidth = titleSizeOf (title).x;
   const auto shiftX = (activeBox.size.x - textWidth) / 2.f;
-  mRender.drawText (
-    sanitizePosition (position + sf::Vector2f (shiftX, 0.f)),
-    title,
-    mStyle.fontColor,
-    mStyle.fontSize.title
-  );
+  mRender.drawText (sanitizePosition (position + sf::Vector2f (shiftX, 0.f)), title, mStyle.fontColor, mStyle.fontSize.title);
 
   // reduce or close window
   if (settings.closable) {
@@ -557,10 +550,8 @@ void Gui::beginPanel (
   const bool horizontal,
   const Tooltip& info)
 {
-  // assign unique id to the widget
-  const auto name = "Panel" + std::to_string (mWidgetCount);
-  mWidgetCount++;
   mBeginPanelCount++;
+  const auto name = initializeActivable ("Panel");
 
   // compute position and create a new group
   auto position = computePosition (settings, constraint);
@@ -639,9 +630,8 @@ void Gui::beginMenu ()
   }
 
   // assign unique id to the widget
-  const auto name = "MenuBar" + std::to_string (mWidgetCount);
-  mWidgetCount++;
   mBeginMenuCount++;
+  const auto name = initializeActivable ("MenuBar");
 
   // construct a menu bar according to the parent size
   const auto& parent = mGroups.top ();
@@ -698,20 +688,16 @@ bool Gui::menuItem (
   // assign unique id to the widget
   auto& parentMenu = mGroups.top ();
   const auto itemId = parentMenu.menuItemCount;
-  const auto name = "MenuItem" + std::to_string (mWidgetCount);
   parentMenu.menuItemCount++;
-  mWidgetCount++;
-
-  // compute description position
+  const auto name = initializeActivable ("MenuItem");
+  // compute item position
   const auto itemPos = parentMenu.lastItemPosition;
-  const auto pos = itemPos + 1.5f*mPadding;
 
   // construct menu item box
   const auto width = 3.f*mPadding.x + subtitleSizeOf (description).x;
   const auto height = subtitleTextHeight ();
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
-  parentMenu.lastItemPosition =
-    itemPos + sf::Vector2f (width + mPadding.x, 0.f);
+  parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
 
   // ensure that we are on the right clipping layer
   const auto layerId = mRender.currentClippingLayer ();
@@ -735,12 +721,8 @@ bool Gui::menuItem (
   parentMenu.isActive = clicked;
 
   // draw a description over it
-  mRender.drawText (
-    sanitizePosition (pos),
-    description,
-    mStyle.fontColor,
-    mStyle.fontSize.subtitle
-  );
+  const auto textPos = itemPos + 1.5f*mPadding;
+  mRender.drawText (sanitizePosition (textPos), description, mStyle.fontColor, mStyle.fontSize.subtitle);
 
   // go back to previous clipping layer
   mRender.moveToClippingLayer (layerId);
@@ -832,24 +814,15 @@ void Gui::separation ()
 bool Gui::textButton (
   const std::string& text,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // compute text position
-  auto pos = mCursorPosition + 1.5f*mPadding;
-  computeRelativePosition (pos, position);
-
-  // construct a button adapted to the text
-  const auto height = buttonHeight ();
-  const auto size = height * sf::Vector2f (6.f, 1.f);
-  const auto clicked = button <Widget::TextButton> (size, info, position);
+  // compute text position and construct a button adapted to the text
+  const auto position = computeRelativePosition (mCursorPosition + 1.5f*mPadding, displacement);
+  const auto size = buttonHeight () * sf::Vector2f (6.f, 1.f);
+  const auto clicked = button <Widget::TextButton> (size, info, displacement);
 
   // draw a text over it
-  mRender.drawText (
-    sanitizePosition (pos),
-    text,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position), text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }
 
@@ -858,17 +831,14 @@ bool Gui::iconButton (
   const IconID& iconName,
   const sf::Vector2f& size,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // compute text position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
-
-  // construct a button adapted to the icon
+  // compute icon position and build a button over it
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
   const auto clicked = button <Widget::IconButton> (size, info, position);
 
   // draw an icon over it
-  mRender.drawIcon (sf::FloatRect (pos, size), iconName);
+  mRender.drawIcon (sf::FloatRect (position, size), iconName);
   return clicked;
 }
 
@@ -877,11 +847,10 @@ bool Gui::iconTextButton (
   const IconID& iconName,
   const std::string& text,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // compute text position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // construct a button adapted to the icon
   const auto height = buttonHeight ();
@@ -889,18 +858,13 @@ bool Gui::iconTextButton (
   const auto clicked = button <Widget::IconTextButton> (size, info, position);
 
   // draw an icon over it
-  pos.x += 0.5f * mPadding.x;
+  position.x += 0.5f * mPadding.x;
   const auto iconSize = sf::Vector2f (1.f, 1.f) * buttonHeight ();
-  mRender.drawIcon (sf::FloatRect (pos, iconSize), iconName);
+  mRender.drawIcon (sf::FloatRect (position, iconSize), iconName);
 
   // add a shifted text besides it
   const auto shift = sf::Vector2f (iconSize.x, 0);
-  mRender.drawText (
-    sanitizePosition (pos + shift + mPadding),
-    text,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position + shift + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }
 
@@ -909,17 +873,15 @@ void Gui::icon (
   const IconID& name,
   const sf::Vector2f& size,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // compute icon position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
-  // draw icon
-  mRender.drawIcon (sf::FloatRect (sf::Vector2f (pos), size), name);
-
-  // handle icon hovering and tooltip
-  itemStatus (sf::FloatRect (sf::Vector2f (pos), size), name, false, info);
+  // draw icon and handle icon hovering and tooltip
+  const auto box = sf::FloatRect (position, size);
+  mRender.drawIcon (box, name);
+  itemStatus (box, name, false, info);
 
   // update cursor position
   updateSpacing (size);
@@ -935,19 +897,15 @@ void Gui::checkBox (
   bool& checked,
   const std::string& text,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the checkBox
-  const auto name = "CheckBox" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute check box position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  // initialize widget name and position
+  const auto name = initializeActivable ("CheckBox");
+  auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // get status of the widget,
   const auto size = normalTextHeight () * sf::Vector2f (2.f, 1.f);
-  const auto box = sf::FloatRect (pos, size);
+  const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftReleased, info);
   if (state == ItemState::Active) {
     checked = !checked;
@@ -960,12 +918,7 @@ void Gui::checkBox (
   mRender.draw <Widget::CheckBox> (box, state);
 
   // draw text next to the checkbox
-  mRender.drawText (
-    sanitizePosition (pos + sf::Vector2f (size.x + mPadding.x, 0.f)),
-    text,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f)), text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
   const auto textLength = normalSizeOf (text + "g").x;
@@ -981,23 +934,17 @@ void Gui::checkBox (
 void Gui::text (
   const std::string& text,
   const sf::Vector2f& boxSize,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // compute text position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // format the text to fit in the box if one is furnished
   const auto fontSize = mStyle.fontSize.normal;
   const auto formatted = formatText (text, boxSize, fontSize);
 
   // draw text
-  mRender.drawText (
-    sanitizePosition (pos),
-    formatted,
-    mStyle.fontColor,
-    fontSize
-  );
+  mRender.drawText (sanitizePosition (position), formatted, mStyle.fontColor, fontSize);
   // update cursor position
   updateSpacing (normalSizeOf (formatted + "g"));
 }
@@ -1012,15 +959,14 @@ void Gui::text (
 void Gui::inputColor (
   sf::Color& color,
   const std::string& description,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // keep initial position
-  auto initialPos = mCursorPosition;
-  computeRelativePosition (initialPos, position);
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // change color with four input number
   const auto verticalPos = mCursorPosition.y;
-  inputNumber (color.r, "", std::uint8_t (0), std::uint8_t (255), "r: ", position);
+  inputNumber (color.r, "", std::uint8_t (0), std::uint8_t (255), "r: ", displacement);
   sameLine ();
   inputNumber (color.g, "", std::uint8_t (0), std::uint8_t (255), "g: ");
   sameLine ();
@@ -1034,7 +980,7 @@ void Gui::inputColor (
   text (description);
 
   // update cursor position
-  mCursorPosition = initialPos;
+  mCursorPosition = position;
   const auto textWidth = normalSizeOf (description + "g").x;
   updateSpacing (sf::Vector2f (4.f*spacing.x + textWidth, spacing.y));
 }
@@ -1044,27 +990,18 @@ void Gui::inputText (
   std::string& text,
   const std::string& description,
   const sf::Vector2f& boxSizeParam,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "inputText" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute widget position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  // initialize widget name and position
+  const auto name = initializeActivable ("InputText");
+  auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // draw description before the box
   auto descriptionSize = sf::Vector2f ();
   if (description != "") {
-    mRender.drawText (
-      sanitizePosition (pos),
-      description,
-      mStyle.fontColor,
-      mStyle.fontSize.normal
-    );
+    mRender.drawText (sanitizePosition (position), description, mStyle.fontColor, mStyle.fontSize.normal);
     descriptionSize = normalSizeOf (description + "g");
-    pos.x += descriptionSize.x;
+    position.x += descriptionSize.x;
   }
 
   // format text to fit in the parent box or the requested box
@@ -1075,7 +1012,7 @@ void Gui::inputText (
   if (!mGroups.empty ()) {
     auto width = mGroups.top ().size.x - 2.f*mPadding.x - descriptionSize.x;
     if (width < 0.f) {
-      pos.y += descriptionSize.y;
+      position.y += descriptionSize.y;
       width += descriptionSize.x;
     }
     if (boxLength < 0.01f) {
@@ -1090,7 +1027,7 @@ void Gui::inputText (
   }
 
   // get status of the widget
-  const auto box = sf::FloatRect (pos, boxSize);
+  const auto box = sf::FloatRect (position, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
 
   // take keyboard focus if clicked
@@ -1111,12 +1048,7 @@ void Gui::inputText (
   // draw formatted text and box arround it
   const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
   mRender.draw <Widget::TextBox> (box, state);
-  mRender.drawText (
-    sanitizePosition (pos + mPadding),
-    formatted,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
   updateSpacing (boxSize + sf::Vector2f (descriptionSize.x, 0.f));
@@ -1126,29 +1058,20 @@ void Gui::inputText (
 void Gui::inputKey (
   char& key,
   const std::string& description,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "inputKey" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute widget position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  // initialize widget name and position
+  const auto name = initializeActivable ("InputKey");
+  auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // draw description before the box
-  mRender.drawText (
-    sanitizePosition (pos),
-    description,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position), description, mStyle.fontColor, mStyle.fontSize.normal);
   const auto descrWidth = normalSizeOf (description + "g").x;
-  pos.x += descrWidth;
+  position.x += descrWidth;
 
   // get widget status
   const auto boxSize = normalTextHeight () * sf::Vector2f (1.f, 1.f);
-  const auto box = sf::FloatRect (pos, boxSize);
+  const auto box = sf::FloatRect (position, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
 
   // take keyboard focus if clicked
@@ -1166,12 +1089,7 @@ void Gui::inputKey (
   // draw char and box
   const auto text = std::string (1, key);
   mRender.draw <Widget::TextBox> (box, state);
-  mRender.drawText (
-    sanitizePosition (pos + mPadding),
-    text,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
   updateSpacing (boxSize + sf::Vector2f (descrWidth, 0.f));
@@ -1188,22 +1106,18 @@ void Gui::progressBar (
   const float progress,
   const sf::Vector2f& size,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "ProgressBar" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute icon position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  // initialize widget name and position
+  const auto name = initializeActivable ("ProgressBar");
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // draw progress bar
-  const auto box = sf::FloatRect (pos, size);
+  const auto box = sf::FloatRect (position, size);
   mRender.drawProgressBar (box, sgui::clamp (0.f, 1.f, progress));
 
   // handle icon hovering
-  itemStatus (sf::FloatRect (pos, size), name, false, info);
+  itemStatus (sf::FloatRect (position, size), name, false, info);
 
   // update cursor position
   updateSpacing (size);
@@ -1279,9 +1193,9 @@ void Gui::plot (
   const sf::Color& lineColor)
 {
   // keep cursor position as handlePlotBound will modify it
-  const auto pos = mCursorPosition;
+  const auto position = mCursorPosition;
   handlePlotBound ();
-  mPlotter.plot (points, pos, lineColor, thickness);
+  mPlotter.plot (points, position, lineColor, thickness);
 }
 
 /////////////////////////////////////////////////
@@ -1356,14 +1270,14 @@ void Gui::dropList (
   uint32_t& selected,
   const std::vector<std::string>& list,
   const uint32_t phantomElements,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // if list is empty we quit and do nothing
   if (list.empty ()) return;
 
-  // initialize drop list id and item height
-  const auto globalName = "DropList" + std::to_string (mWidgetCount);
-  mWidgetCount++;
+  // initialize widget name and position
+  const auto globalName = initializeActivable ("DropList");
+  const auto initialPos = computeRelativePosition (mCursorPosition, displacement);
 
   // compute drop list width
   auto maxWidth = 0.f;
@@ -1373,22 +1287,16 @@ void Gui::dropList (
   const auto itemWidth = 2.f*mPadding.x + maxWidth;
   const auto itemSize = sf::Vector2f (itemWidth, normalTextHeight ());
 
-  // compute drop list initial position
-  auto initialPos = mCursorPosition;
-  computeRelativePosition (initialPos, position);
-
   // compute each drop list item
   auto counter = 0u;
-  auto selName = std::string ("");
+  auto selectedName = std::string ("");
   if (selected < list.size ()) {
-    selName = list [selected];
+    selectedName = list [selected];
   }
   for (const auto& itemName : list) {
-    // compute item position
-    auto itemPos = sf::Vector2f (initialPos) + sf::Vector2f (0.f, counter*itemSize.y);
-
     // get item status and update selected value
-    if (dropListItem (selName, itemName, itemPos, itemSize)) {
+    const auto itemPos = initialPos + sf::Vector2f (0.f, counter*itemSize.y);
+    if (dropListItem (selectedName, itemName, itemPos, itemSize)) {
       selected = counter;
     }
     counter++;
@@ -1406,15 +1314,12 @@ bool Gui::dropListItem (
   const sf::Vector2f& itemPosition,
   const sf::Vector2f& itemSize)
 {
-  // set item id
-  const auto name = "DropListItem" + std::to_string (mWidgetCount);
-  mWidgetCount++;
+  const auto name = initializeActivable ("DropListItem");
 
   // get item status
   const auto box = sf::FloatRect (itemPosition, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-  const auto status = (state == ItemState::Active)
-    && (mGuiState.activeItem == name);
+  const auto status = (state == ItemState::Active) && (mGuiState.activeItem == name);
 
   // draw item
   if (selectedName == itemName) {
@@ -1422,12 +1327,7 @@ bool Gui::dropListItem (
   } else {
     mRender.draw <Widget::ItemBox> (box, state);
   }
-  mRender.drawText (
-    sanitizePosition (box.position + mPadding),
-    itemName,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  mRender.drawText (sanitizePosition (box.position + mPadding), itemName, mStyle.fontColor, mStyle.fontSize.normal);
 
   // return selection status
   return status;
@@ -1485,9 +1385,7 @@ sf::Vector2f Gui::scroller (
   const float scrollSize,
   const bool horizontal)
 {
-  // assign unique id to the widget
-  const auto name = "Scroller" + std::to_string (mWidgetCount);
-  mWidgetCount++;
+  const auto name = initializeActivable ("Scroller");
 
   // compute scroller position (right or bottom) and size
   auto pos = sf::Vector2f ();
@@ -1926,11 +1824,17 @@ sf::Vector2f Gui::computeSpacing (const sf::Vector2f& size)
 }
 
 /////////////////////////////////////////////////
+std::string Gui::initializeActivable (const std::string& key)
+{
+  mWidgetCount++;
+  return key + std::to_string (mWidgetCount - 1);
+}
+
+/////////////////////////////////////////////////
 void Gui::updateSpacing (const sf::Vector2f& size)
 {
-  // manage same line call, if difference > 0, a sameLine was just
-  // called and we need to go back to the previous line. If difference
-  // continue to increase, user is calling several sameLine
+  // manage same line call, if difference > 0, a sameLine was just called and we need to go
+  // back to the previous line. If difference continue to increase, user is calling several sameLine
   auto difference = mResetCount - mPreviousResetCount;
   if (mResetDifference == difference) {
     mPreviousResetCount = mResetCount;
@@ -2006,25 +1910,27 @@ sf::Vector2f Gui::constrainPosition (
 }
 
 /////////////////////////////////////////////////
-void Gui::computeRelativePosition (
-  sf::Vector2f& position,
+sf::Vector2f Gui::computeRelativePosition (
+  const sf::Vector2f& initialPosition,
   const sf::Vector2f& displacement)
 {
   // If there is no active group, displacement = position
   const auto isNotNull = displacement.length () > 0.01f;
   if (mGroups.empty () && isNotNull) {
-    position = displacement;
+    return displacement;
   }
 
   // If there is an active group, displace relatively to the group position
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
+    // if there is a displacement, displace relatively to the parent group
     if (isNotNull) {
-      position = parent.position + displacement;
-    // Manage sameLine/sameColumn edge case, we need to add previous space,
-    // otherwise this sameLine command will send the next widget right on the
-    // previous one
-    } else if (mResetCount - mPreviousResetCount == 2) {
+      return parent.position + displacement;
+    }
+    // manage sameLine/Column edge case, we need to add previous space,otherwise 
+    // this sameLine command will send the next widget right on the previous one
+    if (mResetCount - mPreviousResetCount == 2) {
+      auto position = initialPosition;
       if (parent.horizontal) {
         position.y += mLastSpacing.y;
         mCursorPosition.y += mLastSpacing.y;
@@ -2032,8 +1938,12 @@ void Gui::computeRelativePosition (
         position.x += mLastSpacing.x;
         mCursorPosition.x += mLastSpacing.x;
       }
+      return position;
     }
   }
+
+  // If there are no displacement, return initial position
+  return initialPosition;
 }
 
 } // namespace sgui

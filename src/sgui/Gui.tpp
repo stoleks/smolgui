@@ -8,19 +8,15 @@ template <Widget ButtonType>
 bool Gui::button (
   const sf::Vector2f& size,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "Button" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // get status of the widget
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
-  const auto box = sf::FloatRect (pos, size);
-  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, info);
+  // Initialize widget name and position
+  const auto name = initializeActivable ("Button");
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // draw button state and update cursorPosition
+  const auto box = sf::FloatRect (position, size);
+  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, info);
   mRender.draw <ButtonType> (box, state);
   updateSpacing (size);
 
@@ -41,17 +37,11 @@ void Gui::slider (
   const float length,
   const bool horizontal,
   const Tooltip& info,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "Slider" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute widget position
-  auto pos = mCursorPosition;
-  if (position.length () > 0.01f) {
-    pos = position;
-  }
+  // initialize widget if and position
+  const auto name = initializeActivable ("Slider");
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // get status of the widget
   auto dimVector = sf::Vector2f (1, 1);
@@ -61,7 +51,7 @@ void Gui::slider (
     dimVector.y = length;
   }
   const auto size = normalTextHeight () * dimVector;
-  const auto box = sf::FloatRect (pos, size);
+  const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, info);
   mRender.draw <Widget::Slider> (box, state, horizontal);
 
@@ -73,7 +63,7 @@ void Gui::slider (
 
   // draw text next to the slider
   mRender.drawText (
-    sanitizePosition (pos + sf::Vector2f (size.x + mPadding.x, 0.f)),
+    sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f)),
     text,
     mStyle.fontColor,
     mStyle.fontSize.normal
@@ -116,15 +106,11 @@ void Gui::inputNumber (
   const Type min,
   const Type max,
   const std::string& label,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
-  // assign unique id to the widget
-  const auto name = "inputNumber" + std::to_string (mWidgetCount);
-  mWidgetCount++;
-
-  // compute widget position
-  auto pos = mCursorPosition;
-  computeRelativePosition (pos, position);
+  // Initialize widget name and position
+  const auto name = initializeActivable ("inputNumber");
+  const auto pos = computeRelativePosition (mCursorPosition, displacement);
 
   // compute text box dimension
   const auto width = std::max (
@@ -166,13 +152,8 @@ void Gui::inputNumber (
   );
 
   // draw description
-  auto positionDescription = pos + sf::Vector2f (boxSize.x + mPadding.x, 0);
-  mRender.drawText (
-    sanitizePosition (positionDescription),
-    description,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  const auto descriptionPos = pos + sf::Vector2f (boxSize.x + mPadding.x, 0);
+  mRender.drawText (sanitizePosition (descriptionPos), description, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
   const auto textWidth = normalSizeOf (description + "g").x;
@@ -186,14 +167,13 @@ void Gui::inputVector2 (
   const std::string& description,
   const sf::Vector2<Type>& min,
   const sf::Vector2<Type>& max,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // keep initial position
-  auto initialPos = mCursorPosition;
-  computeRelativePosition (initialPos, position);
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // change vector with two input number
-  inputNumber (vector.x, "", min.x, max.x, "x: ", position);
+  inputNumber (vector.x, "", min.x, max.x, "x: ", displacement);
   sameLine ();
   inputNumber (vector.y, "", min.y, max.y, "y: ");
   sameLine ();
@@ -203,7 +183,7 @@ void Gui::inputVector2 (
   text (description);
 
   // update cursor position
-  mCursorPosition = initialPos;
+  mCursorPosition = position;
   const auto textWidth = normalSizeOf (description + "g").x;
   updateSpacing (sf::Vector2f (2.f*spacing.x + textWidth, spacing.y));
 }
@@ -215,14 +195,13 @@ void Gui::inputVector3 (
   const std::string& description,
   const sf::Vector3<Type>& min,
   const sf::Vector3<Type>& max,
-  const sf::Vector2f& position)
+  const sf::Vector2f& displacement)
 {
   // keep initial position
-  auto initialPos = mCursorPosition;
-  computeRelativePosition (initialPos, position);
+  auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // change vector with two input number
-  inputNumber (vector.x, "", min.x, max.x, "x: ", position);
+  inputNumber (vector.x, "", min.x, max.x, "x: ", displacement);
   sameLine ();
   inputNumber (vector.y, "", min.y, max.y, "y: ");
   sameLine ();
@@ -234,7 +213,7 @@ void Gui::inputVector3 (
   text (description);
 
   // update cursor position
-  mCursorPosition = initialPos;
+  mCursorPosition = position;
   const auto textWidth = normalSizeOf (description + "g").x;
   updateSpacing (sf::Vector2f (2.f*spacing.x + textWidth, spacing.y));
 }
@@ -286,8 +265,10 @@ Type Gui::convertKeyIntoNumber (
     // clamp value if min and max are furnished and valid
     if (max > min) {
       number = sgui::clamp (min, max, number);
-      mActiveInputNumber = toString (number);
+    } else {
+      number = sgui::clamp (max, min, number);
     }
+    mActiveInputNumber = toString (number);
   }
   // return computed number
   return number;

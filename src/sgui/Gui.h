@@ -573,7 +573,12 @@ private:
          const std::string& text,
          const sf::Vector2f& boxSize,
          const uint32_t fontSize);
-  // TODO: add a similar initialize() to begin with, every widget should have a pair of initialize() / updateSpacing()
+  // to compute widget name 
+  std::string initializeActivable (const std::string& key);
+  // to compute position relative to the cursor/group
+  sf::Vector2f computeRelativePosition (
+         const sf::Vector2f& initialPosition,
+         const sf::Vector2f& displacement);
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
@@ -585,10 +590,6 @@ private:
          const sf::Vector2f& windowSize,
          const sf::Vector2f& elementSize,
          const Constraint& constraint);
-  // to compute position relative to the cursor/group
-  void computeRelativePosition (
-         sf::Vector2f& position,
-         const sf::Vector2f& displacement);
   // to check and inform about wrong use of begin/end
   void checkEqualToZero (
          const uint32_t counter,
@@ -612,7 +613,7 @@ private:
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   // Scroll intensity
-  float mPercentPerScroll = 0.01f;
+  float mPercentPerScroll = 0.05f;
   // counters to keep track of same line
   int32_t mResetCount = 0;
   int32_t mResetDifference = 0;
