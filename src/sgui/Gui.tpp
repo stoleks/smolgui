@@ -106,21 +106,22 @@ void Gui::inputNumber (
   const Type min,
   const Type max,
   const std::string& label,
+  const bool fixedWidth,
   const sf::Vector2f& displacement)
 {
   // Initialize widget name and position
-  const auto name = initializeActivable ("inputNumber");
-  const auto pos = computeRelativePosition (mCursorPosition, displacement);
+  const auto name = initializeActivable ("InputNumber");
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // compute text box dimension
-  const auto width = std::max (
-    normalSizeOf ("100000").x + 4.f*mPadding.x,
-    normalSizeOf (toString (number)).x
-  );
-  const auto boxSize = sf::Vector2f (width, normalTextHeight ());
+  auto width = normalSizeOf (label + "10000").x;
+  if (!fixedWidth) {
+    width = std::max (width, normalSizeOf (label + toString (number)).x);
+  }
+  const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, normalTextHeight ());
 
   // get status of the widget
-  const auto box = sf::FloatRect (pos, boxSize);
+  const auto box = sf::FloatRect (position, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   // take keyboard focus if active
   if (mGuiState.activeItem == name) {
@@ -143,21 +144,16 @@ void Gui::inputNumber (
   // draw label and number
   const auto numStr = label + toString (number);
   const auto numWidth = normalSizeOf (numStr).x;
-  auto positionNumber = pos + sf::Vector2f ((boxSize.x - numWidth) / 2.f, 0);
-  mRender.drawText (
-    sanitizePosition (positionNumber),
-    numStr,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
+  auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, 0);
+  mRender.drawText (sanitizePosition (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
 
   // draw description
-  const auto descriptionPos = pos + sf::Vector2f (boxSize.x + mPadding.x, 0);
+  const auto descriptionPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
   mRender.drawText (sanitizePosition (descriptionPos), description, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
-  const auto textWidth = normalSizeOf (description + "g").x;
-  updateSpacing (sf::Vector2f (boxSize.x + textWidth, boxSize.y));
+  const auto textWidth = normalSizeOf (description).x;
+  updateSpacing ({boxSize.x + textWidth, boxSize.y});
 }
 
 /////////////////////////////////////////////////
@@ -169,23 +165,19 @@ void Gui::inputVector2 (
   const sf::Vector2<Type>& max,
   const sf::Vector2f& displacement)
 {
-  // keep initial position
+  // keep track of initial position and draw description
   const auto position = computeRelativePosition (mCursorPosition, displacement);
+  auto disp = displacement;
+  if (description != "") {
+    text (description, displacement);
+    sameLine ();
+    disp = sf::Vector2f ();
+  }
 
   // change vector with two input number
-  inputNumber (vector.x, "", min.x, max.x, "x: ", displacement);
+  inputNumber (vector.x, "", min.x, max.x, "x: ", true, disp);
   sameLine ();
-  inputNumber (vector.y, "", min.y, max.y, "y: ");
-  sameLine ();
-
-  // draw description next to the vector boxes
-  const auto spacing = mLastSpacing;
-  text (description);
-
-  // update cursor position
-  mCursorPosition = position;
-  const auto textWidth = normalSizeOf (description + "g").x;
-  updateSpacing (sf::Vector2f (2.f*spacing.x + textWidth, spacing.y));
+  inputNumber (vector.y, "", min.y, max.y, "y: ", true);
 }
 
 /////////////////////////////////////////////////
@@ -197,25 +189,20 @@ void Gui::inputVector3 (
   const sf::Vector3<Type>& max,
   const sf::Vector2f& displacement)
 {
-  // keep initial position
-  auto position = computeRelativePosition (mCursorPosition, displacement);
+  // keep track of initial position and draw description
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
+  auto disp = displacement;
+  if (description != "") {
+    text (description, displacement);
+    sameLine ();
+    disp = sf::Vector2f ();
+  }
 
-  // change vector with two input number
-  inputNumber (vector.x, "", min.x, max.x, "x: ", displacement);
+  inputNumber (vector.x, "", min.x, max.x, "x: ", true, disp);
   sameLine ();
-  inputNumber (vector.y, "", min.y, max.y, "y: ");
+  inputNumber (vector.y, "", min.y, max.y, "y: ", true);
   sameLine ();
-  inputNumber (vector.z, "", min.z, max.z, "z: ");
-  sameLine ();
-
-  // draw description next to the vector boxes
-  const auto spacing = mLastSpacing;
-  text (description);
-
-  // update cursor position
-  mCursorPosition = position;
-  const auto textWidth = normalSizeOf (description + "g").x;
-  updateSpacing (sf::Vector2f (2.f*spacing.x + textWidth, spacing.y));
+  inputNumber (vector.z, "", min.z, max.z, "z: ", true);
 }
 
 /////////////////////////////////////////////////
@@ -265,10 +252,8 @@ Type Gui::convertKeyIntoNumber (
     // clamp value if min and max are furnished and valid
     if (max > min) {
       number = sgui::clamp (min, max, number);
-    } else {
-      number = sgui::clamp (max, min, number);
-    }
-    mActiveInputNumber = toString (number);
+      mActiveInputNumber = toString (number);
+    } 
   }
   // return computed number
   return number;

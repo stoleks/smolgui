@@ -277,6 +277,7 @@ public:
          const Type min = 0,
          const Type max = 0,
          const std::string& label = "",
+         const bool fixedWidth = false,
          const sf::Vector2f& position = {});
   /**
    * @brief modify a vector value through text
@@ -582,7 +583,7 @@ private:
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
-  sf::Vector2f computeSpacing (const sf::Vector2f& size);
+  GroupData getParentGroup ();
   // to constrain a position
   sf::Vector2f constrainPosition (
          const sf::Vector2f& position,
@@ -615,6 +616,7 @@ private:
   // Scroll intensity
   float mPercentPerScroll = 0.05f;
   // counters to keep track of same line
+  sf::Vector2f mResetCursorPosition = {};
   int32_t mResetCount = 0;
   int32_t mResetDifference = 0;
   int32_t mPreviousResetCount = 0;

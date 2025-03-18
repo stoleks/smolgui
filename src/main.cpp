@@ -56,6 +56,7 @@ int main()
   auto panel = sgui::Panel ();
   panel.position = { 16.f, 256.f};
   panel.size = {640.f, 640.f};
+  panel.closable = true;
   auto panel2 = sgui::Panel ();
   panel2.position = panel.position + sf::Vector2f (panel.size.x + 10.f, 0.f);
   panel2.size = {520.f, 520.f};
@@ -69,6 +70,7 @@ int main()
   auto text = std::string ("You can edit this text on multiple lines !");
   auto text2 = std::string ("You can edit this text !");
   auto vector = sf::Vector2f ();
+  auto vector3 = sf::Vector3f ();
   bool displayFunction = false;
 
   /**
@@ -103,12 +105,13 @@ int main()
       // first window
       if (gui.beginWindow (panel2, "Closable window")) {
         // Open or close
+        gui.text ("A window");
+        gui.sameLine ();
         if (gui.textButton ("Open/Close")) {
           panel.closed = !panel.closed;
         }
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
-        gui.addSpacing ({0.f, 1.f});
         gui.separation ();
         // Display a function
         gui.slider (sliderValue, 0.f, 10.f, "Slider from 0 to 10, value is : " + std::to_string (sliderValue));
@@ -141,20 +144,28 @@ int main()
         gui.slider (fonts.title, 12u, 26u, "Title font size");
         gui.slider (fonts.subtitle, 10u, 22u, "Subtitle font size");
         gui.slider (fonts.normal, 8u, 20u, "Normal font size");
-        gui.inputColor (style.fontColor, "Font color");
+        gui.inputColor (style.fontColor, "Font color: ");
+        gui.inputColor (style.fontColor, "A very long description to make this bug: ");
+        gui.inputColor (style.fontColor);
         gui.separation ();
         gui.inputText (text, "Editable on multiple lines : ", {256.f, 64.f});
         gui.inputText (text2, "Editable on one line");
         gui.separation ();
         gui.inputNumber (inputValue, "Input number with text!");
+        gui.inputVector2 (vector, "Input vector2: ");
+        gui.inputVector2 (vector, "A very long description to make this bug: ");
         gui.inputVector2 (vector);
+        gui.inputVector3 (vector3, "Input vector3: ");
+        gui.inputVector3 (vector3, "A very long description to make this bug: ");
+        gui.inputVector3 (vector3);
       }
       gui.endWindow ();
+
       gui.beginPanel (panel3, sgui::Constraint (), true);
       gui.text ("Just a panel");
-      gui.text ("With text");
+      gui.text ("With scrollable");
       gui.addSpacing ({0.f, 12.f});
-      gui.text ("Scrollable");
+      gui.text ("text");
       gui.endPanel ();
     }
     gui.endFrame ();

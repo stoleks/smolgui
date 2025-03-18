@@ -32,8 +32,7 @@ void Gui::setStyle (
   mStyle = newStyle;
   // define default style
   if (defaultPadding) {
-    mStyle.itemSpacing = mStyle.fontSize.normal / 2.5f;
-    mStyle.itemInnerSpacing = mStyle.fontSize.normal / 3.f;
+    mStyle.itemSpacing = mStyle.fontSize.normal / 3.f;
     mPadding = 0.25f * mStyle.fontSize.normal * sf::Vector2f (2.f, 0.5f);
   }
 }
@@ -114,25 +113,8 @@ void Gui::addSpacing (const sf::Vector2f& amount)
 void Gui::addLastSpacing (const float amount)
 {
   // add h/v spacing according to parent group
-  if (!mGroups.empty ()) {
-    // if group is a menu we skip it
-    auto topGroup = mGroups.top ();
-    if (topGroup.menuItemCount != 0) {
-      mGroups.pop ();
-      if (!mGroups.empty ()) {
-        auto menu = topGroup;
-        topGroup = mGroups.top ();
-        mGroups.emplace (std::move (menu));
-      } else {
-        mGroups.push (topGroup);
-      }
-    }
-    // remove relevant last spacing
-    if (topGroup.horizontal) {
-      addLastHorizontalSpacing (amount);
-    } else {
-      addLastVerticalSpacing (amount);
-    }
+  if (!mGroups.empty () && getParentGroup ().horizontal) {
+    addLastHorizontalSpacing (amount);
   } else {
     addLastVerticalSpacing (amount);
   }
@@ -158,7 +140,10 @@ void Gui::addLastVerticalSpacing (const float amount)
 void Gui::sameLine ()
 {
   mResetCount++;
-  addLastVerticalSpacing (-1.f);
+  if (mResetCount - mPreviousResetCount == 1) {
+    mResetCursorPosition = mCursorPosition;
+    addLastVerticalSpacing (-1.f);
+  }
   addLastHorizontalSpacing ();
 }
 
@@ -166,7 +151,10 @@ void Gui::sameLine ()
 void Gui::sameColumn ()
 {
   mResetCount++;
-  addLastHorizontalSpacing (-1.f);
+  if (mResetCount - mPreviousResetCount == 1) {
+    mResetCursorPosition = mCursorPosition;
+    addLastHorizontalSpacing (-1.f);
+  }
   addLastVerticalSpacing ();
 }
 
@@ -424,6 +412,8 @@ bool Gui::beginWindow (
   const bool horizontal,
   const Tooltip& info)
 {
+  mResetCount = 0;
+  mPreviousResetCount = 0;
   mBeginWindowCount++;
   const auto name = initializeActivable ("Window");
 
@@ -453,7 +443,7 @@ bool Gui::beginWindow (
   if (settings.closable) {
     // reduce
     const auto buttonSize = activeSize.y * sf::Vector2f (1, 1);
-    mCursorPosition = position + sf::Vector2f (activeBox.size.x, 0.f);
+    mCursorPosition = position + sf::Vector2f (activeBox.size.x - 2.f*activeSize.y, 0.f);
     if (button <Widget::TitleButton> (buttonSize)) {
       settings.reduced = !(settings.reduced);
     }
@@ -533,7 +523,8 @@ void Gui::endWindow ()
     }
 
     // update cursor position and spacing
-    mCursorPosition = active.position + computeSpacing (active.size);
+    mCursorPosition = active.position;
+    updateSpacing (active.size);
 
     // track window not closed by user
     mBeginWindowCount--;
@@ -550,11 +541,13 @@ void Gui::beginPanel (
   const bool horizontal,
   const Tooltip& info)
 {
+  mResetCount = 0;
+  mPreviousResetCount = 0;
   mBeginPanelCount++;
   const auto name = initializeActivable ("Panel");
 
   // compute position and create a new group
-  auto position = computePosition (settings, constraint);
+  const auto position = computePosition (settings, constraint);
   beginGroup (horizontal, position, settings.size);
 
   // add clipping layer for the panel box
@@ -573,8 +566,7 @@ void Gui::beginPanel (
   }
 
   // update cursor position
-  mCursorPosition = position + mPadding;
-  mCursorPosition.y += 1.5f * mPadding.y;
+  mCursorPosition = position + mPadding + sf::Vector2f (0.f, 1.5f*mPadding.y);
 
   // scroll through panel if requested
   if (isPanelScrollable (panel)) {
@@ -605,7 +597,8 @@ void Gui::endPanel ()
     }
 
     // update cursor position and spacing
-    mCursorPosition = active.position + computeSpacing (active.size);
+    mCursorPosition = active.position;
+    updateSpacing (active.size);
 
     // track box not closed by user
     mBeginPanelCount--;
@@ -796,7 +789,7 @@ void Gui::separation ()
       size.y = thickness;
     }
   }
-  const auto position = mCursorPosition + mPadding;
+  const auto position = computeRelativePosition (mCursorPosition, {});
   const auto box = sf::FloatRect (position, size);
 
   // render line
@@ -901,26 +894,25 @@ void Gui::checkBox (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("CheckBox");
-  auto position = computeRelativePosition (mCursorPosition, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, displacement);
 
   // get status of the widget,
   const auto size = normalTextHeight () * sf::Vector2f (2.f, 1.f);
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftReleased, info);
+  // check or uncheck if asked
   if (state == ItemState::Active) {
     checked = !checked;
   }
-
-  // draw checkBox state and update cursor position
+  // if checked, draw checkBox as active
   if (checked) {
     state = ItemState::Active;
   }
   mRender.draw <Widget::CheckBox> (box, state);
 
-  // draw text next to the checkbox
-  mRender.drawText (sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f)), text, mStyle.fontColor, mStyle.fontSize.normal);
-
-  // update cursor position
+  // draw text next to the checkbox and update cursor position
+  const auto descriptionPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
+  mRender.drawText (sanitizePosition (descriptionPos), text, mStyle.fontColor, mStyle.fontSize.normal);
   const auto textLength = normalSizeOf (text + "g").x;
   updateSpacing (size + sf::Vector2f (textLength, 0.f));
 }
@@ -943,10 +935,9 @@ void Gui::text (
   const auto fontSize = mStyle.fontSize.normal;
   const auto formatted = formatText (text, boxSize, fontSize);
 
-  // draw text
+  // draw text and update cursor position
   mRender.drawText (sanitizePosition (position), formatted, mStyle.fontColor, fontSize);
-  // update cursor position
-  updateSpacing (normalSizeOf (formatted + "g"));
+  updateSpacing (normalSizeOf (formatted));
 }
 
 
@@ -961,28 +952,23 @@ void Gui::inputColor (
   const std::string& description,
   const sf::Vector2f& displacement)
 {
-  // keep initial position
+  // keep track of initial position and draw description
   const auto position = computeRelativePosition (mCursorPosition, displacement);
+  auto disp = displacement;
+  if (description != "") {
+    text (description, displacement);
+    sameLine ();
+    disp = sf::Vector2f ();
+  }
 
   // change color with four input number
-  const auto verticalPos = mCursorPosition.y;
-  inputNumber (color.r, "", std::uint8_t (0), std::uint8_t (255), "r: ", displacement);
+  inputNumber (color.r, "", std::uint8_t (0), std::uint8_t (255), "r: ", true, disp);
   sameLine ();
-  inputNumber (color.g, "", std::uint8_t (0), std::uint8_t (255), "g: ");
+  inputNumber (color.g, "", std::uint8_t (0), std::uint8_t (255), "g: ", true);
   sameLine ();
-  inputNumber (color.b, "", std::uint8_t (0), std::uint8_t (255), "b: ");
+  inputNumber (color.b, "", std::uint8_t (0), std::uint8_t (255), "b: ", true);
   sameLine ();
-  inputNumber (color.a, "", std::uint8_t (0), std::uint8_t (255), "a: ");
-  sameLine ();
-
-  // draw description next to the four boxes
-  const auto spacing = mLastSpacing;
-  text (description);
-
-  // update cursor position
-  mCursorPosition = position;
-  const auto textWidth = normalSizeOf (description + "g").x;
-  updateSpacing (sf::Vector2f (4.f*spacing.x + textWidth, spacing.y));
+  inputNumber (color.a, "", std::uint8_t (0), std::uint8_t (255), "a: ", true);
 }
 
 /////////////////////////////////////////////////
@@ -1000,7 +986,7 @@ void Gui::inputText (
   auto descriptionSize = sf::Vector2f ();
   if (description != "") {
     mRender.drawText (sanitizePosition (position), description, mStyle.fontColor, mStyle.fontSize.normal);
-    descriptionSize = normalSizeOf (description + "g");
+    descriptionSize = normalSizeOf (description);
     position.x += descriptionSize.x;
   }
 
@@ -1560,9 +1546,7 @@ sf::Vector2f Gui::computePosition (
     constraintSize = parent.size;
   }
   // constrain position
-  return constrainPosition (
-    settings.position, positionShift, constraintSize, settings.size, constraint
-  );
+  return constrainPosition (settings.position, positionShift, constraintSize, settings.size, constraint);
 }
 
 /////////////////////////////////////////////////
@@ -1739,7 +1723,7 @@ std::string Gui::formatText (
   const uint32_t fontSize)
 {
   // if input is contrained by a box
-  if (boxSize.x > 0.f) {
+  if (boxSize.length () > 0.01f) {
     auto formattedText = std::string ("");
     // read the string word by word
     auto in = std::istringstream (input);
@@ -1768,62 +1752,6 @@ std::string Gui::formatText (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-sf::Vector2f Gui::computeSpacing (const sf::Vector2f& size)
-{
-  // Compute spacing relative to the group
-  auto spacing = sf::Vector2f ();
-  if (!mGroups.empty ()) {
-    // if group is a menu we skip it
-    auto parent = mGroups.top ();
-    if (parent.menuItemCount != 0) {
-      mGroups.pop ();
-      if (!mGroups.empty ()) {
-        auto menu = parent;
-        parent = mGroups.top ();
-        mGroups.emplace (std::move (menu));
-      } else {
-        mGroups.push (parent);
-      }
-    }
-
-    // if group is horizontal, add along x. If there are more than two sameLine,
-    // we need to preserve x spacing, instead of going back to window base x pos.
-    const auto backToInnerPos = mResetDifference < 2;
-    const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
-    if (parent.horizontal) {
-      // update and store spacing 
-      spacing.x = size.x + padding.x;
-      mLastSpacing.x = spacing.x;
-      mLastSpacing.y = size.y + padding.y;
-      // get parent pos if less than two sameLine was called
-      if (backToInnerPos) {
-        mCursorPosition.y = parent.innerPosition.y;
-      }
-      mCursorPosition.x += spacing.x;
-    // else update with standard spacing along y
-    } else {
-      // update and store spacing
-      spacing.y = size.y + padding.y;
-      mLastSpacing.x = size.x + padding.x;
-      mLastSpacing.y = spacing.y;
-      // get parent pos if less than two sameLine was called
-      if (backToInnerPos) {
-        mCursorPosition.x = parent.innerPosition.x;
-      }
-      mCursorPosition.y += spacing.y;
-    }
-  // If no group is set, we just write vertically
-  } else {
-    // update spacing and position
-    spacing.y = size.y + mStyle.itemSpacing + mPadding.y;
-    mLastSpacing.x = size.x + mStyle.itemSpacing + mPadding.x;
-    mLastSpacing.y = spacing.y;
-    mCursorPosition += spacing;
-  }
-  return spacing;
-}
-
-/////////////////////////////////////////////////
 std::string Gui::initializeActivable (const std::string& key)
 {
   mWidgetCount++;
@@ -1833,19 +1761,27 @@ std::string Gui::initializeActivable (const std::string& key)
 /////////////////////////////////////////////////
 void Gui::updateSpacing (const sf::Vector2f& size)
 {
-  // manage same line call, if difference > 0, a sameLine was just called and we need to go
-  // back to the previous line. If difference continue to increase, user is calling several sameLine
-  auto difference = mResetCount - mPreviousResetCount;
-  if (mResetDifference == difference) {
-    mPreviousResetCount = mResetCount;
+  // compute spacing added
+  const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
+  mLastSpacing = size + padding;
+  
+  // if difference > 0, a sameLine was just called and we need to go back to the line.
+  mResetDifference = mResetCount - mPreviousResetCount;
+  const auto isSameLineCalled = mResetDifference > 0;
+  // if group is horizontal, add spacing along x, except if same line was called.
+  if (!mGroups.empty () && getParentGroup ().horizontal) {
+    if (!isSameLineCalled) {
+      mCursorPosition.x += mLastSpacing.x;
+      updateScrolling ({mLastSpacing.x, 0.f});
+    }
+    return;
   }
-  mResetDifference = difference;
-
-  // update cursor position
-  const auto spacing = computeSpacing (size);
-
-  // update scrolling size and spacing 
-  updateScrolling (spacing);
+ 
+  // if group is vertical, add spacing along y, except if same line was called
+  if (!isSameLineCalled) {
+    mCursorPosition.y += mLastSpacing.y;
+    updateScrolling ({0.f, mLastSpacing.y});
+  }
 }
 
 /////////////////////////////////////////////////
@@ -1859,6 +1795,24 @@ void Gui::updateScrolling (const sf::Vector2f& spacing)
       scrollData.computeScrollSize (spacing);
     }
   }
+}
+
+/////////////////////////////////////////////////
+Gui::GroupData Gui::getParentGroup () 
+{
+  // if parent is a menu we skip it
+  auto parent = mGroups.top ();
+  if (parent.menuItemCount != 0) {
+    mGroups.pop ();
+    if (!mGroups.empty ()) {
+      auto menu = parent;
+      parent = mGroups.top ();
+      mGroups.emplace (std::move (menu));
+    } else {
+      mGroups.push (parent);
+    }
+  }
+  return parent;
 }
 
 
@@ -1914,6 +1868,19 @@ sf::Vector2f Gui::computeRelativePosition (
   const sf::Vector2f& initialPosition,
   const sf::Vector2f& displacement)
 {
+  // manage same line call, if mResetDifference == difference, we are at the end of
+  // a sameLine chain call, and we need to go back to the stored reset position.
+  const auto difference = mResetCount - mPreviousResetCount;
+  const auto sameLineWasCalled = mResetDifference == difference && difference > 0;
+  if (sameLineWasCalled) {
+    mResetDifference = difference;
+    mPreviousResetCount = mResetCount;
+    // we need to add the missing space due to sameLine call
+    const auto spacing = mResetCursorPosition - mCursorPosition + 2.f*mPadding;
+    updateScrolling (spacing);
+    mCursorPosition = mResetCursorPosition;
+  }
+
   // If there is no active group, displacement = position
   const auto isNotNull = displacement.length () > 0.01f;
   if (mGroups.empty () && isNotNull) {
@@ -1921,25 +1888,19 @@ sf::Vector2f Gui::computeRelativePosition (
   }
 
   // If there is an active group, displace relatively to the group position
-  if (!mGroups.empty ()) {
+  if (!mGroups.empty () && isNotNull) {
     const auto& parent = mGroups.top ();
-    // if there is a displacement, displace relatively to the parent group
-    if (isNotNull) {
-      return parent.position + displacement;
+    return parent.position + displacement;
+  }
+
+  // If we are at the end of a sameLine call, add last spacing
+  if (sameLineWasCalled) {
+    if (!mGroups.empty () && getParentGroup ().horizontal) {
+      mCursorPosition.x += 2.f*mPadding.x;
+      return initialPosition + sf::Vector2f (2.f*mPadding.x, 0.f);
     }
-    // manage sameLine/Column edge case, we need to add previous space,otherwise 
-    // this sameLine command will send the next widget right on the previous one
-    if (mResetCount - mPreviousResetCount == 2) {
-      auto position = initialPosition;
-      if (parent.horizontal) {
-        position.y += mLastSpacing.y;
-        mCursorPosition.y += mLastSpacing.y;
-      } else {
-        position.x += mLastSpacing.x;
-        mCursorPosition.x += mLastSpacing.x;
-      }
-      return position;
-    }
+    mCursorPosition.y += 2.f*mPadding.y;
+    return initialPosition + sf::Vector2f (0.f, 2.f*mPadding.y);
   }
 
   // If there are no displacement, return initial position
