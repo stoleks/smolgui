@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include "sgui/Widgets/Style.h"
+#include "sgui/Widgets/Internals.h"
 #include "sgui/Widgets/ScrollerInformation.h"
 
 #include "sgui/Core/ObjectPool.h"
@@ -422,54 +423,6 @@ public:
    */
   void forcePlotUpdate ();
 private:
-  // TODO: Move InternalState, InputState and GroupData into separate file in Impl:: namespace
-  // store ID of active/hovered item
-  struct InternalItemState
-  {
-    ItemID activeItem = NullItemID;
-    ItemID hoveredItem = NullItemID;
-    ItemID keyboardFocus = NullItemID;
-    sf::FloatRect hoveredItemBox;
-    Tooltip tooltip;
-  };
-  // store input state from a frame to another
-  struct InputState
-  {
-    bool updated = false;
-    // mouse button state
-    bool mouseScrolled = false;
-    bool mouseLeftDown = false;
-    bool mouseRightDown = false;
-    bool mouseMiddleDown = false;
-    bool mouseLeftReleased = false;
-    bool mouseRightReleased = false;
-    bool mouseMiddleReleased = false;
-    // mouse position state
-    float mouseDeltaWheel = 0.f;
-    sf::Vector2f mousePosition = {};
-    sf::Vector2f oldMousePosition = {};
-    sf::Vector2f mouseDisplacement = {};
-    // keyboard state
-    bool keyIsPressed = false;
-    char32_t keyPressed;
-  };
-  // store window and panel internal data
-  struct GroupData
-  {
-    bool isActive = false;
-    bool horizontal = false;
-    bool hasMenuBar = false;
-    uint32_t groupId;
-    uint32_t clippingLayer;
-    uint32_t menuItemCount;
-    sf::Vector2f lastItemPosition;
-    sf::Vector2f menuBarPosition;
-    sf::Vector2f menuBarSize;
-    sf::Vector2f innerPosition;
-    sf::Vector2f position;
-    sf::Vector2f size;
-  };
-private:
   // to have round coordinates
   sf::Vector2f sanitizePosition (const sf::Vector2f& position) const;
   // to have standard height size across the gui code
@@ -504,7 +457,7 @@ private:
   // set plot bound depending of the current context
   void handlePlotBound ();
   // for scrollable panel or window
-  bool isPanelScrollable (const GroupData& panel);
+  bool isPanelScrollable (const Impl::GroupData& panel);
   sf::Vector2f scrollPanel (
          const uint32_t panelID,
          const sf::FloatRect& panelBox,
@@ -582,7 +535,7 @@ private:
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
-  GroupData getParentGroup ();
+  Impl::GroupData getParentGroup ();
   // to check and inform about wrong use of begin/end
   void checkBeginAndEndMatch (
          uint32_t& counter,
@@ -632,12 +585,12 @@ private:
   GuiRender mRender;
   PrimitiveShapeRender mColorRender;
   // inputs and gui state
-  InputState mInputState;
-  InternalItemState mGuiState;
+  Impl::InputState mInputState;
+  Impl::InternalItemState mGuiState;
   // gui internal data
   std::stack <sf::Vector2f> mAnchors;
   std::stack <float> mAnchorsScroll;
-  std::stack <GroupData> mGroups;
+  std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
   ObjectPool <ScrollerInformation> mGroupsScrollerInformation;

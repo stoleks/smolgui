@@ -1325,7 +1325,7 @@ bool Gui::dropListItem (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-bool Gui::isPanelScrollable (const GroupData& panel)
+bool Gui::isPanelScrollable (const Impl::GroupData& panel)
 {
   // panel is scrollable if it possess a scroller
   if (mGroupsScrollerInformation.has (panel.groupId)) {
@@ -1499,7 +1499,7 @@ void Gui::beginGroup (
   const sf::Vector2f& size)
 {
   // construct a new group
-  auto newGroup = GroupData ();
+  auto newGroup = Impl::GroupData ();
   newGroup.horizontal = horizontal;
   newGroup.position = position;
   newGroup.size = size;
@@ -1822,7 +1822,7 @@ void Gui::updateScrolling (const sf::Vector2f& spacing)
 }
 
 /////////////////////////////////////////////////
-Gui::GroupData Gui::getParentGroup () 
+Impl::GroupData Gui::getParentGroup () 
 {
   // if parent is a menu we skip it
   auto parent = mGroups.top ();
