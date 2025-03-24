@@ -473,7 +473,6 @@ private:
   // to have round coordinates
   sf::Vector2f sanitizePosition (const sf::Vector2f& position) const;
   // to have standard height size across the gui code
-  float footnoteTextHeight () const;
   float subtitleTextHeight () const;
   float titleTextHeight () const;
   float normalTextHeight () const;
@@ -584,20 +583,13 @@ private:
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
   GroupData getParentGroup ();
-  // to constrain a position
-  sf::Vector2f constrainPosition (
-         const sf::Vector2f& position,
-         const sf::Vector2f& positionShift,
-         const sf::Vector2f& windowSize,
-         const sf::Vector2f& elementSize,
-         const Constraint& constraint);
   // to check and inform about wrong use of begin/end
-  void checkEqualToZero (
-         const uint32_t counter,
+  void checkBeginAndEndMatch (
+         uint32_t& counter,
          const std::string& open,
          const std::string& close);
   template <typename Type>
-  void checkItsEmpty (
+  void checkGroupIsClosed (
          std::stack<Type>& stack,
          const std::string& open,
          const std::string& close);

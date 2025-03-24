@@ -265,13 +265,13 @@ void Gui::endFrame (const float tooltipDelay)
   }
 
   // inform user if they didn't closed correctly something
-  checkEqualToZero (mBeginWindowCount, "beginWindow", "endWindow");
-  checkEqualToZero (mBeginPanelCount, "beginPanel", "endPanel");
-  checkEqualToZero (mBeginMenuCount, "beginMenu", "endMenu");
+  checkBeginAndEndMatch (mBeginWindowCount, "beginWindow", "endWindow");
+  checkBeginAndEndMatch (mBeginPanelCount, "beginPanel", "endPanel");
+  checkBeginAndEndMatch (mBeginMenuCount, "beginMenu", "endMenu");
 
   // manage all ill-closed group and anchors
-  checkItsEmpty (mGroups, "beginGroup", "endGroup");
-  checkItsEmpty (mAnchors, "setAnchor", "backToAnchor");
+  checkGroupIsClosed (mGroups, "beginGroup", "endGroup");
+  checkGroupIsClosed (mAnchors, "setAnchor", "backToAnchor");
   while (!mAnchorsScroll.empty ()) {
     mAnchorsScroll.pop ();
   }
@@ -285,14 +285,13 @@ void Gui::endFrame (const float tooltipDelay)
 }
 
 /////////////////////////////////////////////////
-void Gui::checkEqualToZero (
-  const uint32_t counter,
+void Gui::checkBeginAndEndMatch (
+  uint32_t& counter,
   const std::string& open,
   const std::string& close)
 {
-  if (counter > 0u) {
-    spdlog::error ("A {} was called without its {} counterpart !", open, close);
-  }
+  if (counter > 0u) spdlog::error ("A {} was called without its {} counterpart !", open, close);
+  counter = 0u;
 }
 
 /////////////////////////////////////////////////
@@ -1534,19 +1533,51 @@ void Gui::endGroup ()
  */
 /////////////////////////////////////////////////
 sf::Vector2f Gui::computePosition (
-  const Panel& settings,
+  const Panel& panel,
   const Constraint& constraint)
 {
   // get parent shift and size
   auto positionShift = sf::Vector2f ();
-  auto constraintSize = mWindowSize;
+  auto windowSize = mWindowSize;
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
     positionShift += parent.position;
-    constraintSize = parent.size;
+    windowSize = parent.size;
   }
-  // constrain position
-  return constrainPosition (settings.position, positionShift, constraintSize, settings.size, constraint);
+  
+  // to compute constrained position
+  auto pos = panel.position;
+
+  // center element if requested
+  const auto halfSize = panel.size / 2.f;
+  const auto center = windowSize / 2.f;
+  if (constraint.centeredVerticaly) {
+    pos.y = center.y - halfSize.y;
+  }
+  if (constraint.centeredHorizontaly) {
+    pos.x = center.x - halfSize.x;
+  }
+
+  // fix element relative to side of the window
+  if (constraint.pixelsFromTop != 0) {
+    pos.y = constraint.pixelsFromTop;
+  }
+  if (constraint.pixelsFromBottom != 0) {
+    pos.y = windowSize.y - constraint.pixelsFromBottom - panel.size.y;
+  }
+  if (constraint.pixelsFromLeft != 0) {
+    pos.x = constraint.pixelsFromLeft;
+  }
+  if (constraint.pixelsFromRight != 0) {
+    pos.x = windowSize.x - constraint.pixelsFromRight - panel.size.x;
+  }
+
+  // if there are no constraints or position set, return cursor position
+  if (pos.length () < 0.01f) {
+    return mCursorPosition;
+  }
+  // else return constrained position
+  return pos + positionShift;
 }
 
 /////////////////////////////////////////////////
@@ -1586,7 +1617,6 @@ ItemState Gui::interactWithMouse (
 }
 
 
-
 /**
  * ----------------------------------------------
  * sanitize position to avoid blurry text
@@ -1604,12 +1634,6 @@ sf::Vector2f Gui::sanitizePosition (const sf::Vector2f& position) const
  * standard height
  * ----------------------------------------------
  */
-/////////////////////////////////////////////////
-float Gui::footnoteTextHeight () const
-{
-  return mStyle.fontSize.footnote + 4.f*mPadding.y;
-}
-
 /////////////////////////////////////////////////
 float Gui::subtitleTextHeight () const
 {
@@ -1813,54 +1837,6 @@ Gui::GroupData Gui::getParentGroup ()
     }
   }
   return parent;
-}
-
-
-/**
- * ----------------------------------------------
- * to compute constrained position
- * ----------------------------------------------
- */
-/////////////////////////////////////////////////
-sf::Vector2f Gui::constrainPosition (
-  const sf::Vector2f& position,
-  const sf::Vector2f& positionShift,
-  const sf::Vector2f& windowSize,
-  const sf::Vector2f& elementSize,
-  const Constraint& constraint)
-{
-  const auto halfSize = elementSize / 2.f;
-  const auto center = windowSize / 2.f;
-  auto pos = position;
-
-  // center element if requested
-  if (constraint.centeredVerticaly) {
-    pos.y = center.y - halfSize.y;
-  }
-  if (constraint.centeredHorizontaly) {
-    pos.x = center.x - halfSize.x;
-  }
-
-  // fix element relative to side of the window
-  if (constraint.pixelsFromTop != 0) {
-    pos.y = constraint.pixelsFromTop;
-  }
-  if (constraint.pixelsFromBottom != 0) {
-    pos.y = windowSize.y - constraint.pixelsFromBottom - elementSize.y;
-  }
-  if (constraint.pixelsFromLeft != 0) {
-    pos.x = constraint.pixelsFromLeft;
-  }
-  if (constraint.pixelsFromRight != 0) {
-    pos.x = windowSize.x - constraint.pixelsFromRight - elementSize.x;
-  }
-
-  // if there are no constraints, return cursor position
-  if (pos.length () < 0.01f) {
-    return mCursorPosition;
-  }
-  // else return constrained position
-  return pos + positionShift;
 }
 
 /////////////////////////////////////////////////

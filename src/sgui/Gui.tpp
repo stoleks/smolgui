@@ -284,7 +284,7 @@ void Gui::connection (
  */
 /////////////////////////////////////////////////
 template <typename Type>
-void Gui::checkItsEmpty (
+void Gui::checkGroupIsClosed (
   std::stack<Type>& stack,
   const std::string& open,
   const std::string& close)

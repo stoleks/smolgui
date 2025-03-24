@@ -65,6 +65,8 @@ int main()
   panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, 0.f);
   panel3.size = {128.f, 40.f};
   panel3.movable = true;
+  auto constraint = sgui::Constraint ();
+  constraint.centeredVerticaly = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
   auto text = std::string ("You can edit this text on multiple lines !");
@@ -82,11 +84,11 @@ int main()
   const auto timePerFrame = sf::seconds (1.f / 60.f);
   while (window.isOpen ())
   {
-    const auto dt = timer.restart ();
-    timeSinceLastUpdate += dt;
     /**
      * Input and logic
      */
+    const auto dt = timer.restart ();
+    timeSinceLastUpdate += dt;
     while (timeSinceLastUpdate > timePerFrame)
     {
       timeSinceLastUpdate -= timePerFrame;
@@ -100,6 +102,10 @@ int main()
       gui.setStyle (style);
       gui.updateTimer (dt);
     }
+
+    /**
+     * Gui
+     */
     gui.beginFrame ();
     {
       // first window
@@ -145,23 +151,17 @@ int main()
         gui.slider (fonts.subtitle, 10u, 22u, "Subtitle font size");
         gui.slider (fonts.normal, 8u, 20u, "Normal font size");
         gui.inputColor (style.fontColor, "Font color: ");
-        gui.inputColor (style.fontColor, "A very long description to make this bug: ");
-        gui.inputColor (style.fontColor);
         gui.separation ();
         gui.inputText (text, "Editable on multiple lines : ", {256.f, 64.f});
         gui.inputText (text2, "Editable on one line");
         gui.separation ();
         gui.inputNumber (inputValue, "Input number with text!");
         gui.inputVector2 (vector, "Input vector2: ");
-        gui.inputVector2 (vector, "A very long description to make this bug: ");
-        gui.inputVector2 (vector);
         gui.inputVector3 (vector3, "Input vector3: ");
-        gui.inputVector3 (vector3, "A very long description to make this bug: ");
-        gui.inputVector3 (vector3);
       }
       gui.endWindow ();
 
-      gui.beginPanel (panel3, sgui::Constraint (), true);
+      gui.beginPanel (panel3, constraint, true);
       gui.text ("Just a panel");
       gui.text ("With scrollable");
       gui.addSpacing ({0.f, 12.f});
@@ -169,6 +169,7 @@ int main()
       gui.endPanel ();
     }
     gui.endFrame ();
+
     /**
      * Drawing
      */
