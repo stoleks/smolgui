@@ -5,9 +5,11 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Widgets)
 
 # all source files
 set (SRC
+  ${INCROOT}/Internals.h
+  ${SRCROOT}/Panel.cpp
+  ${INCROOT}/Panel.h
   ${SRCROOT}/ScrollerInformation.cpp
   ${INCROOT}/ScrollerInformation.h
-  ${SRCROOT}/Style.cpp
   ${INCROOT}/Style.h
   ${INCROOT}/Widgets.h
 )

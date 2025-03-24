@@ -1,4 +1,4 @@
-#include "Style.h"
+#include "Panel.h"
 
 namespace sgui
 {
@@ -13,7 +13,7 @@ Tooltip::Tooltip (
 {}
 
 /////////////////////////////////////////////////
-Panel::Panel(
+Panel::Panel (
   const sf::Vector2f& pos,
   const sf::Vector2f& siz,
   const bool mov,
@@ -28,6 +28,18 @@ Panel::Panel(
     reduced (red),
     size (siz),
     position (pos)
+{}
+
+/////////////////////////////////////////////////
+WidgetOptions::WidgetOptions (
+  const std::string& des,
+  const Tooltip& inf,
+  const bool hor,
+  const sf::Vector2f& pos)
+  : description (des),
+    position (pos),
+    horizontal (hor),
+    info (inf)
 {}
 
 } // namespace sgui

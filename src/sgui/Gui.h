@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include "sgui/Widgets/Style.h"
+#include "sgui/Widgets/Panel.h"
 #include "sgui/Widgets/Internals.h"
 #include "sgui/Widgets/ScrollerInformation.h"
 
@@ -593,7 +594,7 @@ private:
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
-  ObjectPool <ScrollerInformation> mGroupsScrollerInformation;
+  ObjectPool <Impl::ScrollerInformation> mGroupsScrollerInformation;
 };
 
 } // namespace sgui

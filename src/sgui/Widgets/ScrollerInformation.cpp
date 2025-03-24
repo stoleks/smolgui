@@ -4,6 +4,8 @@
 
 namespace sgui
 {
+namespace Impl
+{
 /////////////////////////////////////////////////
 ScrollerInformation::ScrollerInformation (const bool horizontal)
   : mHorizontal (horizontal)
@@ -56,4 +58,5 @@ float ScrollerInformation::percent () const
   return mScrollPercent;
 }
 
+} // namespace Impl
 } // namespace sgui

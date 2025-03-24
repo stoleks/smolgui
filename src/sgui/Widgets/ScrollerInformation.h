@@ -4,6 +4,8 @@
 
 namespace sgui
 {
+namespace Impl
+{
 /**
  * @brief class to store group scroller position and to compute its size
  */
@@ -50,4 +52,5 @@ private:
   float mScrollPercent = 0.f;
 };
 
+} // namespace Impl
 } // namespace sgui
