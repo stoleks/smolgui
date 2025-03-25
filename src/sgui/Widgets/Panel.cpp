@@ -19,13 +19,17 @@ Panel::Panel (
   const bool mov,
   const bool vis,
   const bool clo,
+  const bool has,
+  const bool cli,
   const bool pclosed,
   const bool red)
-  : movable (mov),
-    visible (vis),
+  : clipped (cli),
     closable (clo),
     closed (pclosed),
+    hasMenu (has),
+    movable (mov),
     reduced (red),
+    visible (vis),
     size (siz),
     position (pos)
 {}
@@ -34,11 +38,13 @@ Panel::Panel (
 WidgetOptions::WidgetOptions (
   const std::string& des,
   const Tooltip& inf,
-  const bool hor,
-  const sf::Vector2f& pos)
-  : description (des),
-    position (pos),
-    horizontal (hor),
+  const sf::Vector2f& dis,
+  const float len,
+  const bool hor)
+  : horizontal (hor),
+    length (len),
+    displacement (dis),
+    description (des),
     info (inf)
 {}
 

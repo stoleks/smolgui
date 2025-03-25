@@ -3,6 +3,7 @@
 #include "SerializeSFML.h"
 #include "sgui/Resources/Layout.h"
 #include "sgui/Widgets/Style.h"
+#include "sgui/Widgets/Panel.h"
 
 namespace sgui 
 {
@@ -69,9 +70,9 @@ void from_json (const json& j, Panel& panel) {
 
 
 /**
- * convert Constraint to/from json
+ * convert Constraints to/from json
  */
-void to_json (json& j, const Constraint& constraint) {
+void to_json (json& j, const Constraints& constraint) {
   j = json {
     {"centeredVerticaly",   constraint.centeredVerticaly},
     {"centeredHorizontaly", constraint.centeredHorizontaly},
@@ -82,7 +83,7 @@ void to_json (json& j, const Constraint& constraint) {
   };
 }
 
-void from_json (const json& j, Constraint& constraint) {
+void from_json (const json& j, Constraints& constraint) {
   j.at ("centeredVerticaly")  .get_to (constraint.centeredVerticaly);
   j.at ("centeredHorizontaly").get_to (constraint.centeredHorizontaly);
   j.at ("pixelsFromTop")      .get_to (constraint.pixelsFromTop);

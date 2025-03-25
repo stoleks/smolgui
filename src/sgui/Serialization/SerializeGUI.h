@@ -18,7 +18,7 @@ struct Icon;
 struct Style;
 struct Panel;
 struct FontSize;
-struct Constraint;
+struct Constraints;
 struct LayoutEntry;
 
 /**
@@ -40,10 +40,10 @@ void to_json (json& j, const Panel& panel);
 void from_json (const json& j, Panel& panel);
 
 /**
- * convert Constraint to/from json
+ * convert Constraints to/from json
  */
-void to_json (json& j, const Constraint& constraint);
-void from_json (const json& j, Constraint& constraint);
+void to_json (json& j, const Constraints& constraint);
+void from_json (const json& j, Constraints& constraint);
 
 /**
  * convert Icon to/from json

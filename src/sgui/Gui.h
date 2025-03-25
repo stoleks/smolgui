@@ -153,15 +153,12 @@ public:
    *   automatically computed. Return true if it is not reduced or closed.
    * @param settings store panel size, position and properties
    * @param constraint store panel's constraints on position
-   * TODO: @param options store special information
+   * @param options store special information (tooltip, horizontal)
    */
   bool beginWindow (
          Panel& settings,
-         const std::string& title,
-         const Constraint& constraint = Constraint (),
-         const bool hasMenu = false,
-         const bool horizontal = false,
-         const Tooltip& info = Tooltip ());
+         const Constraints& constraint = {},
+         const WidgetOptions& options = {});
   /**
    * @brief enWindow need to be called to clean state after beginWindow.
    */
@@ -171,14 +168,12 @@ public:
    * @brief static box in which widget will be arranged.
    * @param settings store panel size, position and properties
    * @param constraint store panel's constraints on position
-   * TODO: @param options store special information
+   * @param options store special information (tooltip, horizontal)
    */
   void beginPanel (
          Panel& settings,
-         const Constraint& constraint = Constraint (),
-         const bool clipped = false,
-         const bool horizontal = false,
-         const Tooltip& info = Tooltip ());
+         const Constraints& constraint = {},
+         const WidgetOptions& options = {});
   /**
    * @brief endPanel need to be called to clean state after beginPanel.
    */
@@ -197,12 +192,12 @@ public:
   /**
    * @brief menu item are clickable button aligned along menu bar. It need to be
    *   enclosed in a beginMenu; { menuItem } endMenu;
-   * @param description of the menu item.
+   * @param text printed on the menu item.
    * @param info optional tooltip.
    */
   bool menuItem (
-         const std::string& description,
-         const Tooltip& info = Tooltip ());
+         const std::string& text,
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   // as a general note for all widgets, position (if different from zero) will
@@ -217,47 +212,40 @@ public:
   template <Widget ButtonType = Widget::Button>
   bool button (
          const sf::Vector2f& size,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief button with a text displayed over it
    */
   bool textButton (
          const std::string& text,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief button with an icon drawn over it
    */
   bool iconButton (
          const IconID& iconName,
          const sf::Vector2f& size,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief button with an icon followed by text
    */
   bool iconTextButton (
          const IconID& iconName,
          const std::string& text,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief display square box that can be checked
    */
   void checkBox (
          bool& checked,
-         const std::string& description = "",
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief display a purely decorative icon
    */
   void icon (
          const IconID& name,
          const sf::Vector2f& size,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -266,7 +254,7 @@ public:
   void text (
          const std::string& text,
          const sf::Vector2f& boxSize = {},
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -275,54 +263,48 @@ public:
   template <typename Type>
   void inputNumber (
          Type& number,
-         const std::string& description = "",
          const Type min = 0,
          const Type max = 0,
          const std::string& label = "",
          const bool fixedWidth = false,
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief modify a vector value through text
    */
   template <typename Type>
   void inputVector2 (
          sf::Vector2<Type>& vector,
-         const std::string& description = "",
          const sf::Vector2<Type>& min = {},
          const sf::Vector2<Type>& max = {},
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief modify a vector value through text
    */
   template <typename Type>
   void inputVector3 (
          sf::Vector3<Type>& vector,
-         const std::string& description = "",
          const sf::Vector3<Type>& min = {},
          const sf::Vector3<Type>& max = {},
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief modify a color value through text
    */
   void inputColor (
          sf::Color& color,
-         const std::string& description = "",
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief modify text on one or multiple line
    */
   void inputText (
          std::string& text,
-         const std::string& description = "",
          const sf::Vector2f& boxSize = {},
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief modify a specific character
    */
   void inputKey (
          char& key,
-         const std::string& description = "",
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -331,16 +313,14 @@ public:
   void progressBar (
          const float progress,
          const sf::Vector2f& size,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
   /**
    * @brief display an animated 'wheel' for loading with undefined time limit
    */
   void spinningWheel (
          const bool complete,
          const sf::Vector2f& size,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -350,7 +330,7 @@ public:
          uint32_t& selected,
          const std::vector<std::string>& list,
          const uint32_t phantomElements = 0,
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -361,11 +341,7 @@ public:
          Type& value,
          const Type min,
          const Type max,
-         const std::string& description = "",
-         const float length = 4.5f,
-         const bool horizontal = true,
-         const Tooltip& info = Tooltip (),
-         const sf::Vector2f& position = {});
+         const WidgetOptions& options = WidgetOptions (true));
 
   ///////////////////////////////////////////////
   /**
@@ -440,7 +416,7 @@ private:
   // window or panel utility functions
   sf::Vector2f computePosition (
          const Panel& settings,
-         const Constraint& constraint);
+         const Constraints& constraint);
   uint32_t setClipping (
          const sf::FloatRect& baseBox,
          const float activeHeight = 0.f,
@@ -504,7 +480,7 @@ private:
          const sf::FloatRect& boundingbox,
          const ItemID& item,
          const bool condition = false,
-         const Tooltip& tooltip = Tooltip (),
+         const Tooltip& tooltip = {},
          const bool forceActive = false);
   // handle all edge case and special keys
   void handleKeyInput (

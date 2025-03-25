@@ -7,16 +7,15 @@ namespace sgui {
 template <Widget ButtonType>
 bool Gui::button (
   const sf::Vector2f& size,
-  const Tooltip& info,
-  const sf::Vector2f& displacement)
+  const WidgetOptions& options)
 {
   // Initialize widget name and position
   const auto name = initializeActivable ("Button");
-  const auto position = computeRelativePosition (mCursorPosition, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // draw button state and update cursorPosition
   const auto box = sf::FloatRect (position, size);
-  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, info);
+  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
   mRender.draw <ButtonType> (box, state);
   updateSpacing (size);
 
@@ -33,49 +32,43 @@ void Gui::slider (
   Type& value,
   const Type min,
   const Type max,
-  const std::string& text,
-  const float length,
-  const bool horizontal,
-  const Tooltip& info,
-  const sf::Vector2f& displacement)
+  const WidgetOptions& options)
 {
   // initialize widget if and position
   const auto name = initializeActivable ("Slider");
-  const auto position = computeRelativePosition (mCursorPosition, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // get status of the widget
   auto dimVector = sf::Vector2f (1, 1);
-  if (horizontal) {
-    dimVector.x = length;
+  if (!options.horizontal) {
+    dimVector.x = options.length;
   } else {
-    dimVector.y = length;
+    dimVector.y = options.length;
   }
   const auto size = normalTextHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
-  auto state = itemStatus (box, name, mInputState.mouseLeftDown, info);
-  mRender.draw <Widget::Slider> (box, state, horizontal);
+  auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.info);
+  mRender.draw <Widget::Slider> (box, state, !options.horizontal);
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
     state = ItemState::Active;
-    value = sliderValue (box, min, max, horizontal);
+    value = sliderValue (box, min, max, !options.horizontal);
   }
 
   // draw text next to the slider
-  mRender.drawText (
-    sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f)),
-    text,
-    mStyle.fontColor,
-    mStyle.fontSize.normal
-  );
-
+  auto textWidth = 0.f;
+  if (options.description != "") {
+    const auto descrPos = sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f));
+    mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    textWidth = normalSizeOf (options.description).x;
+  }
   // update cursor position
-  const auto textLength = normalSizeOf (text + "g").x;
-  updateSpacing (size + sf::Vector2f (textLength, 0.f));
+  updateSpacing ({size.x + textWidth, size.y});
 
   // compute scrollBar relative position
   const auto percent = sgui::remap (min, max, 0.05f, 0.95f, value);
-  sliderBar (box, state, percent, horizontal);
+  sliderBar (box, state, percent, !options.horizontal);
 }
 
 /////////////////////////////////////////////////
@@ -102,16 +95,15 @@ Type Gui::sliderValue (
 template <typename Type>
 void Gui::inputNumber (
   Type& number,
-  const std::string& description,
   const Type min,
   const Type max,
   const std::string& label,
   const bool fixedWidth,
-  const sf::Vector2f& displacement)
+  const WidgetOptions& options)
 {
   // Initialize widget name and position
   const auto name = initializeActivable ("InputNumber");
-  const auto position = computeRelativePosition (mCursorPosition, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // compute text box dimension
   auto width = normalSizeOf (label + "10000").x;
@@ -148,11 +140,13 @@ void Gui::inputNumber (
   mRender.drawText (sanitizePosition (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
 
   // draw description
-  const auto descriptionPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
-  mRender.drawText (sanitizePosition (descriptionPos), description, mStyle.fontColor, mStyle.fontSize.normal);
-
+  auto textWidth = 0.f;
+  if (options.description != "") {
+    const auto descrPos = sanitizePosition (position + sf::Vector2f (boxSize.x + mPadding.x, 0));
+    mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    textWidth = normalSizeOf (options.description).x;
+  }
   // update cursor position
-  const auto textWidth = normalSizeOf (description).x;
   updateSpacing ({boxSize.x + textWidth, boxSize.y});
 }
 
@@ -160,49 +154,47 @@ void Gui::inputNumber (
 template <typename Type>
 void Gui::inputVector2 (
   sf::Vector2<Type>& vector,
-  const std::string& description,
   const sf::Vector2<Type>& min,
   const sf::Vector2<Type>& max,
-  const sf::Vector2f& displacement)
+  const WidgetOptions& options)
 {
   // keep track of initial position and draw description
-  const auto position = computeRelativePosition (mCursorPosition, displacement);
-  auto disp = displacement;
-  if (description != "") {
-    text (description, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  auto disp = options.displacement;
+  if (options.description != "") {
+    text (options.description, options.displacement);
     sameLine ();
     disp = sf::Vector2f ();
   }
 
   // change vector with two input number
-  inputNumber (vector.x, "", min.x, max.x, "x: ", true, disp);
+  inputNumber (vector.x, min.x, max.x, "x: ", true, {disp});
   sameLine ();
-  inputNumber (vector.y, "", min.y, max.y, "y: ", true);
+  inputNumber (vector.y, min.y, max.y, "y: ", true);
 }
 
 /////////////////////////////////////////////////
 template <typename Type>
 void Gui::inputVector3 (
   sf::Vector3<Type>& vector,
-  const std::string& description,
   const sf::Vector3<Type>& min,
   const sf::Vector3<Type>& max,
-  const sf::Vector2f& displacement)
+  const WidgetOptions& options)
 {
   // keep track of initial position and draw description
-  const auto position = computeRelativePosition (mCursorPosition, displacement);
-  auto disp = displacement;
-  if (description != "") {
-    text (description, displacement);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  auto disp = options.displacement;
+  if (options.description != "") {
+    text (options.description, options.displacement);
     sameLine ();
     disp = sf::Vector2f ();
   }
 
-  inputNumber (vector.x, "", min.x, max.x, "x: ", true, disp);
+  inputNumber (vector.x, min.x, max.x, "x: ", true, {disp});
   sameLine ();
-  inputNumber (vector.y, "", min.y, max.y, "y: ", true);
+  inputNumber (vector.y, min.y, max.y, "y: ", true);
   sameLine ();
-  inputNumber (vector.z, "", min.z, max.z, "z: ", true);
+  inputNumber (vector.z, min.z, max.z, "z: ", true);
 }
 
 /////////////////////////////////////////////////

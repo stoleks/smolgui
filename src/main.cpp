@@ -57,15 +57,17 @@ int main()
   panel.position = { 16.f, 256.f};
   panel.size = {640.f, 640.f};
   panel.closable = true;
+  panel.title = "General demo";
   auto panel2 = sgui::Panel ();
   panel2.position = panel.position + sf::Vector2f (panel.size.x + 10.f, 0.f);
   panel2.size = {520.f, 520.f};
+  panel2.title = "Closable window";
   panel2.closable = true;
   auto panel3 = sgui::Panel ();
   panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, 0.f);
   panel3.size = {128.f, 40.f};
   panel3.movable = true;
-  auto constraint = sgui::Constraint ();
+  auto constraint = sgui::Constraints ();
   constraint.centeredVerticaly = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
@@ -109,7 +111,7 @@ int main()
     gui.beginFrame ();
     {
       // first window
-      if (gui.beginWindow (panel2, "Closable window")) {
+      if (gui.beginWindow (panel2)) {
         // Open or close
         gui.text ("A window");
         gui.sameLine ();
@@ -120,8 +122,8 @@ int main()
         gui.text ("Open or close the general demo window");
         gui.separation ();
         // Display a function
-        gui.slider (sliderValue, 0.f, 10.f, "Slider from 0 to 10, value is : " + std::to_string (sliderValue));
-        gui.checkBox (displayFunction, "Display a function");
+        gui.slider (sliderValue, 0.f, 10.f, {"Slider from 0 to 10, value is : " + std::to_string (sliderValue)});
+        gui.checkBox (displayFunction, {"Display a function"});
         if (displayFunction) {
           auto func = [t, sliderValue] (float x) {
             const auto time = t.getElapsedTime ().asSeconds ();
@@ -135,11 +137,11 @@ int main()
         }
         // Change window size
         gui.separation ();
-        gui.slider (panel.size.y, 50.f, 700.f, "Slider from 0 to 700, value is : " + std::to_string (panel.size.y));
+        gui.slider (panel.size.y, 50.f, 700.f, {"Slider from 0 to 700, value is : " + std::to_string (panel.size.y)});
       }
       gui.endWindow ();
       // second window
-      if (gui.beginWindow (panel, "General demo")) {
+      if (gui.beginWindow (panel)) {
         if (gui.textButton ("Test button")) {
           spdlog::info ("Test button\n");
         }
@@ -147,21 +149,21 @@ int main()
 
         gui.text ("Select font size");
         auto& fonts = style.fontSize;
-        gui.slider (fonts.title, 12u, 26u, "Title font size");
-        gui.slider (fonts.subtitle, 10u, 22u, "Subtitle font size");
-        gui.slider (fonts.normal, 8u, 20u, "Normal font size");
-        gui.inputColor (style.fontColor, "Font color: ");
+        gui.slider (fonts.title, 12u, 26u, {"Title font size"});
+        gui.slider (fonts.subtitle, 10u, 22u, {"Subtitle font size"});
+        gui.slider (fonts.normal, 8u, 20u, {"Normal font size"});
+        gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
-        gui.inputText (text, "Editable on multiple lines : ", {256.f, 64.f});
-        gui.inputText (text2, "Editable on one line");
+        gui.inputText (text, {256.f, 64.f}, {"Editable on multiple lines : "});
+        gui.inputText (text2, {}, {"Editable on one line"});
         gui.separation ();
-        gui.inputNumber (inputValue, "Input number with text!");
-        gui.inputVector2 (vector, "Input vector2: ");
-        gui.inputVector3 (vector3, "Input vector3: ");
+        gui.inputNumber (inputValue, 0.f, 200.f, "", false, {"Input number with text!"});
+        gui.inputVector2 (vector, {}, {}, {"Input vector2: "});
+        gui.inputVector3 (vector3, {}, {}, {"Input vector3: "});
       }
       gui.endWindow ();
 
-      gui.beginPanel (panel3, constraint, true);
+      gui.beginPanel (panel3, constraint);
       gui.text ("Just a panel");
       gui.text ("With scrollable");
       gui.addSpacing ({0.f, 12.f});

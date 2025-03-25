@@ -43,26 +43,30 @@ struct Panel
          const bool movable = true,
          const bool visible = true,
          const bool closable = false,
+         const bool hasMenu = false,
+         const bool clipped = true,
          const bool closed = false,
          const bool reduced = false);
   // data
-  bool clipped = false;
+  bool clipped  = true;
   bool closable = false;
   bool closed   = false;
+  bool hasMenu  = false;
   bool movable  = true;
   bool reduced  = false;
   bool visible  = true;
-  sf::Vector2f size;
-  sf::Vector2f position;
+  sf::Vector2f size = {};
+  sf::Vector2f position = {};
+  std::string title = "";
 };
 
 /////////////////////////////////////////////////
 /**
  * @brief store constraints on position for gui panel
  */
-struct Constraint
+struct Constraints
 {
-  Constraint () = default;
+  Constraints () = default;
   // data, zero means no constrain
   bool centeredHorizontaly = false;
   bool centeredVerticaly   = false;
@@ -79,15 +83,28 @@ struct Constraint
 struct WidgetOptions
 {
   WidgetOptions () = default;
+  /**
+   * @brief full constructor, but with options if only description is required
+   */
   WidgetOptions (
         const std::string& description,
         const Tooltip& info = {},
-        const bool horizontal = false,
-        const sf::Vector2f& position = {});
+        const sf::Vector2f& displacement = {},
+        const float length = 4.5f,
+        const bool horizontal = false);
+  /**
+   * @brief when only a tooltip is needed
+   */
+  WidgetOptions (const Tooltip& inf) : info (inf) {}
+  /**
+   * @brief when only the relative displacement is needed
+   */
+  WidgetOptions (const sf::Vector2f disp) : displacement (disp) {}
   // data
   bool horizontal = false;
+  float length = 4.5f;
+  sf::Vector2f displacement = {};
   std::string description = "";
-  sf::Vector2f position = {};
   Tooltip info = {};
 };
 

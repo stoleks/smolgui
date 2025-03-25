@@ -11,6 +11,7 @@
 
 #include "sgui/Core/LookupTable.h"
 #include "sgui/Widgets/Style.h"
+#include "sgui/Widgets/Panel.h"
 
 namespace sgui
 {
@@ -25,7 +26,7 @@ struct LayoutEntry
   Icon icon;
   Panel panel;
   sf::Vector2f position;
-  Constraint constraint;
+  Constraints constraint;
 };
 
 
