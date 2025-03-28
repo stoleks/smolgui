@@ -157,9 +157,9 @@ int main()
         gui.inputText (text, {256.f, 64.f}, {"Editable on multiple lines : "});
         gui.inputText (text2, {}, {"Editable on one line"});
         gui.separation ();
-        gui.inputNumber (inputValue, 0.f, 200.f, "", false, {"Input number with text!"});
-        gui.inputVector2 (vector, {}, {}, {"Input vector2: "});
-        gui.inputVector3 (vector3, {}, {}, {"Input vector3: "});
+        gui.inputNumber (inputValue, {"Input number with text!"});
+        gui.inputVector2 (vector, {"Input vector2: "});
+        gui.inputVector3 (vector3, {"Input vector3: "});
       }
       gui.endWindow ();
 

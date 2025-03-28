@@ -259,33 +259,37 @@ public:
   ///////////////////////////////////////////////
   /**
    * @brief modify a number value through text
+   * @param options contains displacement and description
+   * @param min and max are used to clamb number, but only if they are both different from 0.
+   * @param label is a text that appear in the number text box [ label: number ]
+   * @param fixedWidth if true, the box will have the width to fit label + "10000" in it.
    */
   template <typename Type>
   void inputNumber (
          Type& number,
+         const WidgetOptions& options = {},
          const Type min = 0,
          const Type max = 0,
          const std::string& label = "",
-         const bool fixedWidth = false,
-         const WidgetOptions& options = {});
+         const bool fixedWidth = false);
   /**
-   * @brief modify a vector value through text
+   * @brief modify a vector2 value through text, using two inputNumber call
    */
   template <typename Type>
   void inputVector2 (
          sf::Vector2<Type>& vector,
+         const WidgetOptions& options = {},
          const sf::Vector2<Type>& min = {},
-         const sf::Vector2<Type>& max = {},
-         const WidgetOptions& options = {});
+         const sf::Vector2<Type>& max = {});
   /**
-   * @brief modify a vector value through text
+   * @brief modify a vector3 value through text, using three inputNumber call
    */
   template <typename Type>
   void inputVector3 (
          sf::Vector3<Type>& vector,
+         const WidgetOptions& options = {},
          const sf::Vector3<Type>& min = {},
-         const sf::Vector3<Type>& max = {},
-         const WidgetOptions& options = {});
+         const sf::Vector3<Type>& max = {});
   /**
    * @brief modify a color value through text
    */
@@ -341,7 +345,7 @@ public:
          Type& value,
          const Type min,
          const Type max,
-         const WidgetOptions& options = WidgetOptions (true));
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**

@@ -955,13 +955,15 @@ void Gui::inputColor (
   }
 
   // change color with four input number
-  inputNumber (color.r, std::uint8_t (0), std::uint8_t (255), "r: ", true, {disp});
+  const auto min = std::uint8_t (0);
+  const auto max = std::uint8_t (255);
+  inputNumber (color.r, {disp}, min, max, "r: ", true);
   sameLine ();
-  inputNumber (color.g, std::uint8_t (0), std::uint8_t (255), "g: ", true);
+  inputNumber (color.g, {}, min, max, "g: ", true);
   sameLine ();
-  inputNumber (color.b, std::uint8_t (0), std::uint8_t (255), "b: ", true);
+  inputNumber (color.b, {}, min, max, "b: ", true);
   sameLine ();
-  inputNumber (color.a, std::uint8_t (0), std::uint8_t (255), "a: ", true);
+  inputNumber (color.a, {}, min, max, "a: ", true);
 }
 
 /////////////////////////////////////////////////

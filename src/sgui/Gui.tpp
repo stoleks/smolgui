@@ -40,7 +40,8 @@ void Gui::slider (
 
   // get status of the widget
   auto dimVector = sf::Vector2f (1, 1);
-  if (!options.horizontal) {
+  const auto isHorizontal = !options.horizontal;
+  if (isHorizontal) {
     dimVector.x = options.length;
   } else {
     dimVector.y = options.length;
@@ -48,12 +49,12 @@ void Gui::slider (
   const auto size = normalTextHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.info);
-  mRender.draw <Widget::Slider> (box, state, !options.horizontal);
+  mRender.draw <Widget::Slider> (box, state, isHorizontal);
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
     state = ItemState::Active;
-    value = sliderValue (box, min, max, !options.horizontal);
+    value = sliderValue (box, min, max, isHorizontal);
   }
 
   // draw text next to the slider
@@ -68,7 +69,7 @@ void Gui::slider (
 
   // compute scrollBar relative position
   const auto percent = sgui::remap (min, max, 0.05f, 0.95f, value);
-  sliderBar (box, state, percent, !options.horizontal);
+  sliderBar (box, state, percent, isHorizontal);
 }
 
 /////////////////////////////////////////////////
@@ -95,11 +96,11 @@ Type Gui::sliderValue (
 template <typename Type>
 void Gui::inputNumber (
   Type& number,
+  const WidgetOptions& options,
   const Type min,
   const Type max,
   const std::string& label,
-  const bool fixedWidth,
-  const WidgetOptions& options)
+  const bool fixedWidth)
 {
   // Initialize widget name and position
   const auto name = initializeActivable ("InputNumber");
@@ -154,9 +155,9 @@ void Gui::inputNumber (
 template <typename Type>
 void Gui::inputVector2 (
   sf::Vector2<Type>& vector,
+  const WidgetOptions& options,
   const sf::Vector2<Type>& min,
-  const sf::Vector2<Type>& max,
-  const WidgetOptions& options)
+  const sf::Vector2<Type>& max)
 {
   // keep track of initial position and draw description
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
@@ -168,18 +169,18 @@ void Gui::inputVector2 (
   }
 
   // change vector with two input number
-  inputNumber (vector.x, min.x, max.x, "x: ", true, {disp});
+  inputNumber (vector.x, {disp}, min.x, max.x, "x: ", true);
   sameLine ();
-  inputNumber (vector.y, min.y, max.y, "y: ", true);
+  inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
 }
 
 /////////////////////////////////////////////////
 template <typename Type>
 void Gui::inputVector3 (
   sf::Vector3<Type>& vector,
+  const WidgetOptions& options,
   const sf::Vector3<Type>& min,
-  const sf::Vector3<Type>& max,
-  const WidgetOptions& options)
+  const sf::Vector3<Type>& max)
 {
   // keep track of initial position and draw description
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
@@ -190,11 +191,11 @@ void Gui::inputVector3 (
     disp = sf::Vector2f ();
   }
 
-  inputNumber (vector.x, min.x, max.x, "x: ", true, {disp});
+  inputNumber (vector.x, {disp}, min.x, max.x, "x: ", true);
   sameLine ();
-  inputNumber (vector.y, min.y, max.y, "y: ", true);
+  inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
   sameLine ();
-  inputNumber (vector.z, min.z, max.z, "z: ", true);
+  inputNumber (vector.z, {}, min.z, max.z, "z: ", true);
 }
 
 /////////////////////////////////////////////////
