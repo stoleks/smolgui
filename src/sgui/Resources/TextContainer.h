@@ -1,53 +1,62 @@
-/**
-  TextContainer.h
-  Purpose: contain text acessible with a simple string key. Its mainly a lookup-table
-    with a loadFromFile function. It has also some support for localisation with tongue
-    setting and text retrieved according to the tongue set.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "sgui/Core/LookupTable.h"
 
 namespace sgui
 {
+/**
+ * @brief store text accessible with a string key, with option to load and store text
+ *   for a given tongue, so it has simple support for localisation.
+ */
 class TextContainer {
 public:
   /**
-   * set text tongue
+   * @brief get current tongue used
    */
   const std::string& tongue () const;
+  /**
+   * @brief set tongue used 
+   */
   void setTongue (const std::string& tongue);
   /**
-   * load data from the file previously set
+   * @brief reload all texts for the active tongue
    */
-  bool reload ();
+  bool reload (const std::string& tongue = "");
   /**
-   * load data from file and set paths of different languages
+   * @brief load texts from a filename for this given tongue. By default it uses active tongue.
    */
   bool loadFromFile (
          const std::string& filename,
-         const std::string& tongue);
+         const std::string& tongue = "");
+  /**
+   * @brief save texts of the current tongue 
+   */
   void saveInFile (const std::string& filename);
   /**
-   * add or remove an entry to the container
+   * @brief add a text with a given key to the container for the current tongue
    */
   void add (
-         const std::string& entry,
+         const std::string& key,
          const std::string& text);
-  void remove (const std::string& entry);
   /**
-   * get text entry
+   * @brief remove text from the container for the current tongue
+   */
+  void remove (const std::string& key);
+  /**
+   * @brief get mutable text entry for the current tongue
    */
   std::string& get (const std::string& entry);
+  /**
+   * @brief get text entry for the current tongue
+   */
   const std::string& get (const std::string& entry) const;
 private:
-  std::string mActiveTongue;
-  LookupTable <std::string> mPaths;
-  LookupTable <std::string> mTexts;
+  std::string mActiveTongue = "english";
+  LookupTable <std::vector <std::string>> mPaths;
+  LookupTable <LookupTable <std::string>> mTexts;
 };
 
 } // namespace sgui

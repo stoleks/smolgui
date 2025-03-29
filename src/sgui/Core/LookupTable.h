@@ -1,9 +1,3 @@
-/**
-  LookupTable.h
-  Purpose: define generic look-up table, that map a key to a specific value
-  @author A. J.
-*/
-
 #pragma once
 
 #include <string>
@@ -20,30 +14,39 @@ class LookupTable
 {
 public:
   /**
-   * default constructor for serialization
+   * @brief default constructor for serialization
    */
   LookupTable () = default;
   /**
-   * clear data of the table
+   * @brief clear data of the table
    */
   void clear ();
   /**
-   * insert or erase entry in the table
+   * @brief insert by moving entry to the table
    */
   void insert (
          const Key& key,
          Value&& value);
+  /**
+   * @brief insert by copying entry to the table
+   */
   void insert (
          const Key& key,
          const Value& value);
+  /**
+   * @brief erase entry if it exist
+   */
   void erase (const Key& key);
   /**
-   * get entry value at corresponding key
+   * @brief get mutable entry value at corresponding key
    */
   Value& at (const Key& key);
+  /**
+   * @brief get entry value at corresponding key
+   */
   const Value& at (const Key& key) const;
   /**
-   * return true if Key exist
+   * @brief check if entry exist for this key
    */
   bool has (const Key& key) const;
   /**

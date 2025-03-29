@@ -12,35 +12,41 @@ int main()
    */
   auto style = sgui::Style ();
   style.fontColor = sf::Color::White;
-  const std::string fontFile = "../../contents/Averia-Bold.ttf";
   auto font = sf::Font ();
+  const std::string fontFile = "../../contents/Averia-Bold.ttf";
   if (!font.openFromFile (fontFile)) {
     spdlog::error ("Unable to load {}", fontFile);
-    std::this_thread::sleep_for (std::chrono::seconds (2));
   }
-  const std::string mathFontFile = "../../contents/latinmodern-math.otf";
   auto mathFont = sf::Font ();
+  const std::string mathFontFile = "../../contents/latinmodern-math.otf";
   if (!mathFont.openFromFile (mathFontFile)) {
     spdlog::error ("Unable to load {}", mathFontFile);
-    std::this_thread::sleep_for (std::chrono::seconds (2));
   }
-  const std::string atlasFile = "../../contents/atlases.json";
   auto atlas = sgui::TextureAtlas ();
+  const std::string atlasFile = "../../contents/atlases.json";
   if (!atlas.loadFromFile (atlasFile)) {
     spdlog::error ("Unable to load {}", atlasFile);
-    std::this_thread::sleep_for (std::chrono::seconds (2));
   }
-  const std::string textureFile = "../../contents/widget.png";
   auto texture = sf::Texture ();
+  const std::string textureFile = "../../contents/widget.png";
   if (!texture.loadFromFile (textureFile)) {
     spdlog::error ("Unable to load {}", textureFile);
-    std::this_thread::sleep_for (std::chrono::seconds (2));
   }
+  auto texts = sgui::TextContainer ();
+  const std::string englishTexts = "../../contents/english_demo.json";
+  if (!texts.loadFromFile (englishTexts, "english")) {
+    spdlog::error ("Unable to load {} in english", englishTexts);
+  }
+  const std::string frenchTexts = "../../contents/french_demo.json";
+  if (!texts.loadFromFile (frenchTexts, "french")) {
+    spdlog::error ("Unable to load {} in french", frenchTexts);
+  }
+  texts.setTongue ("english");
   
   /**
    * Window initialization
    */
-  auto window = sf::RenderWindow (sf::VideoMode ({1920u, 1080u}), "Card generator project");
+  auto window = sf::RenderWindow (sf::VideoMode ({1920u, 1080u}), "Smolgui Demo");
   window.setFramerateLimit (60);
 
   /**
@@ -56,12 +62,11 @@ int main()
   auto panel = sgui::Panel ();
   panel.position = { 16.f, 256.f};
   panel.size = {640.f, 640.f};
-  panel.closable = true;
-  panel.title = "General demo";
+  panel.title = texts.get ("mainWindow");
   auto panel2 = sgui::Panel ();
   panel2.position = panel.position + sf::Vector2f (panel.size.x + 10.f, 0.f);
   panel2.size = {520.f, 520.f};
-  panel2.title = "Closable window";
+  panel2.title = texts.get ("closableWindow");
   panel2.closable = true;
   auto panel3 = sgui::Panel ();
   panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, 0.f);
@@ -71,8 +76,8 @@ int main()
   constraint.centeredVerticaly = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
-  auto text = std::string ("You can edit this text on multiple lines !");
-  auto text2 = std::string ("You can edit this text !");
+  auto multiLine = texts.get ("textMultiLine");
+  auto oneLine = texts.get ("textOneLine");
   auto vector = sf::Vector2f ();
   auto vector3 = sf::Vector3f ();
   bool displayFunction = false;
@@ -142,8 +147,20 @@ int main()
       gui.endWindow ();
       // second window
       if (gui.beginWindow (panel)) {
-        if (gui.textButton ("Test button")) {
-          spdlog::info ("Test button\n");
+        auto getText = false;
+        if (gui.textButton ("Switch to french")) {
+          texts.setTongue ("french");
+          getText = true;
+        }
+        if (gui.textButton ("Switch to english")) {
+          texts.setTongue ("english");
+          getText = true;
+        }
+        if (getText) {
+          multiLine = texts.get ("textMultiLine");
+          oneLine = texts.get ("textOneLine");
+          panel.title = texts.get ("mainWindow");
+          panel2.title = texts.get ("closableWindow");
         }
         gui.separation ();
 
@@ -154,8 +171,8 @@ int main()
         gui.slider (fonts.normal, 8u, 20u, {"Normal font size"});
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
-        gui.inputText (text, {256.f, 64.f}, {"Editable on multiple lines : "});
-        gui.inputText (text2, {}, {"Editable on one line"});
+        gui.inputText (multiLine, {256.f, 64.f}, {texts.get ("multiLine")});
+        gui.inputText (oneLine, {}, {texts.get ("oneLine")});
         gui.separation ();
         gui.inputNumber (inputValue, {"Input number with text!"});
         gui.inputVector2 (vector, {"Input vector2: "});

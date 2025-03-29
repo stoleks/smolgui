@@ -23,58 +23,55 @@
 namespace sgui
 {
 /**
- * render definition
+ * @brief manage rendering for the gui
  */
-class GuiRender :
-  public sf::Drawable,
-  public sf::Transformable
+class GuiRender : public sf::Drawable, public sf::Transformable
 {
 public:
   /**
-   * set assets
+   * @brief set assets
    */
   void setResources (
          sf::Font& font,
          sf::Texture& sprite,
          const TextureAtlas& atlas);
   /**
-   * clear all widgets and text
+   * @brief clear all widgets and text
    */
   void clear ();
   /**
-   * return last character position of the string
+   * @brief get text size as if it was drawn on screen
    */
   sf::Vector2f textSize (
          const std::string& text,
          const uint32_t fontSize) const;
   /**
-   * update camera
+   * @brief update view on which the gui is drawn
    */
   void updateView (sf::View newView);
   /**
-   * set current clipping layer used to render UI.
-   * Every call will create a new layer with its own
-   * independent mesh and return its id.
+   * @brief set current clipping layer used to render UI. Every call will create a
+   * new layer with its own independent meshes and return its id.
    */
   uint32_t setCurrentClippingLayer (const sf::FloatRect& mask);
   /**
-   * get current active clipping layer
+   * @brief get current active clipping layer
    */
   uint32_t currentClippingLayer () const;
   /**
-   * to reuse a previously set clipping layer
+   * @brief to reuse a previously set clipping layer
    */
   void moveToClippingLayer (const uint32_t layerId);
   /**
-   * go back to base layer with no clipping
+   * @brief go back to base layer with no clipping
    */
   void noClipping ();
   /**
-   * to tell if a position is visible or not (clipped)
+   * @brief to tell if a position is visible or not (clipped)
    */
   bool isClipped (const sf::Vector2f& position) const;
   /**
-   * interface to draw Gui standard element
+   * @brief interface to draw Gui standard element
    */
   template <Widget Type>
   void draw (
@@ -82,7 +79,7 @@ public:
          const ItemState state,
          const bool horizontal = true);
   /**
-   * interface to draw Gui connection
+   * @brief interface to draw Gui connection
    */
   template <Widget ConnectionType>
   void draw (
@@ -91,19 +88,19 @@ public:
          const float thickness,
          const ItemState state);
   /**
-   * interface to draw Gui icon
+   * @brief interface to draw Gui icon
    */
   void drawIcon (
          const sf::FloatRect& box,
          const std::string& name);
   /**
-   * interface to draw Gui progress bar
+   * @brief interface to draw Gui progress bar
    */
   void drawProgressBar (
          const sf::FloatRect& box,
          const float progress);
   /**
-   * interface to draw Gui text
+   * @brief interface to draw Gui text using utf8
    */
   void drawText (
          const sf::Vector2f& position,
@@ -111,13 +108,16 @@ public:
          const sf::Color& textColor,
          const uint32_t fontSize);
   /**
-   * to get draw calls count
+   * @brief get draw calls count
    */
   uint32_t drawCalls () const;
   /**
-   * set or unset specific render for tooltips
+   * @brief set specific render for tooltip
    */
   void setTooltipMode ();
+  /**
+   * @brief unset specific render for tooltip
+   */
   void unsetTooltipMode ();
 private:
   /**

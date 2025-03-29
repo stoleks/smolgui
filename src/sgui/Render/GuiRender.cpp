@@ -68,15 +68,13 @@ sf::Vector2f GuiRender::textSize (
 /////////////////////////////////////////////////
 // Clipping
 /////////////////////////////////////////////////
-void GuiRender::updateView (
-  sf::View newView)
+void GuiRender::updateView (sf::View newView)
 {
   mBaseView = newView;
 }
 
 /////////////////////////////////////////////////
-uint32_t GuiRender::setCurrentClippingLayer (
-  const sf::FloatRect& mask)
+uint32_t GuiRender::setCurrentClippingLayer (const sf::FloatRect& mask)
 {
   // get current view property
   const auto& viewSize = sf::Vector2f (mBaseView.getSize ());
@@ -87,9 +85,7 @@ uint32_t GuiRender::setCurrentClippingLayer (
   const auto& viewport = mBaseView.getViewport ();
   const auto viewportRatioX = viewport.size.x / viewSize.x;
   const auto viewportRatioY = viewport.size.y / viewSize.y;
-  const auto portSize = sf::Vector2f (
-    mask.size.x * viewportRatioX, mask.size.y * viewportRatioY
-  );
+  const auto portSize = sf::Vector2f (mask.size.x * viewportRatioX, mask.size.y * viewportRatioY);
   auto portTopLeft = (mask.position - viewTopLeft);
   portTopLeft.x = (portTopLeft.x * viewportRatioX) + viewport.position.x;
   portTopLeft.y = (portTopLeft.y * viewportRatioY) + viewport.position.y;
@@ -110,10 +106,7 @@ uint32_t GuiRender::setCurrentClippingLayer (
       { std::round (mask.position.x), std::round (mask.position.y) },
       { std::round (mask.size.x), std::round (mask.size.y) }
     ));
-    clippingView.setViewport (sf::FloatRect (
-      { portTopLeft.x, portTopLeft.y },
-      { portSize.x, portSize.y }
-    ));
+    clippingView.setViewport (sf::FloatRect (portTopLeft, portSize));
     mClippingLayers.push_back (clippingView);
   }
 
@@ -128,8 +121,7 @@ uint32_t GuiRender::currentClippingLayer () const
 }
 
 /////////////////////////////////////////////////
-void GuiRender::moveToClippingLayer (
-  const uint32_t layerId)
+void GuiRender::moveToClippingLayer (const uint32_t layerId)
 {
   if (layerId < mClippingLayers.size ()) {
     mActiveLayer = layerId;
@@ -145,8 +137,7 @@ void GuiRender::noClipping ()
 }
 
 /////////////////////////////////////////////////
-bool GuiRender::isClipped (
-  const sf::Vector2f& position) const
+bool GuiRender::isClipped (const sf::Vector2f& position) const
 {
   const auto view = mClippingLayers [mActiveLayer];
   const auto viewBox = sf::FloatRect (
@@ -191,9 +182,12 @@ void GuiRender::drawText (
   const uint32_t fontSize)
 {
   // set text properties
-  auto content = sf::Text (*mGuiFont, text, fontSize);
+  auto content = sf::Text (*mGuiFont);
+  content.setCharacterSize (fontSize);
   content.setPosition (position);
   content.setFillColor (textColor);
+  // we use explicit utf8 encoding to handle special character like 'é'
+  content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
   // draw text
   mTexts [mActiveLayer].emplace_back (std::move (content));
 }

@@ -1,8 +1,6 @@
 namespace sgui
 {
 /////////////////////////////////////////////////
-// key lookup table
-/////////////////////////////////////////////////
 template <typename Value,
           typename Key>
 void LookupTable <Value, Key>::clear ()
