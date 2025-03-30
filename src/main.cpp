@@ -12,36 +12,36 @@ int main()
    */
   auto style = sgui::Style ();
   style.fontColor = sf::Color::White;
-  auto font = sf::Font ();
-  const std::string fontFile = "../../contents/Averia-Bold.ttf";
-  if (!font.openFromFile (fontFile)) {
-    spdlog::error ("Unable to load {}", fontFile);
-  }
-  auto mathFont = sf::Font ();
-  const std::string mathFontFile = "../../contents/latinmodern-math.otf";
-  if (!mathFont.openFromFile (mathFontFile)) {
-    spdlog::error ("Unable to load {}", mathFontFile);
-  }
+  // fonts
+  auto fonts = sgui::FontHolder ();
+  fonts.load ("normal", "../../contents/Averia-Bold.ttf");
+  fonts.load ("math", "../../contents/latinmodern-math.otf");
+  // textures atlas
   auto atlas = sgui::TextureAtlas ();
-  const std::string atlasFile = "../../contents/atlases.json";
-  if (!atlas.loadFromFile (atlasFile)) {
-    spdlog::error ("Unable to load {}", atlasFile);
-  }
+  atlas.loadFromFile ("../../contents/atlases.json");
+  // texture
   auto texture = sf::Texture ();
   const std::string textureFile = "../../contents/widget.png";
   if (!texture.loadFromFile (textureFile)) {
     spdlog::error ("Unable to load {}", textureFile);
   }
+  // texts
   auto texts = sgui::TextContainer ();
-  const std::string englishTexts = "../../contents/english_demo.json";
-  if (!texts.loadFromFile (englishTexts, "english")) {
-    spdlog::error ("Unable to load {} in english", englishTexts);
-  }
-  const std::string frenchTexts = "../../contents/french_demo.json";
-  if (!texts.loadFromFile (frenchTexts, "french")) {
-    spdlog::error ("Unable to load {} in french", frenchTexts);
-  }
+  texts.loadFromFile ("../../contents/english_demo.json", "english");
+  texts.loadFromFile ("../../contents/french_demo.json", "french");
   texts.setTongue ("english");
+  // sounds
+  auto sounds = sgui::SoundHolder ();
+  sounds.load ("Button",       "../../contents/wood1.wav");
+  sounds.load ("CheckBox",     "../../contents/wood2.wav");
+  sounds.load ("Slider",       "../../contents/wood3.wav");
+  sounds.load ("Scroller",     "../../contents/wood4.wav");
+  sounds.load ("InputText",    "../../contents/keys1.wav");
+  sounds.load ("InputKey",     "../../contents/keys2.wav");
+  sounds.load ("InputNumber",  "../../contents/metallic1.wav");
+  sounds.load ("DropList",     "../../contents/metallic2.wav");
+  sounds.load ("DropListItem", "../../contents/metallic3.wav");
+  sounds.load ("MenuItem",     "../../contents/pen1.wav");
   
   /**
    * Window initialization
@@ -53,7 +53,7 @@ int main()
    * Gui initialization
    */
   auto gui = sgui::Gui ();
-  gui.setResources (font, texture, atlas);
+  gui.setResources (fonts.get ("normal"), sounds, texture, atlas);
   gui.setStyle (style);
 
   /**
@@ -196,17 +196,8 @@ int main()
     gui.draw (window);
     // TEST
     const auto expression ("(3 * 4) / (#sin(x - 5 / #sqrt(3) + #sqrt (4 * e^(x-6)) + 4) + 5)");
-    sgui::Formula formula (mathFont);
+    sgui::Formula formula (fonts.get ("math"));
     formula.printFormula (expression, window, gui.style ());
-    std::wstring alphabet;
-    for (auto s : sgui::Parser::Symbols) {
-      alphabet += s.second.character;
-    }
-    sf::Text txt (mathFont);
-    txt.setPosition (gui.cursorPosition ());
-    txt.setCharacterSize (1.5f*gui.style ().fontSize.title);
-    txt.setString (alphabet);
-    window.draw (txt);
     // TEST
     window.display ();
   }

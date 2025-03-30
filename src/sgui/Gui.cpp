@@ -6,6 +6,7 @@
 
 #include "sgui/Core/Interpolation.h"
 #include "sgui/Resources/Layout.h"
+#include "sgui/Resources/SoundPlayer.h"
 #include "sgui/Resources/TextContainer.h"
 
 namespace sgui 
@@ -18,10 +19,11 @@ namespace sgui
 /////////////////////////////////////////////////
 void Gui::setResources (
   sf::Font& font,
+  SoundHolder& sounds,
   sf::Texture& widgetTexture,
   const TextureAtlas& widgetAtlas)
-//  const SoundPlayer& sounds)
 {
+  mSoundPlayer.setResource (sounds);
   mRender.setResources (font, widgetTexture, widgetAtlas);
 }
 
@@ -283,6 +285,9 @@ void Gui::endFrame (const float tooltipDelay)
   }
   mInputState.oldMousePosition = mInputState.mousePosition;
   mInputState.updated = false;
+
+  // remove stopped sounds
+  mSoundPlayer.removeStoppedSounds ();
 }
 
 /////////////////////////////////////////////////
@@ -1694,8 +1699,20 @@ ItemState Gui::itemStatus (
       mGuiState.tooltip.parent = item;
     }
   }
-
+  playSound (state);
   return state;
+}
+
+/////////////////////////////////////////////////
+void Gui::playSound (const ItemState state)
+{
+  const auto isPanel = mActiveWidgetSoundId == "Panel";
+  const auto isWindow = mActiveWidgetSoundId == "Window";
+  const auto isMenu = mActiveWidgetSoundId == "MenuBar";
+  const auto isValid = !isWindow && !isPanel && !isMenu;
+  if (mInputState.updated && state == ItemState::Active && isValid) {
+    mSoundPlayer.play (mActiveWidgetSoundId);
+  }
 }
 
 
@@ -1771,6 +1788,7 @@ std::string Gui::formatText (
 std::string Gui::initializeActivable (const std::string& key)
 {
   mWidgetCount++;
+  mActiveWidgetSoundId = key;
   return key + std::to_string (mWidgetCount - 1);
 }
 

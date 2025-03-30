@@ -13,13 +13,14 @@
 #include "sgui/Core/Interpolation.h"
 #include "sgui/Render/Plotter.h"
 #include "sgui/Render/GuiRender.h"
+#include "sgui/Resources/SoundPlayer.h"
 #include "sgui/Resources/TextContainer.h"
 
 namespace sgui 
 {
 /**
- * @brief implement gui following the immediate gui principles, like dear-imgui,
- *   but with more control over the textures used for widgets.
+ * @brief implement gui following the immediate gui principles, like dear-imgui, but
+ *   with more control over the textures used for widgets, sounds effects and animations.
  */
 class Gui
 {
@@ -35,6 +36,7 @@ public:
    */
   void setResources (
          sf::Font& font,
+         SoundHolder& sounds,
          sf::Texture& widgetTexture,
          const TextureAtlas& widgetAtlas);
   /**
@@ -111,16 +113,14 @@ public:
    */
   sf::Vector2f activePanelSize () const;
   /**
-   * @brief add vertical spacing
+   * @brief add spacing
    * @param amount multiply this vector by the normal font size and add it to (x, y)
    */
   void addSpacing (const sf::Vector2f& amount);
   /**
-   * to add or remove last widget spacing
+   * @brief to add (amount > 0) or remove (amount < 0) last widget spacing
    */
   void addLastSpacing (const float amount = 1.f);
-  void addLastVerticalSpacing (const float amount = 1.f);
-  void addLastHorizontalSpacing (const float amount = 1.f);
   /**
    * @brief register a position at which you can go back with backToAnchor.
    */
@@ -411,6 +411,9 @@ private:
   float titleTextHeight () const;
   float normalTextHeight () const;
   float buttonHeight () const;
+  // to remove or add last vertical or horizontal spacing
+  void addLastVerticalSpacing (const float amount = 1.f);
+  void addLastHorizontalSpacing (const float amount = 1.f);
   // begin/end a group (subjacent struct of window/box/etc.)
   void beginGroup (
          const bool horizontal,
@@ -450,13 +453,13 @@ private:
          const ItemState panelState,
          const float scrollSize,
          const bool horizontal);
-  // to handle scroll bar of slider
+  // to handle scroll bar in a slider
   float sliderBar (
          const sf::FloatRect& parentBox,
          const ItemState state,
          const float scrollPercent,
          const bool horizontal);
-  // to handle scroll bar of scroller
+  // to handle scroll bar in a scroller
   float scrollerBar (
          const sf::FloatRect& parentBox,
          const ItemState state,
@@ -532,6 +535,8 @@ private:
          const sf::RenderWindow& window,
          const std::optional <sf::Event>& event);
   void handleKeyboardInputs (const std::optional <sf::Event>& event);
+  // to play sounds
+  void playSound (const ItemState state);
 private:
   // plot parameters
   bool mPlotIsBounded = false;
@@ -560,6 +565,9 @@ private:
   sf::Vector2f mWindowSize;
   sf::Vector2f mPlotBound;
   std::string mActiveInputNumber;
+  // to play sound
+  std::string mActiveWidgetSoundId = "";
+  SoundPlayer mSoundPlayer;
   // render for gui, plot and primitive shape
   Style mStyle;
   Plotter mPlotter;

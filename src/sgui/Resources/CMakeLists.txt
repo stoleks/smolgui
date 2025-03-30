@@ -17,6 +17,10 @@ set (SRC
   ${SRCROOT}/Layout.cpp
   ${INCROOT}/Layout.h
   ${INCROOT}/Layout.tpp
+  ${INCROOT}/ResourcesHolder.h
+  ${INCROOT}/ResourcesHolder.tpp
+  ${SRCROOT}/SoundPlayer.cpp
+  ${INCROOT}/SoundPlayer.h
   ${SRCROOT}/TextContainer.cpp
   ${INCROOT}/TextContainer.h
   ${SRCROOT}/TextureAtlas.cpp
