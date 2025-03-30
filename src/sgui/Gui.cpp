@@ -20,6 +20,7 @@ void Gui::setResources (
   sf::Font& font,
   sf::Texture& widgetTexture,
   const TextureAtlas& widgetAtlas)
+//  const SoundPlayer& sounds)
 {
   mRender.setResources (font, widgetTexture, widgetAtlas);
 }
@@ -1710,29 +1711,24 @@ void Gui::handleKeyInput (
 {
   // we only handle key if inputs were updated
   if (!mInputState.updated) return;
-  const char keyPressed = mInputState.keyPressed;
+  // convert key into utf8 character
+  std::string character;
+  sf::Utf<8>::encode (mInputState.keyPressed, std::back_inserter (character));
   // erase last character
-  if (keyPressed == L'\b') {
+  if (character == "\b") {
     if (!text.empty ()) {
-      // erase both return at line and last char
-      if (text.back () == L'\n') {
-        text.pop_back();
-        if (!text.empty ()) {
-          text.pop_back ();
-        }
-      // erase last char
-      } else {
-        text.pop_back ();
+      // erase last utf-8 character by looking for continuation bytes
+      auto cp = text.data () + text.size ();
+      while (--cp >= text.data () && ((*cp & 0b10000000) && !(*cp & 0b01000000))) {}
+      if (cp >= text.data ()) {
+        text.resize (cp - text.data ());
       }
     }
-
-  // add return at line
-  } else if (keyPressed == L'\n') {
-    text += L'\n';
-
-  // add character to the text
+  // add character to the text if it's not too large
   } else if (!textIsTooLarge) {
-    text += keyPressed;
+    if (mInputState.keyPressed != U'\u000D') {
+      text += character;
+    }
   }
 }
 
