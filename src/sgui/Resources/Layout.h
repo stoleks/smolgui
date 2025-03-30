@@ -26,7 +26,7 @@ struct LayoutEntry
   Icon icon;
   Panel panel;
   sf::Vector2f position;
-  Constraints constraint;
+  Constraints constraints;
 };
 
 
@@ -44,7 +44,7 @@ constexpr std::string layoutTypeName ()
   } else if constexpr (std::is_same_v <LayoutData, sf::Vector2f>) {
     return std::string ("Position::");
   } else {
-    return std::string ("Constraint::");
+    return std::string ("Constraints::");
   }
   return "Err::";
 }

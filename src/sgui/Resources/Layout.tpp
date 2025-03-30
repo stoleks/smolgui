@@ -37,7 +37,7 @@ LayoutType& Layout::get (
   } else if constexpr (std::is_same_v <LayoutType, sf::Vector2f>) {
     return mEntries.at (key).position;
   } else {
-    return mEntries.at (key).constraint;
+    return mEntries.at (key).constraints;
   }
 }
 
@@ -61,7 +61,7 @@ const LayoutType& Layout::get (
   } else if constexpr (std::is_same_v <LayoutType, sf::Vector2f>) {
     return mEntries.at (key).position;
   } else {
-    return mEntries.at (key).constraint;
+    return mEntries.at (key).constraints;
   }
 }
 

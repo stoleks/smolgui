@@ -19,9 +19,9 @@ bool loadFromFile (
     const auto key = entry.key ();
     const auto end = std::string::npos;
     // test if entry is a constraint
-    if (key.find (layoutTypeName <Constraint> ()) != end) {
+    if (key.find (layoutTypeName <Constraints> ()) != end) {
       auto data = LayoutEntry ();
-      data.constraint = entry.value ().get <Constraint> ();
+      data.constraints = entry.value ().get <Constraints> ();
       layout.add (file, key, std::move (data));
     }
     // a position
@@ -62,8 +62,8 @@ void saveInFile (
   for (const auto& entry : layout.entries (file)) {
     const auto end = std::string::npos;
     // constraint
-    if (entry.find (layoutTypeName <Constraint> ()) != end) {
-      out [entry] = layout.get <Constraint> (entry, false);
+    if (entry.find (layoutTypeName <Constraints> ()) != end) {
+      out [entry] = layout.get <Constraints> (entry, false);
     }
     // position
     else if (entry.find (layoutTypeName <sf::Vector2f> ()) != end) {

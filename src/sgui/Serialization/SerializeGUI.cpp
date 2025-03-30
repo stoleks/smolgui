@@ -66,6 +66,7 @@ void from_json (const json& j, Panel& panel) {
   j.at ("closable").get_to (panel.closable);
   j.at ("size")    .get_to (panel.size);
   j.at ("position").get_to (panel.position);
+  j.at ("title")   .get_to (panel.title);
 }
 
 
@@ -114,18 +115,18 @@ void from_json (const json& j, Icon& icon) {
  */
 void to_json (json& j, const LayoutEntry& entry) {
   j = json {
-    {"icon",       entry.icon},
-    {"panel",      entry.panel},
-    {"position",   entry.position},
-    {"constraint", entry.constraint}
+    {"icon",        entry.icon},
+    {"panel",       entry.panel},
+    {"position",    entry.position},
+    {"constraints", entry.constraints}
   };
 }
 
 void from_json (const json& j, LayoutEntry& entry) {
-  j.at ("icon")      .get_to (entry.icon);
-  j.at ("panel")     .get_to (entry.panel);
-  j.at ("position")  .get_to (entry.position);
-  j.at ("constraint").get_to (entry.constraint);
+  j.at ("icon")       .get_to (entry.icon);
+  j.at ("panel")      .get_to (entry.panel);
+  j.at ("position")   .get_to (entry.position);
+  j.at ("constraints").get_to (entry.constraints);
 }
 
 } // namespace sgui
