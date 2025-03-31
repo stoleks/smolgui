@@ -7,13 +7,13 @@ namespace sgui
 /////////////////////////////////////////////////
 const std::string& TextContainer::tongue () const
 {
-  return mActiveTongue;
+  return m_activeTongue;
 }
 
 /////////////////////////////////////////////////
 void TextContainer::setTongue (const std::string& tongue)
 {
-  mActiveTongue = tongue;
+  m_activeTongue = tongue;
 }
 
 /////////////////////////////////////////////////
@@ -22,13 +22,13 @@ bool TextContainer::reload (const std::string& tongue)
   // check loading tongue validity
   auto loadingTongue = tongue;
   if (tongue == "") {
-    loadingTongue = mActiveTongue;
+    loadingTongue = m_activeTongue;
   }
 
   // load all files stored for the selected tongue
   auto success = true;
-  for (const auto& paths : mPaths.at (loadingTongue)) {
-    success = sgui::loadFromFile (mTexts.at (loadingTongue), paths) && success;
+  for (const auto& paths : m_paths.at (loadingTongue)) {
+    success = sgui::loadFromFile (m_texts.at (loadingTongue), paths) && success;
   }
   return success;
 }
@@ -41,26 +41,26 @@ bool TextContainer::loadFromFile (
   // check loading tongue validity
   auto loadingTongue = tongue;
   if (tongue == "") {
-    loadingTongue = mActiveTongue;
+    loadingTongue = m_activeTongue;
   }
 
   // check that lookup-tables exist for the loading tongue
-  if (!mTexts.has (loadingTongue)) {
-    mTexts.insert (loadingTongue, {});
+  if (!m_texts.has (loadingTongue)) {
+    m_texts.insert (loadingTongue, {});
   }
-  if (!mPaths.has (loadingTongue)) {
-    mPaths.insert (loadingTongue, {});
+  if (!m_paths.has (loadingTongue)) {
+    m_paths.insert (loadingTongue, {});
   }
 
   // load filename
-  mPaths.at (loadingTongue).push_back (filename);
-  return sgui::loadFromFile (mTexts.at (loadingTongue), filename);
+  m_paths.at (loadingTongue).push_back (filename);
+  return sgui::loadFromFile (m_texts.at (loadingTongue), filename);
 }
 
 /////////////////////////////////////////////////
 void TextContainer::saveInFile (const std::string& filename)
 {
-  sgui::saveInFile (mTexts.at (mActiveTongue), filename);
+  sgui::saveInFile (m_texts.at (m_activeTongue), filename);
 }
 
 /////////////////////////////////////////////////
@@ -68,25 +68,34 @@ void TextContainer::add (
   const std::string& key,
   const std::string& text)
 {
-  mTexts.at (mActiveTongue).insert (key, text);
+  m_texts.at (m_activeTongue).insert (key, text);
 }
 
 /////////////////////////////////////////////////
 void TextContainer::remove (const std::string& entry)
 {
-  mTexts.at (mActiveTongue).erase (entry);
+  m_texts.at (m_activeTongue).erase (entry);
 }
 
 /////////////////////////////////////////////////
 std::string& TextContainer::get (const std::string& entry)
 {
-  return mTexts.at (mActiveTongue).at (entry);
+  return m_texts.at (m_activeTongue).at (entry);
 }
 
 /////////////////////////////////////////////////
 const std::string& TextContainer::get (const std::string& entry) const
 {
-  return mTexts.at (mActiveTongue).at (entry);
+  return m_texts.at (m_activeTongue).at (entry);
+}
+
+/////////////////////////////////////////////////
+bool TextContainer::has (const std::string& entry) const
+{
+  if (m_texts.has (m_activeTongue)) {
+    return m_texts.at (m_activeTongue).has (entry);
+  }
+  return false;
 }
 
 } // namespace sgui

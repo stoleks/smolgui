@@ -6,17 +6,17 @@ namespace sf {
    */
   void to_json (json& j, const sf::Color& color) {
     j = json {
-      {"r", color.r}, 
-      {"g", color.g},
-      {"b", color.b},
-      {"a", color.a}
+      ToJson (color, r), 
+      ToJson (color, g),
+      ToJson (color, b),
+      ToJson (color, a)
     };
   }
 
   void from_json (const json& j, sf::Color& color) {
-    j.at ("r").get_to (color.r);
-    j.at ("g").get_to (color.g);
-    j.at ("b").get_to (color.b);
-    j.at ("a").get_to (color.a);
+    FromJson (color, r);
+    FromJson (color, g);
+    FromJson (color, b);
+    FromJson (color, a);
   }
 } // namespace sf

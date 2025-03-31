@@ -7,126 +7,143 @@
 
 namespace sgui 
 {
+////////////////////////////////////////////////////////////
 /**
  * convert FontSize to/from json
  */
 void to_json (json& j, const FontSize& size) {
   j = json {
-    {"normal",   size.normal},
-    {"title",    size.title},
-    {"subtitle", size.subtitle},
-    {"footnote", size.footnote}
+    ToJson (size, normal),
+    ToJson (size, title),
+    ToJson (size, subtitle),
+    ToJson (size, footnote)
   };
 }
 
 void from_json (const json& j, FontSize& size) {
-  j.at ("normal")  .get_to (size.normal);
-  j.at ("title")   .get_to (size.title);
-  j.at ("subtitle").get_to (size.subtitle);
-  j.at ("footnote").get_to (size.footnote);
+  FromJson (size, normal);
+  FromJson (size, title);
+  FromJson (size, subtitle);
+  FromJson (size, footnote);
 }
 
-
+////////////////////////////////////////////////////////////
 /**
  * convert Style to/from json
  */
 void to_json (json& j, const Style& style) {
   j = json {
-    {"fontSize",         style.fontSize},
-    {"fontColor",        style.fontColor},
-    {"itemSpacing",      style.itemSpacing},
-    {"itemInnerSpacing", style.itemInnerSpacing}
+    ToJson (style, fontSize),
+    ToJson (style, fontColor),
+    ToJson (style, itemSpacing),
+    ToJson (style, itemInnerSpacing)
   };
 }
 
 void from_json (const json& j, Style& style) {
-  j.at ("fontSize")        .get_to (style.fontSize);
-  j.at ("fontColor")       .get_to (style.fontColor);
-  j.at ("itemSpacing")     .get_to (style.itemSpacing);
-  j.at ("itemInnerSpacing").get_to (style.itemInnerSpacing);
+  FromJson (style, fontSize);
+  FromJson (style, fontColor);
+  FromJson (style, itemSpacing);
+  FromJson (style, itemInnerSpacing);
 }
 
-
+////////////////////////////////////////////////////////////
 /**
  * convert Panel to/from json
  */
 void to_json (json& j, const Panel& panel) {
   j = json {
-    {"movable",  panel.movable},
-    {"visible",  panel.visible},
-    {"closable", panel.closable},
-    {"size",     panel.size},
-    {"position", panel.position}
+    ToJson (panel, movable),
+    ToJson (panel, visible),
+    ToJson (panel, closable),
+    ToJson (panel, size),
+    ToJson (panel, position)
   };
 }
 
 void from_json (const json& j, Panel& panel) {
-  j.at ("movable") .get_to (panel.movable);
-  j.at ("visible") .get_to (panel.visible);
-  j.at ("closable").get_to (panel.closable);
-  j.at ("size")    .get_to (panel.size);
-  j.at ("position").get_to (panel.position);
-  j.at ("title")   .get_to (panel.title);
+  FromJson (panel, movable);
+  FromJson (panel, visible);
+  FromJson (panel, closable);
+  FromJson (panel, size);
+  FromJson (panel, position);
+  FromJson (panel, title);
 }
 
-
+////////////////////////////////////////////////////////////
 /**
  * convert Constraints to/from json
  */
 void to_json (json& j, const Constraints& constraint) {
   j = json {
-    {"centeredVerticaly",   constraint.centeredVerticaly},
-    {"centeredHorizontaly", constraint.centeredHorizontaly},
-    {"pixelsFromTop",       constraint.pixelsFromTop},
-    {"pixelsFromBottom",    constraint.pixelsFromBottom},
-    {"pixelsFromLeft",      constraint.pixelsFromLeft},
-    {"pixelsFromRight",     constraint.pixelsFromRight}
+    ToJson (constraint, centeredVerticaly),
+    ToJson (constraint, centeredHorizontaly),
+    ToJson (constraint, pixelsFromTop),
+    ToJson (constraint, pixelsFromBottom),
+    ToJson (constraint, pixelsFromLeft),
+    ToJson (constraint, pixelsFromRight)
   };
 }
 
 void from_json (const json& j, Constraints& constraint) {
-  j.at ("centeredVerticaly")  .get_to (constraint.centeredVerticaly);
-  j.at ("centeredHorizontaly").get_to (constraint.centeredHorizontaly);
-  j.at ("pixelsFromTop")      .get_to (constraint.pixelsFromTop);
-  j.at ("pixelsFromBottom")   .get_to (constraint.pixelsFromBottom);
-  j.at ("pixelsFromLeft")     .get_to (constraint.pixelsFromLeft);
-  j.at ("pixelsFromRight")    .get_to (constraint.pixelsFromRight);
+  FromJson (constraint, centeredVerticaly);
+  FromJson (constraint, centeredHorizontaly);
+  FromJson (constraint, pixelsFromTop);
+  FromJson (constraint, pixelsFromBottom);
+  FromJson (constraint, pixelsFromLeft);
+  FromJson (constraint, pixelsFromRight);
 }
 
+////////////////////////////////////////////////////////////
+/**
+ * convert Window to/from json
+ */
+void to_json (json& j, const Window& window) {
+  j = json {
+    ToJson (window, panel),
+    ToJson (window, constraints)
+  };
+}
 
+void from_json (const json& j, Window& window) {
+  FromJson (window, panel);
+  FromJson (window, constraints);
+}
+
+////////////////////////////////////////////////////////////
 /**
  * convert Icon to/from json
  */
 void to_json (json& j, const Icon& icon) {
   j = json {
-    {"icon",     icon.name},
-    {"position", icon.position}
+    ToJson (icon, name),
+    ToJson (icon, position)
   };
 }
 
 void from_json (const json& j, Icon& icon) {
-  j.at ("name")    .get_to (icon.name);
-  j.at ("position").get_to (icon.position);
+  FromJson (icon, name);
+  FromJson (icon, position);
 }
 
-
+////////////////////////////////////////////////////////////
 /**
  * convert LayoutEntry to/from json
  */
 void to_json (json& j, const LayoutEntry& entry) {
   j = json {
-    {"icon",        entry.icon},
-    {"panel",       entry.panel},
-    {"position",    entry.position},
-    {"constraints", entry.constraints}
+    ToJson (entry, icon),
+    ToJson (entry, panel),
+    ToJson (entry, position),
+    ToJson (entry, constraints)
   };
 }
 
 void from_json (const json& j, LayoutEntry& entry) {
-  j.at ("icon")       .get_to (entry.icon);
-  j.at ("panel")      .get_to (entry.panel);
-  j.at ("position")   .get_to (entry.position);
-  j.at ("constraints").get_to (entry.constraints);
+  FromJson (entry, icon);
+  FromJson (entry, panel);
+  FromJson (entry, position);
+  FromJson (entry, constraints);
 }
 
 } // namespace sgui

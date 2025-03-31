@@ -52,12 +52,12 @@ public:
   /**
    * to iterate through the table
    */
-  auto begin () { return std::begin (mTable); }
-  auto end   () { return std::end (mTable); }
-  auto begin () const { return std::cbegin (mTable); }
-  auto end   () const { return std::cend (mTable); }
+  auto begin () { return std::begin (m_table); }
+  auto end   () { return std::end (m_table); }
+  auto begin () const { return std::cbegin (m_table); }
+  auto end   () const { return std::cend (m_table); }
 private:
-  std::unordered_map <Key, Value> mTable;
+  std::unordered_map <Key, Value> m_table;
 };
 
 } // namespace sgui

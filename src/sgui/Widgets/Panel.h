@@ -108,4 +108,17 @@ struct WidgetOptions
   Tooltip info = {};
 };
 
+/////////////////////////////////////////////////
+/**
+ * @brief small struct to ease use of beginPanel and beginWindow in Gui
+ */
+struct Window
+{
+  Window () = default;
+  // data
+  Panel panel;
+  Constraints constraints;
+  WidgetOptions options;
+};
+
 } // namespace sgui

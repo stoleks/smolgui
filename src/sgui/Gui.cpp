@@ -509,6 +509,22 @@ bool Gui::beginWindow (
 }
 
 /////////////////////////////////////////////////
+bool Gui::beginWindow (
+  Window& window,
+  const TextContainer& texts)
+{
+  // use panel title as a key to retrieve the localized title, if it exist
+  const auto key = window.panel.title;
+  if (texts.has (key)) {
+    window.panel.title = texts.get (key);
+  }
+  const auto open = beginWindow (window.panel, window.constraints, window.options);
+  // keep track of the panel key, if user want to store panel afterward
+  window.panel.title = key;
+  return open;
+}
+
+/////////////////////////////////////////////////
 void Gui::endWindow ()
 {
   // update cursor position and last spacing
@@ -579,6 +595,12 @@ void Gui::beginPanel (
     }
   }
   panel.innerPosition = mCursorPosition;
+}
+
+/////////////////////////////////////////////////
+void Gui::beginPanel (Window& window)
+{
+  beginPanel (window.panel, window.constraints, window.options);
 }
 
 /////////////////////////////////////////////////

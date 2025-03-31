@@ -6,10 +6,9 @@ bool Layout::has (
   const std::string& entry) const
 {
   const auto end = std::string::npos;
-  for (const auto& set : mSetFilenames) {
-    for (const auto& key : mLayoutEntries.at (set)) {
-      if (key.find (layoutTypeName <LayoutType> ()) != end
-      && key.find (entry) != end) {
+  for (const auto& set : m_setFilenames) {
+    for (const auto& key : m_layoutEntries.at (set)) {
+      if (key.find (layoutTypeName <LayoutType> ()) != end && key.find (entry) != end) {
         return true;
       }
     }
@@ -21,31 +20,16 @@ bool Layout::has (
 template <typename LayoutType>
 LayoutType& Layout::get (
   const std::string& entry,
-  const bool addLayoutType)
+  bool addLayoutType)
 {
-  // get key. We need these two cases for serialization ease
-  auto key = entry;
-  if (addLayoutType) {
-    key = layoutTypeName <LayoutType> () + entry;
-  }
-
-  // return requested entry
-  if constexpr (std::is_same_v <LayoutType, Icon>) {
-    return mEntries.at (key).icon;
-  } else if constexpr (std::is_same_v <LayoutType, Panel>) {
-    return mEntries.at (key).panel;
-  } else if constexpr (std::is_same_v <LayoutType, sf::Vector2f>) {
-    return mEntries.at (key).position;
-  } else {
-    return mEntries.at (key).constraints;
-  }
+  return const_cast <LayoutType&> (std::as_const (*this).get <LayoutType> (entry, addLayoutType));
 }
 
 /////////////////////////////////////////////////
 template <typename LayoutType>
 const LayoutType& Layout::get (
   const std::string& entry,
-  const bool addLayoutType) const
+  bool addLayoutType) const
 {
   // get key. We need these two cases for serialization ease
   auto key = entry;
@@ -55,13 +39,15 @@ const LayoutType& Layout::get (
 
   // return requested entry
   if constexpr (std::is_same_v <LayoutType, Icon>) {
-    return mEntries.at (key).icon;
+    return m_entries.at (key).icon;
   } else if constexpr (std::is_same_v <LayoutType, Panel>) {
-    return mEntries.at (key).panel;
+    return m_entries.at (key).panel;
   } else if constexpr (std::is_same_v <LayoutType, sf::Vector2f>) {
-    return mEntries.at (key).position;
+    return m_entries.at (key).position;
+  } else if constexpr (std::is_same_v <LayoutType, Window>) {
+    return m_entries.at (key).window;
   } else {
-    return mEntries.at (key).constraints;
+    return m_entries.at (key).constraints;
   }
 }
 

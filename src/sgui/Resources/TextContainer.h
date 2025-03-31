@@ -53,10 +53,14 @@ public:
    * @brief get text entry for the current tongue
    */
   const std::string& get (const std::string& entry) const;
+  /**
+   * @brief check that entry is stored
+   */
+  bool has (const std::string& entry) const;
 private:
-  std::string mActiveTongue = "english";
-  LookupTable <std::vector <std::string>> mPaths;
-  LookupTable <LookupTable <std::string>> mTexts;
+  std::string m_activeTongue = "english";
+  LookupTable <std::vector <std::string>> m_paths;
+  LookupTable <LookupTable <std::string>> m_texts;
 };
 
 } // namespace sgui

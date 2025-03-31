@@ -7,8 +7,11 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/System/Vector3.hpp>
+
+#include "Macro.h"
 
 // for readability
 using json = nlohmann::json;
@@ -27,15 +30,34 @@ void from_json (const json& j, sf::Color& color);
 template <typename T>
 void to_json (json& j, const sf::Vector2<T>& vector) {
   j = json {
-    {"x", vector.x}, 
-    {"y", vector.y}
+    ToJson (vector, x),
+    ToJson (vector, y)
   };
 }
 
 template <typename T>
 void from_json (const json& j, sf::Vector2<T>& vector) {
-  j.at ("x").get_to (vector.x);
-  j.at ("y").get_to (vector.y);
+  FromJson (vector, x);
+  FromJson (vector, y);
+}
+
+/**
+ * convert Vector3 to/from json
+ */
+template <typename T>
+void to_json (json& j, const sf::Vector3<T>& vector) {
+  j = json {
+    ToJson (vector, x),
+    ToJson (vector, y),
+    ToJson (vector, z)
+  };
+}
+
+template <typename T>
+void from_json (const json& j, sf::Vector3<T>& vector) {
+  FromJson (vector, x);
+  FromJson (vector, y);
+  FromJson (vector, z);
 }
 
 /**
@@ -44,15 +66,15 @@ void from_json (const json& j, sf::Vector2<T>& vector) {
 template <typename T>
 void to_json (json& j, const sf::Rect<T>& rect) {
   j = json {
-    {"position", rect.position}, 
-    {"size",     rect.size},
+    ToJson (rect, position),
+    ToJson (rect, size)
   };
 }
 
 template <typename T>
 void from_json (const json& j, sf::Rect<T>& rect) {
-  j.at ("position").get_to (rect.position);
-  j.at ("size")    .get_to (rect.size);
+  FromJson (rect, position);
+  FromJson (rect, size);
 }
 
 } // namespace sf

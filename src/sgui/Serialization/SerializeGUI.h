@@ -17,6 +17,7 @@ namespace sgui
 struct Icon;
 struct Style;
 struct Panel;
+struct Window;
 struct FontSize;
 struct Constraints;
 struct LayoutEntry;
@@ -44,6 +45,12 @@ void from_json (const json& j, Panel& panel);
  */
 void to_json (json& j, const Constraints& constraint);
 void from_json (const json& j, Constraints& constraint);
+
+/**
+ * convert Window to/from json
+ */
+void to_json (json& j, const Window& window);
+void from_json (const json& j, Window& window);
 
 /**
  * convert Icon to/from json

@@ -160,6 +160,14 @@ public:
          const Constraints& constraint = {},
          const WidgetOptions& options = {});
   /**
+   * @brief build a window using window.panel.title as a key in texts.
+   * @param window contains settings, constraints and options.
+   * @param texts contains window title
+   */
+  bool beginWindow (
+         Window& window,
+         const TextContainer& texts = {});
+  /**
    * @brief enWindow need to be called to clean state after beginWindow.
    */
   void endWindow ();
@@ -174,6 +182,11 @@ public:
          Panel& settings,
          const Constraints& constraint = {},
          const WidgetOptions& options = {});
+  /**
+   * @brief build a panel.
+   * @param window contains settings, constraints and options.
+   */
+  void beginPanel (Window& window);
   /**
    * @brief endPanel need to be called to clean state after beginPanel.
    */
