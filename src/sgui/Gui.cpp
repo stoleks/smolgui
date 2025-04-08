@@ -285,6 +285,10 @@ void Gui::endFrame (const float tooltipDelay)
   }
   mInputState.oldMousePosition = mInputState.mousePosition;
   mInputState.updated = false;
+  mInputState.mouseScrolled = false;
+  mInputState.mouseLeftReleased = false;
+  mInputState.mouseRightReleased = false;
+  mInputState.mouseDeltaWheel = 0.f;
 
   // remove stopped sounds
   mSoundPlayer.removeStoppedSounds ();
