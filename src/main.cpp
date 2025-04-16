@@ -143,8 +143,8 @@ int main()
         // Change window size
         gui.separation ();
         gui.slider (panel.size.y, 50.f, 700.f, {"Slider from 0 to 700, value is : " + std::to_string (panel.size.y)});
+        gui.endWindow ();
       }
-      gui.endWindow ();
       // second window
       if (gui.beginWindow (panel)) {
         auto getText = false;
@@ -177,8 +177,8 @@ int main()
         gui.inputNumber (inputValue, {"Input number with text!"});
         gui.inputVector2 (vector, {"Input vector2: "});
         gui.inputVector3 (vector3, {"Input vector3: "});
+        gui.endWindow ();
       }
-      gui.endWindow ();
 
       gui.beginPanel (panel3, constraint);
       gui.text ("Just a panel");

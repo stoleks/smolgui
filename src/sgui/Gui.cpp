@@ -418,9 +418,11 @@ bool Gui::beginWindow (
   const Constraints& constraints,
   const WidgetOptions& options)
 {
+  // if window is closed skip everything
+  if (settings.closed) return false;
+
   mResetCount = 0;
   mPreviousResetCount = 0;
-  mBeginWindowCount++;
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
@@ -428,29 +430,26 @@ bool Gui::beginWindow (
   beginGroup (options.horizontal, position, settings.size);
   auto& thisWindow = mGroups.top ();
 
-  // if window is closed skip everything
-  if (settings.closed) return false;
-
   // handle mouse interaction
-  const auto activeSize = sf::Vector2f (settings.size.x, titleTextHeight ());
-  const auto closeSize = sf::Vector2f (1.7f*(activeSize.y) + mPadding.x, 0.f);
-  const auto activeBox = sf::FloatRect (position, activeSize - closeSize);
-  const auto drawBox = sf::FloatRect (position, activeSize);
+  const auto titleBoxSize = sf::Vector2f (settings.size.x, titleTextHeight ());
+  const auto reduceCloseButtonSize = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
+  const auto titleBoxWithoutButtons = sf::FloatRect (position, titleBoxSize - reduceCloseButtonSize);
+  const auto drawBox = sf::FloatRect (position, titleBoxSize);
   setClipping (drawBox, 0.f);
-  const auto state = interactWithMouse (settings, activeBox, name, options.info);
+  const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
 
   // draw title box and window name
   mRender.draw <Widget::TitleBox> (drawBox, state);
   const auto textWidth = titleSizeOf (settings.title).x;
-  const auto shiftX = (activeBox.size.x - textWidth) / 2.f;
+  const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
   const auto titlePos = sanitizePosition ({position.x + shiftX, position.y});
   mRender.drawText (titlePos, settings.title, mStyle.fontColor, mStyle.fontSize.title);
 
   // reduce or close window
   if (settings.closable) {
     // reduce
-    const auto buttonSize = activeSize.y * sf::Vector2f (1, 1);
-    mCursorPosition = position + sf::Vector2f (activeBox.size.x - 2.f*activeSize.y, 0.f);
+    const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
+    mCursorPosition = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
     if (button <Widget::TitleButton> (buttonSize)) {
       settings.reduced = !(settings.reduced);
     }
@@ -467,14 +466,17 @@ bool Gui::beginWindow (
     addLastVerticalSpacing (-1.f);
     icon ("close", buttonSize);
   }
-  mCursorPosition = position + sf::Vector2f (0.f, activeSize.y);
+  mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
 
   // if window is reduced skip box drawing
-  if (settings.reduced) return false;
+  if (settings.reduced) {
+    endWindow ();
+    return false;
+  }
 
   // set clipping layer
   auto& groupLayer = thisWindow.clippingLayer;
-  const auto activeShift = sf::Vector2f (0.f, activeSize.y);
+  const auto activeShift = sf::Vector2f (0.f, titleBoxSize.y);
   const auto panelBox = sf::FloatRect (position + activeShift, settings.size);
   if (settings.hasMenu) {
     groupLayer = setClipping (panelBox, 0.f, buttonHeight ());
@@ -492,15 +494,15 @@ bool Gui::beginWindow (
   }
 
   // draw window box and handle hovering of the window
-  const auto winBox = sf::FloatRect (mCursorPosition, settings.size);
-  const auto winStatus = itemStatus (winBox, name);
+  const auto windowBox = sf::FloatRect (mCursorPosition, settings.size);
+  const auto windowStatus = itemStatus (windowBox, name);
   mRender.draw <Widget::Box> (winBox, ItemState::Neutral);
   mCursorPosition += mPadding;
   mCursorPosition.y += 1.5f * mPadding.y;
 
   // scroll through window if requested
   if (isPanelScrollable (thisWindow)) {
-    mCursorPosition -= scrollPanel (thisWindow.groupId, winBox, winStatus, options.horizontal);
+    mCursorPosition -= scrollPanel (thisWindow.groupId, windowBox, windowStatus, options.horizontal);
     // reduce group size to account scroller
     if (options.horizontal) {
       thisWindow.size.y -= normalTextHeight ();
