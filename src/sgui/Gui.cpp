@@ -496,21 +496,12 @@ bool Gui::beginWindow (
   // draw window box and handle hovering of the window
   const auto windowBox = sf::FloatRect (mCursorPosition, settings.size);
   const auto windowStatus = itemStatus (windowBox, name);
-  mRender.draw <Widget::Box> (winBox, ItemState::Neutral);
+  mRender.draw <Widget::Box> (windowBox, ItemState::Neutral);
   mCursorPosition += mPadding;
   mCursorPosition.y += 1.5f * mPadding.y;
 
   // scroll through window if requested
-  if (isPanelScrollable (thisWindow)) {
-    mCursorPosition -= scrollPanel (thisWindow.groupId, windowBox, windowStatus, options.horizontal);
-    // reduce group size to account scroller
-    if (options.horizontal) {
-      thisWindow.size.y -= normalTextHeight ();
-    } else {
-      thisWindow.size.x -= normalTextHeight ();
-    }
-  }
-  thisWindow.innerPosition = mCursorPosition;
+  scrollThroughPanel (thisWindow, windowBox, windowStatus, options.horizontal);
   return true;
 }
 
@@ -575,7 +566,6 @@ void Gui::beginPanel (
 
   // add clipping layer for the panel box
   const auto panelBox = sf::FloatRect (position, settings.size);
-  const auto panelStatus = itemStatus (panelBox, name);
   auto& panel = mGroups.top ();
   if (settings.clipped) {
     auto& groupLayer = panel.clippingLayer;
@@ -592,15 +582,7 @@ void Gui::beginPanel (
   mCursorPosition = position + mPadding + sf::Vector2f (0.f, 1.5f*mPadding.y);
 
   // scroll through panel if requested
-  if (isPanelScrollable (panel)) {
-    mCursorPosition -= scrollPanel (panel.groupId, panelBox, state, options.horizontal);
-    if (options.horizontal) {
-      panel.size.y -= normalTextHeight ();
-    } else {
-      panel.size.x -= normalTextHeight ();
-    }
-  }
-  panel.innerPosition = mCursorPosition;
+  scrollThroughPanel (panel, panelBox, state, options.horizontal);
 }
 
 /////////////////////////////////////////////////
@@ -674,10 +656,8 @@ void Gui::beginMenu ()
 
   // scroll through panel if requested
   auto& panel = mGroups.top ();
-  if (isPanelScrollable (panel)) {
-    const auto panelStatus = itemStatus (box, name);
-    mCursorPosition -= scrollPanel (panel.groupId, box, panelStatus, true);
-  }
+  const auto panelState = itemStatus (box, name);
+  scrollThroughPanel (panel, box, panelState, true);
 }
 
 /////////////////////////////////////////////////
@@ -1373,30 +1353,37 @@ bool Gui::isPanelScrollable (const Impl::GroupData& panel)
 }
 
 /////////////////////////////////////////////////
-sf::Vector2f Gui::scrollPanel (
-  const uint32_t id,
-  const sf::FloatRect& box,
-  const ItemState state,
+void Gui::scrollThroughPanel (
+  Impl::GroupData& panel,
+  const sf::FloatRect& panelBox,
+  const ItemState panelState,
   const bool horizontal)
 {
-  // scroll through panel
-  if (mGroupsScrollerInformation.has (id)) {
-    auto& scrollData = mGroupsScrollerInformation.get (id);
-    auto percent = scrollData.percent ();
-    const auto size = scrollData.size ();
-    const auto amount = scroller (percent, box, state, size, horizontal);
-    scrollData.scroll (percent);
-    return amount;
+  if (isPanelScrollable (panel)) {
+    // scroll through panel
+    if (mGroupsScrollerInformation.has (panel.groupId)) {
+      auto& scrollData = mGroupsScrollerInformation.get (panel.groupId);
+      auto percent = scrollData.percent ();
+      const auto size = scrollData.size ();
+      const auto amount = scroller (percent, panelBox, panelState, size, horizontal);
+      scrollData.scroll (percent);
+      mCursorPosition -= amount;
+    }
+    // reduce group size to account for scroller
+    if (horizontal) {
+      panel.size.y -= normalTextHeight ();
+    } else {
+      panel.size.x -= normalTextHeight ();
+    }
   }
-
-  return sf::Vector2f (0.f, 0.f);
+  panel.innerPosition = mCursorPosition;
 }
 
 /////////////////////////////////////////////////
 sf::Vector2f Gui::scroller (
   float& percent,
   const sf::FloatRect& panelBox,
-  const ItemState panelStatus,
+  const ItemState panelState,
   const float scrollSize,
   const bool horizontal)
 {
@@ -1430,7 +1417,7 @@ sf::Vector2f Gui::scroller (
   }
 
   // if parent is active and scroller is inactive (we can't drag and scroll), scroll with wheel
-  const auto parentIsActive = panelStatus == ItemState::Hovered || panelStatus == ItemState::Active;
+  const auto parentIsActive = panelState == ItemState::Hovered || panelState == ItemState::Active;
   const auto scrollerIsInactive = state != ItemState::Active;
   if (parentIsActive && scrollerIsInactive && mInputState.mouseScrolled) {
     // move by default 5 % per scroll

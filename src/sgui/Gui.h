@@ -455,8 +455,8 @@ private:
   void handlePlotBound ();
   // for scrollable panel or window
   bool isPanelScrollable (const Impl::GroupData& panel);
-  sf::Vector2f scrollPanel (
-         const uint32_t panelID,
+  void scrollThroughPanel (
+         Impl::GroupData& panel,
          const sf::FloatRect& panelBox,
          const ItemState panelState,
          const bool horizontal);
