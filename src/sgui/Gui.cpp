@@ -423,6 +423,7 @@ bool Gui::beginWindow (
 
   mResetCount = 0;
   mPreviousResetCount = 0;
+  mBeginWindowCount++;
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
@@ -484,7 +485,7 @@ bool Gui::beginWindow (
     groupLayer = setClipping (panelBox, 0.f);
   }
 
-  // update cursorPosition and draw menu bar if needed
+  // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
     thisWindow.menuBarPosition = mCursorPosition;
     thisWindow.menuBarSize = sf::Vector2f (settings.size.x, buttonHeight ());
@@ -524,24 +525,14 @@ bool Gui::beginWindow (
 /////////////////////////////////////////////////
 void Gui::endWindow ()
 {
-  // update cursor position and last spacing
   if (!mGroups.empty ()) {
-    // end group
+    // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     endGroup ();
-
-    // go back to no clipping or to previous clipping
-    if (!mGroups.empty ()) {
-      const auto id = mGroups.top ().clippingLayer;
-      mRender.moveToClippingLayer (id);
-    } else {
-      mRender.noClipping ();
-    }
-
-    // update cursor position and spacing
     mCursorPosition = active.position;
     updateSpacing (active.size);
-
+    // remove clipping
+    removeClipping ();
     // track window not closed by user
     mBeginWindowCount--;
   } else {
@@ -595,22 +586,13 @@ void Gui::beginPanel (Window& window)
 void Gui::endPanel ()
 {
   if (!mGroups.empty ()) {
-    // end group
+    // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     endGroup ();
-
-    // go back to no clipping or to previous clipping
-    if (!mGroups.empty ()) {
-      const auto id = mGroups.top ().clippingLayer;
-      mRender.moveToClippingLayer (id);
-    } else {
-      mRender.noClipping ();
-    }
-
-    // update cursor position and spacing
     mCursorPosition = active.position;
     updateSpacing (active.size);
-
+    // remove clipping layer
+    removeClipping ();
     // track box not closed by user
     mBeginPanelCount--;
   } else {
@@ -988,6 +970,7 @@ void Gui::inputText (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("InputText");
+  const auto basePosition = mCursorPosition;
   auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // draw description before the box
@@ -999,7 +982,6 @@ void Gui::inputText (
   }
 
   // format text to fit in the parent box or the requested box
-  // TODO: Encapsulate text in a scrollable box
   auto boxSize = boxSizeParam;
   const auto boxLength = boxSizeParam.length ();
   const auto textWidth = normalSizeOf (text).x;
@@ -1023,12 +1005,10 @@ void Gui::inputText (
   // get status of the widget
   const auto box = sf::FloatRect (position, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-
   // take keyboard focus if clicked
   if (mGuiState.activeItem == name) {
     mGuiState.keyboardFocus = name;
   }
-
   // if this widget has keyboard focus
   const auto focused = mGuiState.keyboardFocus == name;
   if (focused) {
@@ -1038,13 +1018,26 @@ void Gui::inputText (
       handleKeyInput (text, isTooLarge);
     }
   }
-
-  // draw formatted text and box arround it
-  const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
+  // draw text box
   mRender.draw <Widget::TextBox> (box, state);
-  mRender.drawText (sanitizePosition (position + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
+  
+  // clip text outside of the box
+  beginGroup (options.horizontal, position, boxSize);
+  auto& textPanel = mGroups.top ();
+  auto& groupLayer = textPanel.clippingLayer;
+  groupLayer = setClipping (box);
 
-  // update cursor position
+  // draw formatted text and scroll through it if necessary
+  const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
+  mCursorPosition = position;
+  scrollThroughPanel (textPanel, box, state, options.horizontal);
+  mRender.drawText (sanitizePosition (mCursorPosition + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
+  updateSpacing (normalSizeOf (formatted));
+  endGroup  ();
+  removeClipping ();
+
+  // update cursor position and remove clipping
+  mCursorPosition = basePosition;
   updateSpacing (boxSize + sf::Vector2f (descriptionSize.x, 0.f));
 }
 
@@ -1613,6 +1606,18 @@ uint32_t Gui::setClipping (
 
   // set clipping layer and return its id
   return mRender.setCurrentClippingLayer (layerBox);
+}
+
+/////////////////////////////////////////////////
+void Gui::removeClipping ()
+{
+  // go back to no clipping or to previous clipping
+  if (!mGroups.empty ()) {
+    const auto id = mGroups.top ().clippingLayer;
+    mRender.moveToClippingLayer (id);
+  } else {
+    mRender.noClipping ();
+  }
 }
 
 /////////////////////////////////////////////////

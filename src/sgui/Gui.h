@@ -442,6 +442,8 @@ private:
          const float activeHeight = 0.f,
          const float menuHeight = 0.f,
          const bool isPanel = false);
+  // this should be called after endGroup to clean clipping layer.
+  void removeClipping ();
   // move a group with the mouse if its possible
   ItemState interactWithMouse (
          Panel& settings,
