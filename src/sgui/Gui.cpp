@@ -553,14 +553,15 @@ void Gui::beginPanel (
 
   // compute position and create a new group
   const auto position = computePosition (settings, constraints);
+  const auto panelBox = sf::FloatRect (position, settings.size);
+  const auto clipBox = handleParentClipBox (panelBox);
   beginGroup (options.horizontal, position, settings.size);
 
   // add clipping layer for the panel box
-  const auto panelBox = sf::FloatRect (position, settings.size);
   auto& panel = mGroups.top ();
   if (settings.clipped) {
     auto& groupLayer = panel.clippingLayer;
-    groupLayer = setClipping (panelBox);
+    groupLayer = setClipping (clipBox);
   }
 
   // draw panel box if requested
@@ -1022,10 +1023,11 @@ void Gui::inputText (
   mRender.draw <Widget::TextBox> (box, state);
   
   // clip text outside of the box
+  const auto clipBox = handleParentClipBox (box);
   beginGroup (options.horizontal, position, boxSize);
   auto& textPanel = mGroups.top ();
   auto& groupLayer = textPanel.clippingLayer;
-  groupLayer = setClipping (box);
+  groupLayer = setClipping (clipBox);
 
   // draw formatted text and scroll through it if necessary
   const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
@@ -1606,6 +1608,37 @@ uint32_t Gui::setClipping (
 
   // set clipping layer and return its id
   return mRender.setCurrentClippingLayer (layerBox);
+}
+  
+/////////////////////////////////////////////////
+sf::FloatRect Gui::handleParentClipBox (const sf::FloatRect& box)
+{
+  // return box if there is no parent
+  if (mGroups.empty ()) {
+    return box;
+  }
+  // If there are no intersection, return null size
+  auto clipBox = box;
+  const auto& parent = mGroups.top ();
+  if (box.findIntersection ({parent.position, parent.size}) == std::nullopt) {
+    clipBox.size = sf::Vector2f ();
+    return clipBox;
+  }
+  // compute minimal clamped version of the child box
+  // clamp size
+  const auto bottomRight = box.position + box.size;
+  const auto parentBottomRight = parent.position + parent.size;
+  const auto newBottomRight = sf::Vector2f (
+    std::min (bottomRight.x, parentBottomRight.x),
+    std::min (bottomRight.y, parentBottomRight.y)
+  );
+  // clamp position
+  clipBox.size = newBottomRight - box.position;
+  clipBox.position = sf::Vector2f (
+    std::max (box.position.x, parent.position.x),
+    std::max (box.position.y, parent.position.y)
+  );
+  return clipBox;
 }
 
 /////////////////////////////////////////////////
