@@ -135,7 +135,8 @@ void to_json (json& j, const LayoutEntry& entry) {
     ToJson (entry, icon),
     ToJson (entry, panel),
     ToJson (entry, position),
-    ToJson (entry, constraints)
+    ToJson (entry, constraints),
+    ToJson (entry, window)
   };
 }
 
@@ -144,6 +145,7 @@ void from_json (const json& j, LayoutEntry& entry) {
   FromJson (entry, panel);
   FromJson (entry, position);
   FromJson (entry, constraints);
+  FromJson (entry, window);
 }
 
 } // namespace sgui

@@ -42,6 +42,12 @@ bool loadFromFile (
       data.icon = entry.value ().get <Icon> ();
       layout.add (file, key, std::move (data));
     }
+    // or a window
+    else if (key.find (layoutTypeName <Window> ()) != end) {
+      auto data = LayoutEntry ();
+      data.window = entry.value ().get <Window> ();
+      layout.add (file, key, std::move (data));
+    }
     // inform user about invalid format
     else {
       spdlog::warn ("loadFromFile (Layout&): {} is not a valid gui layout entry in {}", key, file);
@@ -76,6 +82,10 @@ void saveInFile (
     // icon
     else if (entry.find (layoutTypeName <Icon> ()) != end) {
       out [entry] = layout.get <Icon> (entry, false);
+    }
+    // window
+    else if (entry.find (layoutTypeName <Window> ()) != end) {
+      out [entry] = layout.get <Window> (entry, false);
     }
   }
 
