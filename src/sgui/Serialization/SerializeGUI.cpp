@@ -57,7 +57,8 @@ void to_json (json& j, const Panel& panel) {
     ToJson (panel, visible),
     ToJson (panel, closable),
     ToJson (panel, size),
-    ToJson (panel, position)
+    ToJson (panel, position),
+    ToJson (panel, title)
   };
 }
 
