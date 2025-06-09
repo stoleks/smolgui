@@ -9,7 +9,7 @@ namespace sgui
 /////////////////////////////////////////////////
 TextureAtlas::TextureAtlas (const std::string& filename)
 {
-  if (loadFromFile (filename)) {
+  if (!loadFromFile (filename)) {
     spdlog::error ("TextureAtlas: unable to load {}", filename);
   }
 }
