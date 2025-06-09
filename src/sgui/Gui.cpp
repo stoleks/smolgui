@@ -942,8 +942,7 @@ void Gui::inputColor (
   sf::Color& color,
   const WidgetOptions& options)
 {
-  // keep track of initial position and draw description
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  // draw description
   auto disp = options.displacement;
   if (options.description != "") {
     text (options.description, options.displacement);

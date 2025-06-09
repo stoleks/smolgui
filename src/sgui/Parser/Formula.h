@@ -149,8 +149,6 @@ private:
    FormulaTree* node = new FormulaTree (formula);
    
    // If it has parentheses then we eliminate them and go to the next node
-   int numberOfOperators = 0;
-   int numberOfMulDivOperators = 0;
    if (formula[0] == '(' && formula[int(formula.size() - 1)] == ')') {
      if (Parser::isNextParenthesesValid (formula)) {
        node->parentheses = true;

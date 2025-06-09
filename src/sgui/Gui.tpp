@@ -159,8 +159,7 @@ void Gui::inputVector2 (
   const sf::Vector2<Type>& min,
   const sf::Vector2<Type>& max)
 {
-  // keep track of initial position and draw description
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  // draw description
   auto disp = options.displacement;
   if (options.description != "") {
     text (options.description, options.displacement);
@@ -182,8 +181,7 @@ void Gui::inputVector3 (
   const sf::Vector3<Type>& min,
   const sf::Vector3<Type>& max)
 {
-  // keep track of initial position and draw description
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  // draw description
   auto disp = options.displacement;
   if (options.description != "") {
     text (options.description, options.displacement);

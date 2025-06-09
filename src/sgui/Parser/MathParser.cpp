@@ -11,7 +11,7 @@ namespace Parser
 std::string removeSpace (const std::string& expression)
 {
   auto formula = std::string ();
-  for (const auto character : expression) {
+  for (const auto& character : expression) {
     if (character != ' ') {
       if (character == '*') {
         formula.push_back (dot);
@@ -32,7 +32,7 @@ Function parseNextFunction (const std::string& expression)
   }
 
   // search each function in the expression
-  for (const auto function : Functions) {
+  for (const auto& function : Functions) {
     // test if found function has the correct parentheses
     const auto found = expression.find (function.second);
     if (found == 1 && isNextParenthesesValid (expression, function.second.size () + 1)) {
@@ -53,7 +53,7 @@ Symbol parseNextSymbol (const std::string& expression)
   }
 
   // search each symbol in the expression
-  for (const auto symbol : Symbols) {
+  for (const auto& symbol : Symbols) {
     // test if found symbol has the correct parentheses
     const auto& symbolStr = symbol.second.identifier;
     const auto found = expression.find (symbolStr);
@@ -71,7 +71,7 @@ bool isNextParenthesesValid (const std::string& expression, int start)
 {
   // Check all pairs of parentheses
   std::stack<int> parentheses;
-  for (int i = start; i < expression.size () - 1; i++) {
+  for (uint32_t i = start; i < expression.size () - 1; i++) {
     if (expression[i] == '(') {
       parentheses.push (i);
     }
