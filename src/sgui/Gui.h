@@ -362,17 +362,6 @@ public:
 
   ///////////////////////////////////////////////
   /**
-   * @brief draw a connection between two point
-   */
-  template <Widget ConnectionType>
-  void connection (
-         const sf::Vector2f& begin,
-         const sf::Vector2f& end,
-         const float thickness,
-         const ItemState state);
-
-  ///////////////////////////////////////////////
-  /**
    * @brief set plot range and number of points sampled
    */
   void setPlotRange (

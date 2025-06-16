@@ -253,23 +253,6 @@ Type Gui::convertKeyIntoNumber (
 
 /**
  * ----------------------------------------------
- * connection between two point
- * ----------------------------------------------
- */
-/////////////////////////////////////////////////
-template <Widget ConnectionType>
-void Gui::connection (
-  const sf::Vector2f& begin,
-  const sf::Vector2f& end,
-  const float thickness,
-  const ItemState state)
-{
-  mRender.draw <ConnectionType> (begin, end, thickness, state);
-}
-
-
-/**
- * ----------------------------------------------
  * to check that a stack is empty
  * ----------------------------------------------
  */
