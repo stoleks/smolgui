@@ -36,9 +36,12 @@ public:
    */
   void setResources (
          sf::Font& font,
-         SoundHolder& sounds,
          sf::Texture& widgetTexture,
          const TextureAtlas& widgetAtlas);
+  /**
+   * @brief this must be called once if user want to have sound effects
+   */
+  void setSounds (SoundHolder& sounds);
   /**
    * @brief to change font size, color and item padding.
    */
@@ -544,6 +547,7 @@ private:
   // to play sounds
   void playSound (const ItemState state);
 private:
+  bool mSoundIsOn = false;
   // plot parameters
   bool mPlotIsBounded = false;
   uint32_t mPlotSample = 50u;
@@ -572,6 +576,7 @@ private:
   sf::Vector2f mPlotBound;
   std::string mActiveInputNumber;
   // to play sound
+  std::string mPreviousWidgetSoundId = "";
   std::string mActiveWidgetSoundId = "";
   SoundPlayer mSoundPlayer;
   // render for gui, plot and primitive shape

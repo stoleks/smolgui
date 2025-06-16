@@ -19,12 +19,17 @@ namespace sgui
 /////////////////////////////////////////////////
 void Gui::setResources (
   sf::Font& font,
-  SoundHolder& sounds,
   sf::Texture& widgetTexture,
   const TextureAtlas& widgetAtlas)
 {
-  mSoundPlayer.setResource (sounds);
   mRender.setResources (font, widgetTexture, widgetAtlas);
+}
+
+/////////////////////////////////////////////////
+void Gui::setSounds (SoundHolder& sounds)
+{
+  mSoundIsOn = true;
+  mSoundPlayer.setResource (sounds);
 }
 
 /////////////////////////////////////////////////
@@ -292,6 +297,7 @@ void Gui::endFrame (const float tooltipDelay)
 
   // remove stopped sounds
   mSoundPlayer.removeStoppedSounds ();
+  mPreviousWidgetSoundId = mActiveWidgetSoundId;
 }
 
 /////////////////////////////////////////////////
@@ -1757,7 +1763,8 @@ void Gui::playSound (const ItemState state)
   const auto isPanel = mActiveWidgetSoundId == "Panel";
   const auto isWindow = mActiveWidgetSoundId == "Window";
   const auto isMenu = mActiveWidgetSoundId == "MenuBar";
-  const auto isValid = !isWindow && !isPanel && !isMenu;
+  const auto noRepetition = mActiveWidgetSoundId != mPreviousWidgetSoundId;
+  const auto isValid = mSoundIsOn && !isWindow && !isPanel && !isMenu && noRepetition;
   if (mInputState.updated && state == ItemState::Active && isValid) {
     mSoundPlayer.play (mActiveWidgetSoundId);
   }
