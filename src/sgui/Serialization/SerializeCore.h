@@ -6,10 +6,10 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <nlohmann/json.hpp>
 
 #include "sgui/Core/ObjectPool.h"
-#include "sgui/Core/LookupTable.h"
 
 // for readability
 using json = nlohmann::json;
@@ -17,10 +17,10 @@ using json = nlohmann::json;
 namespace sgui
 {
 /**
- * convert look-up table to/from json
+ * convert unordered_map  to/from json
  */
-template <typename Value, typename Key>
-void to_json (json& j, const LookupTable<Value, Key>& table)
+template <typename Key, typename Type>
+void to_json (json& j, const std::unordered_map <Key, Type>& table)
 {
   // note that user should use NLOHMANN_JSON_SERIALIZE_ENUM if they
   // want to have human readable enumeration in json if Key is an Enum
@@ -29,15 +29,15 @@ void to_json (json& j, const LookupTable<Value, Key>& table)
   }
 }
 
-template <typename Value, typename Key>
-void from_json (const json& j, LookupTable<Value, Key>& table)
+template <typename Key, typename Type>
+void from_json (const json& j, std::unordered_map <Key, Type>& table)
 {
   // note that user should use NLOHMANN_JSON_SERIALIZE_ENUM if they
   // want to have human readable enumeration in json if Key is an Enum
   for (auto elem = j.begin (); elem != j.end (); elem++) {
-    const auto key = elem.key ();
-    const Value value = elem.value ();
-    table.insert (key, value);
+    const Key key = elem.key ();
+    const Type value = elem.value ();
+    table.insert ({key, value});
   }
 }
 

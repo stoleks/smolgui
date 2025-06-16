@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
-#include "sgui/Core/LookupTable.h"
 #include "sgui/Widgets/Style.h"
 #include "sgui/Widgets/Panel.h"
 
@@ -94,8 +94,8 @@ public:
          bool addLayoutType = true) const;
 private:
   std::vector <std::string> m_setFilenames;
-  LookupTable <LayoutEntry> m_entries;
-  LookupTable <std::vector <std::string>> m_layoutEntries;
+  std::unordered_map <std::string, LayoutEntry> m_entries;
+  std::unordered_map <std::string, std::vector <std::string>> m_layoutEntries;
 };
 
 } // namespace sgui

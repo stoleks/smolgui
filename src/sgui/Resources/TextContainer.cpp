@@ -1,5 +1,4 @@
 #include "TextContainer.h"
-
 #include "LoadLookupTable.h"
 
 namespace sgui
@@ -45,11 +44,11 @@ bool TextContainer::loadFromFile (
   }
 
   // check that lookup-tables exist for the loading tongue
-  if (!m_texts.has (loadingTongue)) {
-    m_texts.insert (loadingTongue, {});
+  if (m_texts.find (loadingTongue) == std::end (m_texts)) {
+    m_texts.insert ({loadingTongue, {}});
   }
-  if (!m_paths.has (loadingTongue)) {
-    m_paths.insert (loadingTongue, {});
+  if (m_paths.find (loadingTongue) == std::end (m_paths)) {
+    m_paths.insert ({loadingTongue, {}});
   }
 
   // load filename
@@ -68,7 +67,7 @@ void TextContainer::add (
   const std::string& key,
   const std::string& text)
 {
-  m_texts.at (m_activeTongue).insert (key, text);
+  m_texts.at (m_activeTongue).insert ({key, text});
 }
 
 /////////////////////////////////////////////////
@@ -92,8 +91,9 @@ const std::string& TextContainer::get (const std::string& entry) const
 /////////////////////////////////////////////////
 bool TextContainer::has (const std::string& entry) const
 {
-  if (m_texts.has (m_activeTongue)) {
-    return m_texts.at (m_activeTongue).has (entry);
+  if (m_texts.find (m_activeTongue) != std::end (m_texts)) {
+    const auto& textsInTongue = m_texts.at (m_activeTongue);
+    return textsInTongue.find (entry) != std::end (textsInTongue);
   }
   return false;
 }

@@ -6,7 +6,6 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Resources)
 set (LOAD_SRC
   ${SRCROOT}/LoadLayout.cpp
   ${INCROOT}/LoadLayout.h
-  ${INCROOT}/LoadLookupTable.tpp
   ${INCROOT}/LoadLookupTable.h
   ${SRCROOT}/LoadTextureAtlas.cpp
   ${INCROOT}/LoadTextureAtlas.h

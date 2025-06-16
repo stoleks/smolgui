@@ -15,19 +15,35 @@ namespace sgui
  * save/load look-up table from file
  */
 /////////////////////////////////////////////////
-template <typename Value,
-          typename Enum>
+template <typename Key,
+          typename Type>
 bool loadFromFile (
-  LookupTable <Value, Enum>& table,
-  const std::string& file);
+  std::unordered_map <Key, Type>& table,
+  const std::string& file)
+{
+  // parse from json
+  json j = sgui::loadFromFile (file);
+  std::unordered_map <Key, Type> tableData = j;
+  for (const auto& data : tableData) {
+    table.insert ({data.first, data.second});
+  }
+  return true;
+}
 
 /////////////////////////////////////////////////
-template <typename Value,
-          typename Enum>
+template <typename Key,
+          typename Type>
 void saveInFile (
-  const LookupTable <Value, Enum>& table,
-  const std::string& file);
+  const std::unordered_map <Key, Type>& table,
+  const std::string& file)
+{
+  // parse in json
+  json out = table;
+
+  // write in file
+  auto output = std::ofstream (file);
+  output << std::setw (2) << out << std::endl;
+  output.close ();
+}
 
 } // namespace sgui
-
-#include "LoadLookupTable.tpp"

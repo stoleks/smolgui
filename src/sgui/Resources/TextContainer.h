@@ -2,11 +2,12 @@
 
 #include <string>
 #include <vector>
-
-#include "sgui/Core/LookupTable.h"
+#include <unordered_map>
 
 namespace sgui
 {
+template <typename Type>
+using LookupTable = std::unordered_map <std::string, Type>;
 /**
  * @brief store text accessible with a string key, with option to load and store text
  *   for a given tongue, so it has simple support for localisation.

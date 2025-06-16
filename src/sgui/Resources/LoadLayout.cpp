@@ -1,7 +1,9 @@
 #include "LoadLayout.h"
 
+#include <spdlog/spdlog.h>
+
 #include "Layout.h"
-#include "LoadLookupTable.h"
+#include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"
 #include "sgui/Serialization/SerializeSFML.h"
 
@@ -12,7 +14,7 @@ bool loadFromFile (
   Layout& layout,
   const std::string& file)
 {
-  auto allEntries = loadFromFile (file);
+  json allEntries = loadFromFile (file);
 
   // save json data into layout
   for (auto& entry : allEntries.items ()) {

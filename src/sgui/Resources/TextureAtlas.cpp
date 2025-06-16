@@ -34,9 +34,7 @@ void TextureAtlas::add (
   frames.count = frameCount;
   frames.texture = textureRect;
   mTexturesCount += frameCount;
-  mAtlas.insert (
-    std::make_pair (entry, std::move (frames))
-  );
+  mAtlas.insert ({entry, std::move (frames)});
 }
 
 /////////////////////////////////////////////////

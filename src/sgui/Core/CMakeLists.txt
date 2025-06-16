@@ -8,8 +8,6 @@ set (MATH_SRC
 source_group ("" FILES ${MATH_SRC})
 
 set (CONTAINER_SRC
-  ${INCROOT}/LookupTable.tpp
-  ${INCROOT}/LookupTable.h
   ${INCROOT}/ObjectPool.tpp
   ${INCROOT}/ObjectPool.h
 )

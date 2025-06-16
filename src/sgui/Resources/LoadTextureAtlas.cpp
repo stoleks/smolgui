@@ -1,7 +1,7 @@
 #include "LoadTextureAtlas.h"
 
 #include "TextureAtlas.h"
-#include "LoadLookupTable.h"
+#include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"
 #include "sgui/Serialization/SerializeSFML.h"
 
@@ -15,7 +15,7 @@ bool loadFromFile (
   const std::string& file)
 {
   // parse file into json
-  auto allEntries = loadFromFile (file);
+  json allEntries = sgui::loadFromFile (file);
 
   // save json data into atlas
   for (auto& entry : allEntries.items ()) {
