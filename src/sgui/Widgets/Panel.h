@@ -68,12 +68,9 @@ struct Constraints
 {
   Constraints () = default;
   // data, zero means no constrain
-  bool centeredHorizontaly = false;
-  bool centeredVerticaly   = false;
-  uint32_t pixelsFromBottom = 0u;
-  uint32_t pixelsFromLeft   = 0u;
-  uint32_t pixelsFromRight  = 0u;
-  uint32_t pixelsFromTop    = 0u;
+  bool centeredHorizontally = false;
+  bool centeredVertically   = false;
+  sf::Vector2f relativePosition = {};
 };
 
 /////////////////////////////////////////////////

@@ -14,11 +14,6 @@ bool loadFromFile (
   TextureAtlas& atlas,
   const std::string& file)
 {
-  // define simple equality lambda to test entries
-  auto equal = [] (const std::string& a, const std::string& b) {
-    return a == b;
-  };
-
   // parse file into json
   auto allEntries = loadFromFile (file);
 
