@@ -13,46 +13,21 @@ void GuiRender::draw (
   || Type == Widget::Scroller
   || Type == Widget::TitleBox
   || Type == Widget::TextBox
-  || Type == Widget::Separation) {
-    addThreePatch (box, state, toString <Type> (), horizontal);
+  || Type == Widget::Separation
+  || Type == Widget::TextButton) {
+    addThreePatch (box, toString <Type> () + "::" + toString (state), horizontal);
 
   // widget composed of nine patches
   } else if constexpr (Type == Widget::Box
   || Type == Widget::MultiLineTextBox
   || Type == Widget::FootnoteBox
   || Type == Widget::WindowBox) {
-    addNinePatch (box, state, toString <Type> ());
+    addNinePatch (box, toString <Type> () + "::" + toString (state));
 
   // widget composed of one block
   } else {
     auto newWidget = mTexturesUV.texture (toString <Type> () + "::" + toString (state));
     appendMesh (std::move (newWidget), box, horizontal);
-  }
-}
-
-/////////////////////////////////////////////////
-template <Widget ConnectionType>
-void GuiRender::draw (
-  const sf::Vector2f& begin,
-  const sf::Vector2f& end,
-  const float thickness,
-  const ItemState state)
-{
-  // get widget texture mapping
-  auto newCo = mTexturesUV.texture (toString <ConnectionType> () + "::" + toString (state));
-
-  // compute widget mesh
-  const auto ortho = (end - begin).perpendicular ().normalized ();
-  const auto thick = 0.5f * thickness;
-  newCo[0].position = begin - thick*ortho;
-  newCo[1].position = end   - thick*ortho;
-  newCo[2].position = end   + thick*ortho;
-  newCo[3].position = begin + thick*ortho;
-
-  // add widget to render
-  auto& activeMesh = mWidgets [mActiveLayer];
-  for (uint32_t i = 0; i < newCo.size (); i++) {
-    activeMesh.append (std::move (newCo [i]));
   }
 }
 

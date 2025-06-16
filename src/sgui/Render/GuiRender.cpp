@@ -168,10 +168,10 @@ void GuiRender::drawProgressBar (
 {
   // add bar mesh
   const auto state = ItemState::Neutral;
-  addThreePatch (box, state, "ProgressBar");
+  addThreePatch (box, "ProgressBar::" + toString (state));
 
   // get filling texture coordinates
-  addThreePatch (box, state, "ProgressFilling", true, progress);
+  addThreePatch (box, "ProgressFilling::" + toString (state), true, progress);
 }
 
 /////////////////////////////////////////////////
@@ -221,27 +221,26 @@ void GuiRender::unsetTooltipMode ()
 /////////////////////////////////////////////////
 void GuiRender::addThreePatch (
   const sf::FloatRect& box,
-  const ItemState state,
-  const std::string& boxType,
+  const std::string& boxTypeAndState,
   const bool horizontal,
   const float percentToDraw)
 {
   // compute box part sizes
-  const auto smallest = std::min (box.size.x, box.size.y);
-  const auto cornerSize = smallest * sf::Vector2f (1, 1);
+  const auto smallestSide = std::min (box.size.x, box.size.y);
+  const auto cornerSize = smallestSide * sf::Vector2f (1, 1);
   auto percentCorner = 0.f;
   auto centerSize = box.size;
-  auto shift = sf::Vector2f (0, 0);
+  auto shift = sf::Vector2f ();
   if (horizontal) {
-    shift.x = smallest;
-    centerSize.x -= 2*smallest;
-    percentCorner = smallest / box.size.x;
+    shift.x = smallestSide;
+    centerSize.x -= 2*smallestSide;
+    percentCorner = smallestSide / box.size.x;
   } else {
-    shift.y = smallest;
-    centerSize.y -= 2*smallest;
-    percentCorner = smallest / box.size.y;
+    shift.y = smallestSide;
+    centerSize.y -= 2*smallestSide;
+    percentCorner = smallestSide / box.size.y;
   }
-  const auto percentCenter = 1.f - 2.f*percentCorner;
+  const auto percentMiddle = 1.f - 2.f*percentCorner;
 
   // compute box part positions
   const auto centerPos = box.position + shift;
@@ -253,25 +252,27 @@ void GuiRender::addThreePatch (
     rightPos.y += centerSize.y;
   }
 
-  // draw center if box is large enough
-  const auto boxState = toString (state);
-  if (centerSize.length () > 0.01f) {
-    const auto center = boxType + "::" + boxState + "::Center";
-    const auto pCenter = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner) / percentCenter);
-    auto centerBox = mTexturesUV.texture (center);
-    appendMesh (std::move (centerBox), sf::FloatRect (centerPos, centerSize), horizontal, pCenter);
+  // draw left corner with the right filling
+  // the filling percent is simply the total percent divided by the fraction taken by the patch
+  const auto pLeft = sgui::clamp (0.f, 1.f, percentToDraw / percentCorner);
+  if (percentToDraw > 0.01f && pLeft > 0.01f) {
+    const auto left = boxTypeAndState + "::Left";
+    auto leftBox = mTexturesUV.texture (left);
+    appendMesh (std::move (leftBox), sf::FloatRect (leftPos, cornerSize), horizontal, pLeft);
   }
 
-  // left corner with asked percent of filling
-  const auto left = boxType + "::" + boxState + "::Left";
-  const auto pLeft = sgui::clamp (0.f, 1.f, percentToDraw / percentCorner);
-  auto leftBox = mTexturesUV.texture (left);
-  appendMesh (std::move (leftBox), sf::FloatRect (leftPos, cornerSize), horizontal, pLeft);
+  // draw middle if box is large enough
+  const auto pMiddle  = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner) / percentMiddle);
+  if (centerSize.length () > 0.01f && pMiddle > 0.01f) {
+    const auto center = boxTypeAndState + "::Cent";
+    auto centerBox = mTexturesUV.texture (center);
+    appendMesh (std::move (centerBox), sf::FloatRect (centerPos, centerSize), horizontal, pMiddle);
+  }
 
-  // right corner with asked percent of filling
-  if (percentToDraw - percentCorner - percentCenter > 0.01f) {
-    const auto right = boxType + "::" + boxState + "::Right";
-    const auto pRight = 1.f - (1.f - percentToDraw) / percentCorner;
+  // draw right corner with the remaining filling
+  const auto pRight = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner - percentMiddle) / percentCorner);
+  if (pRight > 0.01f) {
+    const auto right = boxTypeAndState + "::Righ";
     auto rightBox = mTexturesUV.texture (right);
     appendMesh (std::move (rightBox), sf::FloatRect (rightPos, cornerSize), horizontal, pRight);
   }
@@ -280,55 +281,53 @@ void GuiRender::addThreePatch (
 /////////////////////////////////////////////////
 void GuiRender::addNinePatch (
   const sf::FloatRect& box,
-  const ItemState state,
-  const std::string& boxType)
+  const std::string& boxTypeAndState)
 {
-  // Patch size should be : size asked - 2 * corner mesh sizes 
-  // except if size asked < 2 * corner mesh size
-  // compute patch sizes
-  const auto scale = sf::Vector2f (box.size.x, box.size.y / 3.f);
-  const auto shift = sf::Vector2f (0.f, scale.y);
-  const auto pos = box.position;
+  // get corner size, we assume that all 4 corner have the same size
+  auto topLeftTexture = mTexturesUV.texture (boxTypeAndState + "::Top::Left");
+  const auto textureSize = topLeftTexture[4].texCoords - topLeftTexture[0].texCoords;
+  const auto smallestSide = std::min (box.size.x, box.size.y);
+  const auto cornerSize = std::min (smallestSide / 2.f, textureSize.x) * sf::Vector2f (1.f, 1.f);
 
-  // draw top box
-  const auto topBox = sf::FloatRect (pos, scale);
-  addEqualSizePatch (topBox, state, boxType + "::Top");
+  // middle size and unit vector along x or y for convenience
+  const auto ux = sf::Vector2f (1.f, 0.f);
+  const auto uy = sf::Vector2f (0.f, 1.f);
+  const auto middleSize = box.size - 2.f * cornerSize;
+  const auto middleSideSize = cornerSize.x*ux + middleSize.y*uy;
+  const auto middleTopSize  = middleSize.x*ux + cornerSize.y*uy;
 
-  // draw mid box
-  const auto middleBox = sf::FloatRect (pos + shift, scale);
-  addEqualSizePatch (middleBox, state, boxType + "::Middle");
+  // TOP PART
+  // draw top left corner
+  const auto topLeft = sf::FloatRect (box.position, cornerSize);
+  appendMesh (std::move (topLeftTexture), topLeft, true);
+  // draw top center corner
+  const auto topCenter = sf::FloatRect (box.position + cornerSize.x*ux, middleTopSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Cent"), topCenter, true);
+  // draw top right corner
+  const auto topRight = sf::FloatRect (box.position + (cornerSize.x + middleSize.x)*ux, cornerSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Righ"), topRight, true);
 
-  // draw bottom box
-  const auto bottomBox = sf::FloatRect (pos + 2.f*shift, scale);
-  addEqualSizePatch (bottomBox, state, boxType + "::Bottom");
-}
-
-/////////////////////////////////////////////////
-void GuiRender::addEqualSizePatch (
-  const sf::FloatRect& box,
-  const ItemState state,
-  const std::string& boxType)
-{
-  // compute common values
-  const auto boxState = toString (state);
-  const auto size = sf::Vector2f (box.size.x / 3.f, box.size.y);
-  const auto pos = box.position;
-  const auto shift = sf::Vector2f (size.x, 0.f);
-
-  // draw left
-  const auto left = boxType + "::" + boxState + "::Left";
-  auto leftBox = mTexturesUV.texture (left);
-  appendMesh (std::move (leftBox), sf::FloatRect (pos, size), true);
-
+  // MIDDLE PART
+  // draw center left
+  const auto midLeft = sf::FloatRect (box.position + cornerSize.y*uy, middleSideSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Left"), midLeft, true);
   // draw center
-  const auto center = boxType + "::" + boxState + "::Center";
-  auto centerBox = mTexturesUV.texture (center);
-  appendMesh (std::move (centerBox), sf::FloatRect (pos + shift, size), true);
-
-  // draw right
-  const auto right = boxType + "::" + boxState + "::Right";
-  auto rightBox = mTexturesUV.texture (right);
-  appendMesh (std::move (rightBox), sf::FloatRect (pos + 2.f*shift, size), true);
+  const auto midCenter = sf::FloatRect (box.position + cornerSize, middleSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Cent"), midCenter, true);
+  // draw center right
+  const auto midRight = sf::FloatRect (box.position + cornerSize + middleSize.x*ux, middleSideSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Righ"), midRight, true);
+  
+  // BOTTOM PART
+  // draw bottom left
+  const auto bottomLeft = sf::FloatRect (box.position + (cornerSize.y + middleSize.y)*uy, cornerSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Left"), bottomLeft, true);
+  // draw bottom
+  const auto bottomCenter = sf::FloatRect (box.position + cornerSize + middleSize.y*uy, middleTopSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Cent"), bottomCenter, true);
+  // draw bottom right
+  const auto bottomRight = sf::FloatRect (box.position + cornerSize + middleSize, cornerSize);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Righ"), bottomRight, true);
 }
 
 /////////////////////////////////////////////////
@@ -343,7 +342,7 @@ void GuiRender::appendMesh (
 
   // compute mesh coordinates
   computeMesh (mesh, box);
-  computeMeshFilling (mesh, percentToDraw);
+  computeMeshFilling (mesh, percentToDraw, horizontal);
 
   // rotate it if needed
   if (!horizontal) {
@@ -360,18 +359,28 @@ void GuiRender::appendMesh (
 /////////////////////////////////////////////////
 void GuiRender::computeMeshFilling (
   Mesh& mesh,
-  const float percentToDraw)
+  const float percentToDraw,
+  const bool horizontal)
 {
   // quit if percent is not less than 1
-  if (percentToDraw - 1.f < 0.01f) return;
+  if (percentToDraw > 0.99f) return;
 
   // change mesh size
-  const auto meshOrigin = mesh[0].position.x;
-  const auto meshWidth = mesh[1].position.x - meshOrigin;
-  const auto filledWidth = meshOrigin + meshWidth*percentToDraw;
-  mesh[1].position.x = filledWidth;
-  mesh[3].position.x = filledWidth;
-  mesh[4].position.x = filledWidth;
+  if (horizontal) {
+    const auto meshOrigin = mesh[0].position.x;
+    const auto meshWidth = mesh[1].position.x - meshOrigin;
+    const auto filledWidth = meshOrigin + meshWidth*percentToDraw;
+    mesh[1].position.x = filledWidth;
+    mesh[3].position.x = filledWidth;
+    mesh[4].position.x = filledWidth;
+  } else {
+    const auto meshOrigin = mesh[0].position.y;
+    const auto meshHeight = mesh[1].position.y - meshOrigin;
+    const auto filledHeight = meshOrigin + meshHeight*percentToDraw;
+    mesh[1].position.y = filledHeight;
+    mesh[3].position.y = filledHeight;
+    mesh[4].position.y = filledHeight;
+  }
 
   // and adapt its texture
   const auto texOrigin = mesh[0].texCoords.x;
@@ -426,11 +435,11 @@ void GuiRender::drawLayer (
 std::string GuiRender::toString (const ItemState state) const
 {
   if (state == ItemState::Active) {
-    return "Active";
+    return "Act";
   } else if (state == ItemState::Hovered) {
-    return "Hovered";
+    return "Hov";
   } else if (state == ItemState::Neutral) {
-    return "Neutral";
+    return "Neu";
   }
   return "";
 }

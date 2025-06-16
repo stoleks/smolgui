@@ -79,15 +79,6 @@ public:
          const ItemState state,
          const bool horizontal = true);
   /**
-   * @brief interface to draw Gui connection
-   */
-  template <Widget ConnectionType>
-  void draw (
-         const sf::Vector2f& begin,
-         const sf::Vector2f& end,
-         const float thickness,
-         const ItemState state);
-  /**
    * @brief interface to draw Gui icon
    */
   void drawIcon (
@@ -131,25 +122,16 @@ private:
    */
   void addThreePatch (
          const sf::FloatRect& box,
-         const ItemState state,
-         const std::string& boxType,
+         const std::string& boxTypeAndState,
          const bool horizontal = true,
          const float percentToDraw = 1.f);
-  /**
-   * to draw three horizontal patch with equal size
-   */
-  void addEqualSizePatch (
-         const sf::FloatRect& box,
-         const ItemState state,
-         const std::string& boxType);
   /**
    * to draw window box, panel box, etc. with 4 corner
    * with fixed size and 5 stretched center patch
    */
   void addNinePatch (
          const sf::FloatRect& box,
-         const ItemState state,
-         const std::string& boxType);
+         const std::string& boxTypeAndState);
   /**
    * add mesh to the draw batch
    */
@@ -163,7 +145,8 @@ private:
    */
   void computeMeshFilling (
          Mesh& mesh,
-         const float percentToDraw);
+         const float percentToDraw,
+         const bool horizontal = true);
   /**
    * overload of Drawable::draw
    */
