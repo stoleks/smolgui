@@ -1,10 +1,3 @@
-/**
-  TextureMeshes.h
-  Purpose: compute texture meshes for a given texture map. 
-    computeTextureMapping should be called before any attempt to call texture.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <vector>
@@ -18,19 +11,30 @@ namespace sgui
 class TextureAtlas;
 using Mesh = std::array <sf::Vertex, 6>;
 
+/**
+ * @brief Compute texture meshes for a given texture map
+ */
 class TextureMeshes
 {
 public:
   /**
-   * compute texture mapping, this should be called first
+   * @brief compute texture mapping, this should be called before any texture() call
    */
   void computeTextureMapping (const TextureAtlas& textures);
   /**
-   * get computed texture mesh
+   * @brief get computed texture mesh of an entry
    */
   Mesh texture (
          const std::string& textureID,
          const uint32_t frame = 0) const;
+  /**
+   * to iterate through stored meshes
+   */
+  auto begin () { return std::begin (mTextureMeshes); }
+  auto end ()   { return std::end (mTextureMeshes); }
+  auto begin () const { return std::cbegin (mTextureMeshes); }
+  auto end ()   const { return std::cend (mTextureMeshes); }
+
 private:
   // For a clearer internal interface
   struct FrameAndIndex {

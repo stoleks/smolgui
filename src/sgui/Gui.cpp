@@ -433,8 +433,8 @@ bool Gui::beginWindow (
 
   // handle mouse interaction
   const auto titleBoxSize = sf::Vector2f (settings.size.x, titleTextHeight ());
-  const auto reduceCloseButtonSize = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
-  const auto titleBoxWithoutButtons = sf::FloatRect (position, titleBoxSize - reduceCloseButtonSize);
+  const auto reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
+  const auto titleBoxWithoutButtons = sf::FloatRect (position, titleBoxSize - reduceCloseButtonWidth);
   const auto drawBox = sf::FloatRect (position, titleBoxSize);
   setClipping (drawBox, 0.f);
   const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
@@ -460,7 +460,7 @@ bool Gui::beginWindow (
     // close
     addLastVerticalSpacing (-1.f);
     addLastHorizontalSpacing ();
-    addSpacing ({-0.5f, 0.f});
+    addSpacing ({-1.f, 0.f});
     if (button <Widget::TitleButton> (buttonSize)) {
       settings.closed = true;
     }
@@ -528,6 +528,7 @@ void Gui::endWindow ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
+    updateScrolling (2.f * normalSizeOf ("B"));
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -536,7 +537,7 @@ void Gui::endWindow ()
     // track window not closed by user
     mBeginWindowCount--;
   } else {
-    spdlog::warn ("There are no window to end");
+    spdlog::warn ("There is no window to end");
   }
 }
 
@@ -589,6 +590,7 @@ void Gui::endPanel ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
+    updateScrolling (2.f * normalSizeOf ("B"));
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -597,7 +599,7 @@ void Gui::endPanel ()
     // track box not closed by user
     mBeginPanelCount--;
   } else {
-    spdlog::warn ("There are no panel to end");
+    spdlog::warn ("There is no panel to end");
   }
 }
 
@@ -1562,25 +1564,19 @@ sf::Vector2f Gui::computePosition (
   // center element if requested
   const auto halfSize = panel.size / 2.f;
   const auto center = windowSize / 2.f;
-  if (constraint.centeredVerticaly) {
+  if (constraint.centeredVertically) {
     pos.y = center.y - halfSize.y;
   }
-  if (constraint.centeredHorizontaly) {
+  if (constraint.centeredHorizontally) {
     pos.x = center.x - halfSize.x;
   }
 
-  // fix element relative to side of the window
-  if (constraint.pixelsFromTop != 0) {
-    pos.y = constraint.pixelsFromTop;
+  // fix element relative to window size
+  if (constraint.relativePosition.x > 0.01f) {
+    pos.x += windowSize.x * constraint.relativePosition.x;
   }
-  if (constraint.pixelsFromBottom != 0) {
-    pos.y = windowSize.y - constraint.pixelsFromBottom - panel.size.y;
-  }
-  if (constraint.pixelsFromLeft != 0) {
-    pos.x = constraint.pixelsFromLeft;
-  }
-  if (constraint.pixelsFromRight != 0) {
-    pos.x = windowSize.x - constraint.pixelsFromRight - panel.size.x;
+  if (constraint.relativePosition.y > 0.01f) {
+    pos.y += windowSize.y * constraint.relativePosition.y;
   }
 
   // if there are no constraints or position set, return cursor position

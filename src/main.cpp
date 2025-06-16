@@ -14,34 +14,35 @@ int main()
   style.fontColor = sf::Color::White;
   // fonts
   auto fonts = sgui::FontHolder ();
-  fonts.load ("normal", "../../contents/Averia-Bold.ttf");
-  fonts.load ("math", "../../contents/latinmodern-math.otf");
+  fonts.load ("normal", ContentsDir"/Luciole-Regular.ttf");
+  fonts.load ("bold",   ContentsDir"/Luciole-Bold.ttf");
+  fonts.load ("math",   ContentsDir"/latinmodern-math.otf");
   // textures atlas
   auto atlas = sgui::TextureAtlas ();
-  atlas.loadFromFile ("../../contents/atlases.json");
+  atlas.loadFromFile (ContentsDir"/atlas.json");
   // texture
   auto texture = sf::Texture ();
-  const std::string textureFile = "../../contents/widget.png";
+  const std::string textureFile = ContentsDir"/widgets.png";
   if (!texture.loadFromFile (textureFile)) {
     spdlog::error ("Unable to load {}", textureFile);
   }
   // texts
   auto texts = sgui::TextContainer ();
-  texts.loadFromFile ("../../contents/english_demo.json", "english");
-  texts.loadFromFile ("../../contents/french_demo.json", "french");
+  texts.loadFromFile (ContentsDir"/english_demo.json", "english");
+  texts.loadFromFile (ContentsDir"/french_demo.json", "french");
   texts.setTongue ("english");
   // sounds
   auto sounds = sgui::SoundHolder ();
-  sounds.load ("Button",       "../../contents/wood1.wav");
-  sounds.load ("CheckBox",     "../../contents/wood2.wav");
-  sounds.load ("Slider",       "../../contents/wood3.wav");
-  sounds.load ("Scroller",     "../../contents/wood4.wav");
-  sounds.load ("InputText",    "../../contents/keys1.wav");
-  sounds.load ("InputKey",     "../../contents/keys2.wav");
-  sounds.load ("InputNumber",  "../../contents/metallic1.wav");
-  sounds.load ("DropList",     "../../contents/metallic2.wav");
-  sounds.load ("DropListItem", "../../contents/metallic3.wav");
-  sounds.load ("MenuItem",     "../../contents/pen1.wav");
+  sounds.load ("Button",       ContentsDir"/wood1.wav");
+  sounds.load ("CheckBox",     ContentsDir"/wood2.wav");
+  sounds.load ("Slider",       ContentsDir"/wood3.wav");
+  sounds.load ("Scroller",     ContentsDir"/wood4.wav");
+  sounds.load ("InputText",    ContentsDir"/keys1.wav");
+  sounds.load ("InputKey",     ContentsDir"/keys2.wav");
+  sounds.load ("InputNumber",  ContentsDir"/metallic1.wav");
+  sounds.load ("DropList",     ContentsDir"/metallic2.wav");
+  sounds.load ("DropListItem", ContentsDir"/metallic3.wav");
+  sounds.load ("MenuItem",     ContentsDir"/pen1.wav");
   
   /**
    * Window initialization
@@ -73,7 +74,7 @@ int main()
   panel3.size = {128.f, 40.f};
   panel3.movable = true;
   auto constraint = sgui::Constraints ();
-  constraint.centeredVerticaly = true;
+  constraint.centeredVertically = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
   auto multiLine = texts.get ("textMultiLine");
@@ -127,7 +128,12 @@ int main()
         gui.text ("Open or close the general demo window");
         gui.separation ();
         // Display a function
-        gui.slider (sliderValue, 0.f, 10.f, {"Slider from 0 to 10, value is : " + std::to_string (sliderValue)});
+        const auto phaseMax = 10.f;
+        const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
+        gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
+        gui.progressBar (sliderValue / phaseMax, gui.normalSizeOf ("b").y * sf::Vector2f (24.f, 4.f));
+        gui.sameLine ();
+        gui.text (fmt::format ("{} %", sliderValue / phaseMax * 100.f));
         gui.checkBox (displayFunction, {"Display a function"});
         if (displayFunction) {
           auto func = [t, sliderValue] (float x) {
