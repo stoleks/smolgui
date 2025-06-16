@@ -18,7 +18,7 @@ target_link_libraries (${PROJECT_NAME} PRIVATE
 ####
 # Build small demo
 set (DEMO_APP smolguiDemo)
-add_executable (${DEMO_APP} main.cpp)
+add_executable (${DEMO_APP} smolguiDemo.cpp)
 
 target_link_libraries (${DEMO_APP} PRIVATE
   SFML::Graphics
@@ -43,7 +43,6 @@ add_executable (${TEX_APP} testTexture.cpp)
 
 target_link_libraries (${TEX_APP} PRIVATE
   SFML::Graphics
-  SFML::Audio
   nlohmann_json
   spdlog
   SmolGui

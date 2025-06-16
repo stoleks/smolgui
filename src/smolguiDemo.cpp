@@ -35,14 +35,14 @@ int main()
   auto sounds = sgui::SoundHolder ();
   sounds.load ("Button",       ContentsDir"/wood1.wav");
   sounds.load ("CheckBox",     ContentsDir"/wood2.wav");
-  sounds.load ("Slider",       ContentsDir"/wood3.wav");
-  sounds.load ("Scroller",     ContentsDir"/wood4.wav");
-  sounds.load ("InputText",    ContentsDir"/keys1.wav");
-  sounds.load ("InputKey",     ContentsDir"/keys2.wav");
+  sounds.load ("Slider",       ContentsDir"/wood2.wav");
+  sounds.load ("Scroller",     ContentsDir"/wood1.wav");
+  sounds.load ("MenuItem",     ContentsDir"/wood2.wav");
+  sounds.load ("InputText",    ContentsDir"/mettalic1.wav");
+  sounds.load ("InputKey",     ContentsDir"/mettalic2.wav");
   sounds.load ("InputNumber",  ContentsDir"/metallic1.wav");
   sounds.load ("DropList",     ContentsDir"/metallic2.wav");
-  sounds.load ("DropListItem", ContentsDir"/metallic3.wav");
-  sounds.load ("MenuItem",     ContentsDir"/pen1.wav");
+  sounds.load ("DropListItem", ContentsDir"/metallic1.wav");
   
   /**
    * Window initialization

@@ -1,0 +1,8 @@
+{
+  "mainWindow":      "Fenêtre principale de la démo",
+  "closableWindow":  "Fenêtre fermable",
+  "textMultiLine":   "Vous pouvez modifier ce texte sur plusieurs lignes !",
+  "multiLine":       "Texte modifiable sur plusieurs lignes : ",
+  "textOneLine":     "Vous pouvez modifier ce texte !",
+  "oneLine":         "Texte modifiable :"
+}

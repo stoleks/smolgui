@@ -1,0 +1,8 @@
+{
+  "mainWindow":      "Main window of demo",
+  "closableWindow":  "Closable window",
+  "textMultiLine":   "You can edit this text on multiples lines !",
+  "multiLine":       "Editable on multiple lines : ",
+  "textOneLine":     "You can edit this text !",
+  "oneLine":         "Editable on one line"
+}
