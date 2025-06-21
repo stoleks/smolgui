@@ -22,7 +22,6 @@ void Gui::setResources (
   sf::Texture& widgetTexture,
   const TextureAtlas& widgetAtlas)
 {
-  spdlog::info ("Pixels scrolled = {}", mPixelsPerScroll);
   mRender.setResources (font, widgetTexture, widgetAtlas);
 }
 
@@ -1435,7 +1434,6 @@ sf::Vector2f Gui::scroller (
     } else {
       percent = sgui::clamp (0.f, 1.f, (percent*length + mPixelsPerScroll) / length);
     }
-    spdlog::info ("Percent = {}, dx = {}", percent, mPixelsPerScroll);
   }
 
   // compute scrollbar extra shift
