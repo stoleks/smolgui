@@ -1,9 +1,3 @@
-/**
-  PrimitiveShapeRender.h
-  Purpose : render primitive shapes using vertex array.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <SFML/Graphics/Drawable.hpp>
@@ -14,9 +8,10 @@
 
 namespace sgui
 {
-class PrimitiveShapeRender :
-  public sf::Drawable,
-  public sf::Transformable
+/**
+ * @brief render primitive shapes using vertex array.
+ */
+class PrimitiveShapeRender : public sf::Drawable, public sf::Transformable
 {
 public:
   PrimitiveShapeRender ();

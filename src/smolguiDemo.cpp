@@ -38,8 +38,8 @@ int main()
   sounds.load ("Slider",       ContentsDir"/wood2.wav");
   sounds.load ("Scroller",     ContentsDir"/wood1.wav");
   sounds.load ("MenuItem",     ContentsDir"/wood2.wav");
-  sounds.load ("InputText",    ContentsDir"/mettalic1.wav");
-  sounds.load ("InputKey",     ContentsDir"/mettalic2.wav");
+  sounds.load ("InputText",    ContentsDir"/metallic1.wav");
+  sounds.load ("InputKey",     ContentsDir"/metallic2.wav");
   sounds.load ("InputNumber",  ContentsDir"/metallic1.wav");
   sounds.load ("DropList",     ContentsDir"/metallic2.wav");
   sounds.load ("DropListItem", ContentsDir"/metallic1.wav");
@@ -57,6 +57,7 @@ int main()
   gui.setResources (fonts.get ("normal"), texture, atlas);
   gui.setSounds (sounds);
   gui.setStyle (style);
+  gui.setView (window);
 
   /**
    * Some gui settings
@@ -200,7 +201,7 @@ int main()
      * Drawing
      */
     window.clear ();
-    gui.draw (window);
+    window.draw (gui);
     // TEST
     const auto expression ("(3 * 4) / (#sin(x - 5 / #sqrt(3) + #sqrt (4 * e^(x-6)) + 4) + 5)");
     sgui::Formula formula (fonts.get ("math"));

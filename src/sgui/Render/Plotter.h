@@ -1,9 +1,3 @@
-/**
-  Plotter.h
-  Purpose : plot function with given range and level of sampling.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <functional>
@@ -15,7 +9,7 @@
 namespace sgui
 {
 /**
- * define plot range
+ * @brief plot range for an axis
  */
 struct PlotRange {
   PlotRange () = default;
@@ -29,48 +23,66 @@ struct PlotRange {
 
 
 /**
- * plotter
+ * @brief plot function in a given range and level of sampling.
  */
-class Plotter
+class Plotter : public sf::Drawable, public sf::Transformable
 {
 public:
   Plotter () = default;
   /**
-   * set x or y range for plot
+   * @brief set abscissa range
    */
   void setRangeX (const PlotRange xRange);
+  /**
+   * @brief set ordinate range
+   */
   void setRangeY (const PlotRange yRange);
   /**
-   * get x or y range
+   * @brief get abscissa range
    */
   PlotRange rangeX () const;
+  /**
+   * @brief get ordinate range
+   */
   PlotRange rangeY () const;
   /**
-   * set number of point used to sample function.
-   * Default is 50 points.
+   * @brief set points to sample function, default is 50 points.
+   * @param sample is the number of points used to sample curve.
    */
   void setSample (const uint32_t sample);
   /**
-   * set/unset bound size
+   * @brief unset bound size of the plot
    */
   void unsetBound ();
+  /**
+   * @brief set bound in which the function will be drawn
+   */
   void setBound (const sf::Vector2f& plotBound);
   /**
-   * set border rendering for bounded plot
+   * @brief set border rendering for bounded plot
+   * @param count is the number of subdivision for abscissa and ordinate
    */
   void setBorderTick (const uint32_t count);
+  /**
+   * @brief set border widtj
+   * @param thickness of the border
+   */
   void setBorderWidth (const float thickness);
+  /**
+   * @brief set color of the border
+   * @param color of the border
+   */
   void setBorderColor (const sf::Color& color);
   /**
-   * clear all plotted function
+   * @brief clear all plotted function
    */
   void clear ();
   /**
-   * draw all function plotted
-   */
-  void draw (sf::RenderWindow& screen);
-  /**
-   * plot a function y = f(x)
+   * @brief plot a function y = f(x)
+   * @param slope is a lambda of the form y = f(x)
+   * @param position is the position of the plot
+   * @param lineColor set the color of the line
+   * @param thickness set the thickness of the line
    */
   void plot (
          const std::function<float (float)>& slope,
@@ -78,7 +90,11 @@ public:
          const sf::Color& lineColor,
          const float thickness = 1.f);
   /**
-   * plot a parametric function (x, y) = f (t)
+   * @brief plot a parametric function (x, y) = f(t)
+   * @param slope is a lambda of the form (x, y) = f(t)
+   * @param position is the position of the plot
+   * @param lineColor set the color of the line
+   * @param thickness set the thickness of the line
    */
   void plot (
         const std::function<sf::Vector2f (float)>& slope,
@@ -86,7 +102,11 @@ public:
         const sf::Color& lineColor,
         const float thickness = 1.f);
   /**
-   * plot a set of points (x, y)
+   * @brief plot a set of point
+   * @param points is the set of point to be drawn
+   * @param position is the position of the plot
+   * @param lineColor set the color of the line/dot
+   * @param thickness set the thickness of the line/dot
    */
   void plot (
          const std::vector <sf::Vector2f>& points,
@@ -94,13 +114,23 @@ public:
          const sf::Color& lineColor,
          const float thickness);
 private:
-  // to remap value in the draw area
+  /**
+   * to remap value in the draw area
+   */
   sf::Vector2f toPlot (
          const float pointX,
          const float pointY) const;
   sf::Vector2f toPlot (const sf::Vector2f& point) const;
-  // plot boundaries and axis for bounded plot
-  void drawBorderAndAxis (const sf::Vector2f& position);
+  /**
+   * plot boundaries and axes for bounded plot
+   */
+  void drawBorderAndAxes (const sf::Vector2f& position);
+  /**
+   * draw all function plotted
+   */
+  void draw (
+         sf::RenderTarget& target,
+         sf::RenderStates states) const override;
 private:
   bool mBounded = false;
   uint32_t mSample = 50;

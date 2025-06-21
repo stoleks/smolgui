@@ -72,12 +72,6 @@ void Plotter::clear ()
 }
 
 /////////////////////////////////////////////////
-void Plotter::draw (sf::RenderWindow& screen)
-{
-  screen.draw (mRender);
-}
-
-/////////////////////////////////////////////////
 void Plotter::plot (
   const std::function<float (float)>& slope,
   const sf::Vector2f& position,
@@ -106,7 +100,7 @@ void Plotter::plot (
 
   // draw border and axis on top
   if (mBounded) {
-    drawBorderAndAxis (position);
+    drawBorderAndAxes (position);
   }
 }
 
@@ -137,7 +131,7 @@ void Plotter::plot (
 
   // draw border and axis on top
   if (mBounded) {
-    drawBorderAndAxis (position);
+    drawBorderAndAxes (position);
   }
 }
 
@@ -165,7 +159,7 @@ void Plotter::plot (
 
   // draw border and axis on top
   if (mBounded) {
-    drawBorderAndAxis (position);
+    drawBorderAndAxes (position);
   }
 }
 
@@ -189,7 +183,7 @@ sf::Vector2f Plotter::toPlot (const sf::Vector2f& point) const
 }
 
 /////////////////////////////////////////////////
-void Plotter::drawBorderAndAxis (
+void Plotter::drawBorderAndAxes (
   const sf::Vector2f& pos)
 {
   // draw axis with a given tick count
@@ -210,6 +204,15 @@ void Plotter::drawBorderAndAxis (
   // draw border
   const auto border = sf::FloatRect (pos, mBound);
   mRender.load (border, mBorderWidth, mBorderColor);
+}
+
+/////////////////////////////////////////////////
+void Plotter::draw (
+  sf::RenderTarget& target,
+  sf::RenderStates states) const
+{
+  states.transform *= getTransform ();
+  target.draw (mRender, states);
 }
 
 } // namespace sgui

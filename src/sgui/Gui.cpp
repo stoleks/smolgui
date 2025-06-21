@@ -22,6 +22,7 @@ void Gui::setResources (
   sf::Texture& widgetTexture,
   const TextureAtlas& widgetAtlas)
 {
+  spdlog::info ("Pixels scrolled = {}", mPixelsPerScroll);
   mRender.setResources (font, widgetTexture, widgetAtlas);
 }
 
@@ -46,9 +47,9 @@ void Gui::setStyle (
 }
 
 /////////////////////////////////////////////////
-void Gui::setPercentPerScroll (const float amount)
+void Gui::setPixelsPerScroll (const float amount)
 {
-  mPercentPerScroll = amount;
+  mPixelsPerScroll = amount;
 }
 
 /////////////////////////////////////////////////
@@ -61,6 +62,13 @@ Style& Gui::style ()
 const Style& Gui::style () const
 {
   return mStyle;
+}
+
+/////////////////////////////////////////////////
+void Gui::setView (sf::RenderTarget& target)
+{
+  // set view to standard gui view
+  mRender.updateView (target.getDefaultView ());
 }
 
 
@@ -392,24 +400,19 @@ void Gui::updateTimer (const sf::Time& deltaT)
 }
 
 /////////////////////////////////////////////////
-void Gui::draw (sf::RenderWindow& window)
+void Gui::draw (
+  sf::RenderTarget& target,
+  sf::RenderStates states) const
 {
   // set view to standard gui view
-  const auto windowView = window.getView ();
-  const auto guiView = window.getDefaultView ();
-  window.setView (guiView);
+  const auto targetView = target.getView ();
+  const auto guiView = target.getDefaultView ();
+  target.setView (guiView);
   // draw widgets and plot
-  mRender.updateView (guiView);
-  window.draw (mRender);
-  mPlotter.draw (window);
-  // return to normal window view
-  window.setView (windowView);
-}
-
-/////////////////////////////////////////////////
-uint32_t Gui::drawCalls () const
-{
-  return mRender.drawCalls () + 1;
+  target.draw (mRender, states);
+  target.draw (mPlotter, states);
+  // return to normal target view
+  target.setView (targetView);
 }
 
 
@@ -1422,20 +1425,17 @@ sf::Vector2f Gui::scroller (
   const auto parentIsActive = panelState == ItemState::Hovered || panelState == ItemState::Active;
   const auto scrollerIsInactive = state != ItemState::Active;
   if (parentIsActive && scrollerIsInactive && mInputState.mouseScrolled) {
-    // move by default 5 % per scroll
-    const auto dx =  std::abs (mPercentPerScroll * mInputState.mouseDeltaWheel);
-    auto gain = 0.f;
+    // note that 0% is the top scrollbar, so if delta > 0 we need to subtract pixels
+    auto length = box.size.y;
     if (horizontal) {
-      gain = sgui::remap (0.f, box.size.x, 0.f, 1.f, dx * box.size.x);
-    } else {
-      gain = sgui::remap (0.f, box.size.y, 0.f, 1.f, dx * box.size.y);
+      length = box.size.x;
     }
-    // note that 0% is the top scrollbar, so if delta > 0 we need to subtract gain
     if (mInputState.mouseDeltaWheel > 0.f) {
-      percent = sgui::clamp (0.f, 1.f, percent - gain);
+      percent = sgui::clamp (0.f, 1.f, (percent*length - mPixelsPerScroll) / length);
     } else {
-      percent = sgui::clamp (0.f, 1.f, percent + gain);
+      percent = sgui::clamp (0.f, 1.f, (percent*length + mPixelsPerScroll) / length);
     }
+    spdlog::info ("Percent = {}, dx = {}", percent, mPixelsPerScroll);
   }
 
   // compute scrollbar extra shift

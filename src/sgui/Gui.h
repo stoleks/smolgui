@@ -22,7 +22,7 @@ namespace sgui
  * @brief implement gui following the immediate gui principles, like dear-imgui, but
  *   with more control over the textures used for widgets, sounds effects and animations.
  */
-class Gui
+class Gui : public sf::Drawable, public sf::Transformable
 {
 public:
   /**
@@ -49,11 +49,15 @@ public:
          const Style& newStyle,
          const bool defaultPadding = true);
   /**
-   * @brief set wheel scroll percent strength (should be < 0.1f)
+   * @brief set scroll wheel strength (should be ~ 20.f)
    */
-  void setPercentPerScroll (const float amount);
+  void setPixelsPerScroll (const float amount);
 
   ///////////////////////////////////////////////
+  /**
+   * @brief to set gui view
+   */
+  void setView (sf::RenderTarget& target);
   /**
    * @brief this function must be called at the start of every loop.
    */
@@ -76,15 +80,6 @@ public:
    * @param deltaT is the current time of the frame
    */
   void updateTimer (const sf::Time& deltaT);
-  /**
-   * @brief draw all gui's widgets, text and plot.
-   * @param window on which gui is drawn.
-   */
-  void draw (sf::RenderWindow& window);
-  /**
-   * @brief get number of drawCalls in gui
-   */
-  uint32_t drawCalls () const;
 
   ///////////////////////////////////////////////
   /**
@@ -409,6 +404,12 @@ public:
    */
   void forcePlotUpdate ();
 private:
+  /**
+   * draw gui
+   */
+  void draw (
+         sf::RenderTarget& target,
+         sf::RenderStates states) const override;
   // to have round coordinates
   sf::Vector2f sanitizePosition (const sf::Vector2f& position) const;
   // to have standard height size across the gui code
@@ -555,7 +556,7 @@ private:
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   // Scroll intensity
-  float mPercentPerScroll = 0.05f;
+  float mPixelsPerScroll = 20.f;
   // counters to keep track of same line
   sf::Vector2f mResetCursorPosition = {};
   int32_t mResetCount = 0;
