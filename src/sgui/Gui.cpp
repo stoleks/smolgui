@@ -451,7 +451,7 @@ bool Gui::beginWindow (
   mRender.draw <Widget::TitleBox> (drawBox, state);
   const auto textWidth = titleSizeOf (settings.title).x;
   const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
-  const auto titlePos = sanitizePosition ({position.x + shiftX, position.y});
+  const auto titlePos = sgui::round (sf::Vector2f {position.x + shiftX, position.y});
   mRender.drawText (titlePos, settings.title, mStyle.fontColor, mStyle.fontSize.title);
 
   // reduce or close window
@@ -716,7 +716,7 @@ bool Gui::menuItem (
   parentMenu.isActive = clicked;
 
   // draw a description over it
-  const auto textPos = sanitizePosition (itemPos + 1.5f*mPadding);
+  const auto textPos = sgui::round (itemPos + 1.5f*mPadding);
   mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.subtitle);
 
   // go back to previous clipping layer
@@ -816,7 +816,7 @@ bool Gui::textButton (
   const auto clicked = button <Widget::TextButton> (size, options);
 
   // draw a text over it
-  mRender.drawText (sanitizePosition (position), text, mStyle.fontColor, mStyle.fontSize.normal);
+  mRender.drawText (sgui::round (position), text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }
 
@@ -856,7 +856,7 @@ bool Gui::iconTextButton (
 
   // add a shifted text besides it
   const auto shift = sf::Vector2f (iconSize.x, 0);
-  const auto textPos = sanitizePosition (position + shift + mPadding);
+  const auto textPos = sgui::round (position + shift + mPadding);
   mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }
@@ -911,7 +911,7 @@ void Gui::checkBox (
   auto textWidth = 0.f;
   if (options.description != "") {
     const auto descriptionPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
-    mRender.drawText (sanitizePosition (descriptionPos), options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    mRender.drawText (sgui::round (descriptionPos), options.description, mStyle.fontColor, mStyle.fontSize.normal);
     textWidth = normalSizeOf (options.description).x;
   }
   // update cursor position
@@ -937,7 +937,7 @@ void Gui::text (
   const auto formatted = formatText (text, boxSize, fontSize);
 
   // draw text and update cursor position
-  mRender.drawText (sanitizePosition (position), formatted, mStyle.fontColor, fontSize);
+  mRender.drawText (sgui::round (position), formatted, mStyle.fontColor, fontSize);
   updateSpacing (normalSizeOf (formatted));
 }
 
@@ -986,7 +986,7 @@ void Gui::inputText (
   // draw description before the box
   auto descriptionSize = sf::Vector2f ();
   if (options.description != "") {
-    mRender.drawText (sanitizePosition (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    mRender.drawText (sgui::round (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
     descriptionSize = normalSizeOf (options.description);
     position.x += descriptionSize.x;
   }
@@ -1042,7 +1042,7 @@ void Gui::inputText (
   const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
   mCursorPosition = position;
   scrollThroughPanel (textPanel, box, state, options.horizontal);
-  mRender.drawText (sanitizePosition (mCursorPosition + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
+  mRender.drawText (sgui::round (mCursorPosition + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
   updateSpacing (normalSizeOf (formatted));
   endGroup  ();
   removeClipping ();
@@ -1064,7 +1064,7 @@ void Gui::inputKey (
   // draw description before the box
   auto descrWidth = 0.f;
   if (options.description != "") {
-    mRender.drawText (sanitizePosition (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    mRender.drawText (sgui::round (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
     const auto descrWidth = normalSizeOf (options.description).x;
     position.x += descrWidth;
   }
@@ -1089,7 +1089,7 @@ void Gui::inputKey (
   // draw char and box
   const auto text = std::string (1, key);
   mRender.draw <Widget::TextBox> (box, state);
-  mRender.drawText (sanitizePosition (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
+  mRender.drawText (sgui::round (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
   updateSpacing ({boxSize.x + descrWidth, boxSize.y});
@@ -1326,7 +1326,7 @@ bool Gui::dropListItem (
   } else {
     mRender.draw <Widget::ItemBox> (box, state);
   }
-  mRender.drawText (sanitizePosition (box.position + mPadding), itemName, mStyle.fontColor, mStyle.fontSize.normal);
+  mRender.drawText (sgui::round (box.position + mPadding), itemName, mStyle.fontColor, mStyle.fontSize.normal);
 
   // return selection status
   return status;
@@ -1668,18 +1668,6 @@ ItemState Gui::interactWithMouse (
     settings.position.y += mInputState.mouseDisplacement.y;
   }
   return state;
-}
-
-
-/**
- * ----------------------------------------------
- * sanitize position to avoid blurry text
- * ----------------------------------------------
- */
-/////////////////////////////////////////////////
-sf::Vector2f Gui::sanitizePosition (const sf::Vector2f& position) const
-{
-  return sf::Vector2f (std::round (position.x), std::round (position.y));
 }
 
 

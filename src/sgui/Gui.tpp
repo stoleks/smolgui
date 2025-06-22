@@ -60,7 +60,7 @@ void Gui::slider (
   // draw text next to the slider
   auto textWidth = 0.f;
   if (options.description != "") {
-    const auto descrPos = sanitizePosition (position + sf::Vector2f (size.x + mPadding.x, 0.f));
+    const auto descrPos = sgui::round (position + sf::Vector2f (size.x + mPadding.x, 0.f));
     mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
     textWidth = normalSizeOf (options.description).x;
   }
@@ -138,12 +138,12 @@ void Gui::inputNumber (
   const auto numStr = label + toString (number);
   const auto numWidth = normalSizeOf (numStr).x;
   auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, 0);
-  mRender.drawText (sanitizePosition (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
+  mRender.drawText (sgui::round (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
 
   // draw description
   auto textWidth = 0.f;
   if (options.description != "") {
-    const auto descrPos = sanitizePosition (position + sf::Vector2f (boxSize.x + mPadding.x, 0));
+    const auto descrPos = sgui::round (position + sf::Vector2f (boxSize.x + mPadding.x, 0));
     mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
     textWidth = normalSizeOf (options.description).x;
   }

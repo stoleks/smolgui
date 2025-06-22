@@ -410,8 +410,6 @@ private:
   void draw (
          sf::RenderTarget& target,
          sf::RenderStates states) const override;
-  // to have round coordinates
-  sf::Vector2f sanitizePosition (const sf::Vector2f& position) const;
   // to have standard height size across the gui code
   float subtitleTextHeight () const;
   float titleTextHeight () const;

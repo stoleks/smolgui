@@ -2,6 +2,20 @@ namespace sgui
 {
 /////////////////////////////////////////////////
 template <typename Type>
+constexpr sf::Vector2<Type> round (const sf::Vector2<Type>& value)
+{
+  return sf::Vector2<Type> { std::round (value.x), std::round (value.y) };
+}
+
+/////////////////////////////////////////////////
+template <typename Type>
+constexpr sf::Vector2<Type> round (const sf::Vector3<Type>& value)
+{
+  return sf::Vector3<Type> { std::round (value.x), std::round (value.y), std::round (value.z) };
+}
+
+/////////////////////////////////////////////////
+template <typename Type>
 constexpr Type lerp (
   const Type& min,
   const Type& max,

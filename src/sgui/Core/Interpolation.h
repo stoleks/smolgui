@@ -1,9 +1,3 @@
-/**
-  interpolation.h
-  Purpose : implement function for interpolation between values
-  @author A. J.
-*/
-
 #pragma once
 
 #include <cmath>
@@ -11,13 +5,28 @@
 #include <type_traits>
 
 // forward declaration
-namespace sf { class Color; }
+namespace sf { 
+  class Color;
+  template <typename T> class Vector2;
+  template <typename T> class Vector3;
+}
 
 namespace sgui
 {
+/**
+ * @brief Round sf::Vector2 components
+ */
+template <typename Type>
+constexpr sf::Vector2<Type> round (const sf::Vector2<Type>& value);
 
 /**
-  Linear interpolation between min and max if value belong to [0, 1], with 
+ * @brief Round sf::Vector3 components
+ */
+template <typename Type>
+constexpr sf::Vector2<Type> round (const sf::Vector3<Type>& value);
+
+/**
+  @brief Linear interpolation between min and max if value belong to [0, 1], with 
   extrapolation otherwise (see clampedLerp).
  */
 template <typename Type>
@@ -27,7 +36,7 @@ constexpr Type lerp (
   const float value);
 
 /**
-  Interpolate between two color, value is clamped to [0, 1].
+  @brief Interpolate between two color, value is clamped to [0, 1].
  */
 sf::Color lerp (
   const sf::Color& a,
@@ -35,7 +44,7 @@ sf::Color lerp (
   const float value);
 
 /**
- * Clamp value between min and max
+ * @brief Clamp value between min and max
  */
 template <typename Type>
 constexpr Type clamp (
@@ -44,8 +53,8 @@ constexpr Type clamp (
   const Type value);
 
 /**
-  Clamped linear interpolation, it always return a value in [min, max] regardless
-  of if value value is in [0, 1] or not
+  @brief Clamped linear interpolation, it always return a value in [min, max] regardless
+  of if value is in [0, 1] or not
  */
 template <typename Type>
 constexpr Type clampedLerp (
@@ -54,7 +63,7 @@ constexpr Type clampedLerp (
   const float value);
 
 /**
-  Inverse linear interpolation. Return in [0, 1] range if value is in [min, max].
+  @brief Inverse linear interpolation. Return in [0, 1] range if value is in [min, max].
  */
 template <typename Type>
 constexpr float inverseLerp (
@@ -63,7 +72,7 @@ constexpr float inverseLerp (
   const Type& value);
 
 /**
-  Remap a value from [minInput, maxInput] range to [minOutput, maxOutput],
+  @brief Remap a value from [minInput, maxInput] range to [minOutput, maxOutput],
   depending on where value is in [minInput, maxInput].
  */
 template <typename InputType,
@@ -76,8 +85,7 @@ constexpr OutputType remap (
   const InputType& value);
 
 /**
- * convert floating point value into string
- * without useless zero after dot
+ * @brief convert floating point value into string without useless zero after dot
  */
 template <typename Type>
 std::string toString (
