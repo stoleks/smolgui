@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "sgui/sgui.h"
+#include <sgui/sgui.h>
 
 int main ()
 {

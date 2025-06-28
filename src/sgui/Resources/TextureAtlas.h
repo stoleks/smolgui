@@ -1,13 +1,3 @@
-/**
-  TextureAtlas.h
-  Purpose: Contains texture position and sub-box of all sprites for a given 
-    sprite sheet. Animation can be handled with the following restriction:
-      - texture rect need to represent the first frame
-      - all frames stand in one line on the sprite sheet
-      - all frames have the same size as the first one
-  @author A. J.
-*/
-
 #pragma once
 
 #include <string>
@@ -17,41 +7,73 @@
 
 namespace sgui
 {
-// for serialization simplicity and better interface
+/**
+ * @brief Store frames count and textures to ease serialization and for better interface
+ */
 struct Frames {
-  uint32_t count;
+  uint32_t count = 1;
   sf::IntRect texture;
 };
 
-// class definition
+/**
+ * @brief Contains texture position and sub-box of all sprites for a given sprite sheet.
+ * Animations ca be handled with the following restrictions:
+ *    - texture rect need to represent the first frame
+ *    - all frames stand in one line on the sprite sheet
+ *    - all frames have the same size as the first one
+ */
 class TextureAtlas
 {
 public:
+  /**
+   * @brief Build an empty atlas
+   */
   TextureAtlas () = default;
+  /**
+   * @brief Build texture atlas from file
+   * @param filename File from which atlas is loaded
+   */
   TextureAtlas (const std::string& filename);
   /**
-   * load texture atlas from file
+   * @brief Load texture atlas from file
+   * @param filename File from which atlas is loaded
+   * @return `true` if loading was successful
    */
   bool loadFromFile (const std::string& filename);
   /**
-   * add or remove an entry to the atlas
+   * @brief Add a texture to the atlas
+   * @param entry Texture name
+   * @param textureRect Texture position and size
+   * @param framesCount Number of frames in the animation if needed (1 by default)
    */
   void add (
          const std::string& entry,
          sf::IntRect&& textureRect,
-         const uint32_t frameCount = 0);
+         const uint32_t framesCount = 1);
+  /**
+   * @brief Remove a texture from the atlas
+   * @param entry Texture name
+   */
   void remove (const std::string& entry);
   /**
-   * get or set texture dimension of the atlas
+   * @brief Get texture dimension of the atlas
+   * @return Size of the texture image.
    */
   const sf::Vector2u& textureDimension () const;
+  /**
+   * @brief Set texture dimension of the atlas
+   */
   void setTextureDimension (const sf::Vector2u& dim);
   /**
-   * get element count in the atlas
+   * @brief Get number of textures stored in the atlas
+   * @return Number of textures stored.
    */
   uint32_t texturesCount () const { return mTexturesCount; }
   /**
-   * get texture rect of an entry, if the entry exist
+   * @brief Get texture rect of an entry, if the entry exist
+   * @param entry Texture name
+   * @param frame Texture frame it its part of an animation
+   * @return Texture rect if it's stored in the atlas, `std::nullopt` otherwise
    */
   std::optional <sf::IntRect> textureRect (
          const std::string& entry,
