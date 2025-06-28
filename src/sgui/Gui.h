@@ -235,7 +235,6 @@ public:
    */
   bool iconButton (
          const IconID& iconName,
-         const sf::Vector2f& size,
          const WidgetOptions& options = {});
   /**
    * @brief button with an icon followed by text

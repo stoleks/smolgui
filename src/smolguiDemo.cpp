@@ -64,11 +64,11 @@ int main()
    */
   auto panel = sgui::Panel ();
   panel.position = { 16.f, 256.f};
-  panel.size = {640.f, 640.f};
+  panel.size = {800.f, 640.f};
   panel.title = texts.get ("mainWindow");
   auto panel2 = sgui::Panel ();
   panel2.position = panel.position + sf::Vector2f (panel.size.x + 10.f, 0.f);
-  panel2.size = {520.f, 520.f};
+  panel2.size = {800.f, 520.f};
   panel2.title = texts.get ("closableWindow");
   panel2.closable = true;
   auto panel3 = sgui::Panel ();
@@ -176,7 +176,14 @@ int main()
         auto& fonts = style.fontSize;
         gui.slider (fonts.title, 12u, 26u, {"Title font size"});
         gui.slider (fonts.subtitle, 10u, 22u, {"Subtitle font size"});
-        gui.slider (fonts.normal, 8u, 20u, {"Normal font size"});
+        if (gui.iconTextButton ("plus", "Increase normal font size")) {
+          fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
+        }
+        if (gui.iconButton ("minus")) {
+          fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
+        }
+        gui.sameLine ();
+        gui.text ("Decrease normal font size");
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
         gui.inputText (multiLine, {256.f, 64.f}, {texts.get ("multiLine")});

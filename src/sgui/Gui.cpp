@@ -812,7 +812,8 @@ bool Gui::textButton (
 {
   // compute text position and construct a button adapted to the text
   const auto position = computeRelativePosition (mCursorPosition + 1.5f*mPadding, options.displacement);
-  const auto size = buttonHeight () * sf::Vector2f (6.f, 1.f);
+  const auto width = std::max (normalSizeOf (text).x + 3.f*mPadding.x, 6.f*buttonHeight ());
+  const auto size = sf::Vector2f (width, buttonHeight ());
   const auto clicked = button <Widget::TextButton> (size, options);
 
   // draw a text over it
@@ -823,12 +824,12 @@ bool Gui::textButton (
 /////////////////////////////////////////////////
 bool Gui::iconButton (
   const IconID& iconName,
-  const sf::Vector2f& size,
   const WidgetOptions& options)
 {
-  // compute icon position and build a button over it
+  // button part
+  const auto size = sf::Vector2f (1.f, 1.f) * buttonHeight ();
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
-  const auto clicked = button <Widget::IconButton> (size, {"", options.info, position});
+  const auto clicked = button <Widget::IconButton> (size, options);
 
   // draw an icon over it
   const auto box = sf::FloatRect (position, size);
@@ -843,13 +844,12 @@ bool Gui::iconTextButton (
   const WidgetOptions& options)
 {
   // draw an icon with a button
-  const auto iconSize = sf::Vector2f (1.f, 1.f) * buttonHeight ();
-  const auto clicked = iconButton (iconName, iconSize, options);
+  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto clicked = iconButton (iconName, options);
 
   // add a shifted text besides it
-  sameLine ();
-  const auto shift = sf::Vector2f (iconSize.x, 0);
-  const auto textPos = sgui::round (mCursorPosition + shift + mPadding);
+  const auto shift = sf::Vector2f (buttonHeight (), 0);
+  const auto textPos = sgui::round (position + shift + mPadding);
   mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }

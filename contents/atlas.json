@@ -160,10 +160,10 @@
   "Separation::Act::Righ": { "count": 1, "texture": { "position": { "x": 1280, "y": 640 }, "size": { "x": 128, "y": 128 } } },
   "Separation::Act::Cent": { "count": 1, "texture": { "position": { "x": 1344, "y": 640 }, "size": { "x":  64, "y": 128 } } },
 
-  "Icon::plus":   { "count": 1, "texture": { "position": { "x": 1472, "y": 384 }, "size": { "x": 128, "y": 128 } } },
-  "Icon::minus":  { "count": 1, "texture": { "position": { "x": 1600, "y": 384 }, "size": { "x": 128, "y": 128 } } },
-  "Icon::left":   { "count": 1, "texture": { "position": { "x": 1472, "y": 512 }, "size": { "x": 128, "y": 128 } } },
-  "Icon::right":  { "count": 1, "texture": { "position": { "x": 1600, "y": 512 }, "size": { "x": 128, "y": 128 } } },
+  "Icon::left":   { "count": 1, "texture": { "position": { "x": 1472, "y": 384 }, "size": { "x": 128, "y": 128 } } },
+  "Icon::right":  { "count": 1, "texture": { "position": { "x": 1600, "y": 384 }, "size": { "x": 128, "y": 128 } } },
+  "Icon::plus":   { "count": 1, "texture": { "position": { "x": 1472, "y": 512 }, "size": { "x": 128, "y": 128 } } },
+  "Icon::minus":  { "count": 1, "texture": { "position": { "x": 1600, "y": 512 }, "size": { "x": 128, "y": 128 } } },
   "Icon::reduce": { "count": 1, "texture": { "position": { "x": 1472, "y": 640 }, "size": { "x": 128, "y": 128 } } },
   "Icon::close":  { "count": 1, "texture": { "position": { "x": 1600, "y": 640 }, "size": { "x": 128, "y": 128 } } },
 
