@@ -1,9 +1,3 @@
-/**
-  GuiRender.h
-  Purpose: class that manage rendering for the gui and allow a better separation between logical and graphical stuff.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <vector>
@@ -23,73 +17,90 @@
 namespace sgui
 {
 /**
- * @brief manage rendering for the gui
+ * @brief Store options for drawing widgets
+ */
+struct WidgetDrawOptions {
+  // Helper ctors
+  WidgetDrawOptions () = default;
+  WidgetDrawOptions (const float p) : progress (p) {}
+  WidgetDrawOptions (const ItemState& s) : state (s) {}
+  WidgetDrawOptions (const ItemState& s, bool h) : horizontal (h), state (s) {}
+  WidgetDrawOptions (const std::string& n) : name (n) {}
+  // data
+  bool horizontal = true;
+  float progress = 1.f;
+  ItemState state = ItemState::Neutral;
+  std::string name = "";
+};
+
+/**
+ * @brief Handle rendering for the gui 
  */
 class GuiRender : public sf::Drawable, public sf::Transformable
 {
 public:
   /**
-   * @brief set assets
+   * @brief Set resources used in render. It should be called before any `draw` call
+   * @param font Font used
+   * @param sprite Texture used
+   * @param atlas Texture atlas used
    */
   void setResources (
          sf::Font& font,
          sf::Texture& sprite,
          const TextureAtlas& atlas);
   /**
-   * @brief clear all widgets and text
+   * @brief Clear all widgets and text
    */
   void clear ();
   /**
-   * @brief get text size as if it was drawn on screen
+   * @brief Get text size as if it was drawn on screen
+   * @param text Text from which we get the size
+   * @param fontSize Size of the text font
+   * @return Size of the text as it would be displayed
    */
   sf::Vector2f textSize (
          const std::string& text,
          const uint32_t fontSize) const;
   /**
-   * @brief update view on which the gui is drawn
+   * @brief Update view on which the gui is drawn
    */
   void updateView (sf::View newView);
   /**
-   * @brief set current clipping layer used to render UI. Every call will create a
+   * @brief Set current clipping layer used to render UI. Every call will create a
    * new layer with its own independent meshes and return its id.
+   * @return Index of the current clipping layer
    */
   uint32_t setCurrentClippingLayer (const sf::FloatRect& mask);
   /**
-   * @brief get current active clipping layer
+   * @brief Get current active clipping layer index
+   * @return Index of the active clipping layer
    */
   uint32_t currentClippingLayer () const;
   /**
-   * @brief to reuse a previously set clipping layer
+   * @brief To reuse a previously set clipping layer
    */
   void moveToClippingLayer (const uint32_t layerId);
   /**
-   * @brief go back to base layer with no clipping
+   * @brief Go back to base layer with no clipping
    */
   void noClipping ();
   /**
-   * @brief to tell if a position is visible or not (clipped)
+   * @brief To tell if a position is visible or not (clipped)
+   * @return `true` if position is not visible, `false` if it is visible
    */
   bool isClipped (const sf::Vector2f& position) const;
   /**
    * @brief interface to draw Gui standard element
+   * @param Type Widget type to draw, as defined in `Widget`
+   * @param box Rect of the widget to draw
+   * @param state State of the widget to draw
+   * @param horizontal If widget is horizontal (`true`) or vertical (`false`). It's mportant for sliders.
    */
   template <Widget Type>
   void draw (
          const sf::FloatRect& box,
-         const ItemState state,
-         const bool horizontal = true);
-  /**
-   * @brief interface to draw Gui icon
-   */
-  void drawIcon (
-         const sf::FloatRect& box,
-         const std::string& name);
-  /**
-   * @brief interface to draw Gui progress bar
-   */
-  void drawProgressBar (
-         const sf::FloatRect& box,
-         const float progress);
+         const WidgetDrawOptions options = {});
   /**
    * @brief interface to draw Gui text using utf8
    */

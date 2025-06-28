@@ -4,30 +4,38 @@ namespace sgui
 template <Widget Type>
 void GuiRender::draw (
   const sf::FloatRect& box,
-  const ItemState state,
-  const bool horizontal)
+  const WidgetDrawOptions options)
 {
-  // widget composed of three patches
+  const auto typeName = toString <Type> () + "::";
+  const auto state = toString (options.state);
+  // Widget composed of three patches (stretchable)
   if constexpr (Type == Widget::Slider
   || Type == Widget::ScrollerBar
   || Type == Widget::Scroller
+  || Type == Widget::ProgressBar
+  || Type == Widget::ProgressFilling
   || Type == Widget::TitleBox
   || Type == Widget::TextBox
+  || Type == Widget::ItemBox
   || Type == Widget::Separation
   || Type == Widget::TextButton) {
-    addThreePatch (box, toString <Type> () + "::" + toString (state), horizontal);
+    addThreePatch (box, typeName + state, options.horizontal, options.progress);
 
-  // widget composed of nine patches
+  // Widgets composed of nine patches (stretchable)
   } else if constexpr (Type == Widget::Box
   || Type == Widget::MultiLineTextBox
-  || Type == Widget::FootnoteBox
   || Type == Widget::WindowBox) {
-    addNinePatch (box, toString <Type> () + "::" + toString (state));
+    addNinePatch (box, typeName + state);
 
-  // widget composed of one block
+  // Icons
+  } else if constexpr (Type == Widget::Icon) {
+    auto newWidget = mTexturesUV.texture (typeName + options.name);
+    appendMesh (std::move (newWidget), box);
+
+  // Widgets composed of one block
   } else {
-    auto newWidget = mTexturesUV.texture (toString <Type> () + "::" + toString (state));
-    appendMesh (std::move (newWidget), box, horizontal);
+    auto newWidget = mTexturesUV.texture (typeName + state);
+    appendMesh (std::move (newWidget), box, options.horizontal);
   }
 }
 
@@ -51,22 +59,14 @@ constexpr std::string GuiRender::toString () const
     return "MenuItemBox";
   } else if constexpr (Type == Widget::TitleBox) {
     return "TitleBox";
-  } else if constexpr (Type == Widget::FootnoteBox) {
-    return "FootnoteBox";
   } else if constexpr (Type == Widget::Button) {
     return "Button";
   } else if constexpr (Type == Widget::TextButton) {
     return "TextButton";
   } else if constexpr (Type == Widget::IconButton) {
     return "IconButton";
-  } else if constexpr (Type == Widget::IconTextButton) {
-    return "IconTextButton";
   } else if constexpr (Type == Widget::TitleButton) {
     return "TitleButton";
-  } else if constexpr (Type == Widget::SkillButton) {
-    return "SkillButton";
-  } else if constexpr (Type == Widget::TreeConnection) {
-    return "TreeConnection";
   } else if constexpr (Type == Widget::CheckBox) {
     return "CheckBox";
   } else if constexpr (Type == Widget::Icon) {
@@ -86,7 +86,7 @@ constexpr std::string GuiRender::toString () const
   } else if constexpr (Type == Widget::Separation) {
     return "Separation";
   } else {
-    return "";
+    return "None";
   }
 }
 

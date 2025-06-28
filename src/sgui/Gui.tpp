@@ -16,7 +16,7 @@ bool Gui::button (
   // draw button state and update cursorPosition
   const auto box = sf::FloatRect (position, size);
   const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
-  mRender.draw <ButtonType> (box, state);
+  mRender.draw <ButtonType> (box, {state});
   updateSpacing (size);
 
   // it has been clicked if state is active
@@ -49,7 +49,7 @@ void Gui::slider (
   const auto size = normalTextHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.info);
-  mRender.draw <Widget::Slider> (box, state, isHorizontal);
+  mRender.draw <Widget::Slider> (box, {state, isHorizontal});
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
@@ -132,7 +132,7 @@ void Gui::inputNumber (
   if (focused) {
     state = ItemState::Active;
   }
-  mRender.draw <Widget::TextBox> (box, state);
+  mRender.draw <Widget::TextBox> (box, {state});
 
   // draw label and number
   const auto numStr = label + toString (number);

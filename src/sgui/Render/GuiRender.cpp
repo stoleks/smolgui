@@ -152,29 +152,6 @@ bool GuiRender::isClipped (const sf::Vector2f& position) const
 /////////////////////////////////////////////////
 // draw
 /////////////////////////////////////////////////
-void GuiRender::drawIcon (
-  const sf::FloatRect& box,
-  const std::string& name)
-{
-  // get texture mesh and apppend it
-  auto newIcon = mTexturesUV.texture ("Icon::" + name);
-  appendMesh (std::move (newIcon), box);
-}
-
-/////////////////////////////////////////////////
-void GuiRender::drawProgressBar (
-  const sf::FloatRect& box,
-  const float progress)
-{
-  // add bar mesh
-  const auto state = ItemState::Neutral;
-  addThreePatch (box, "ProgressBar::" + toString (state));
-
-  // get filling texture coordinates
-  addThreePatch (box, "ProgressFilling::" + toString (state), true, progress);
-}
-
-/////////////////////////////////////////////////
 void GuiRender::drawText (
   const sf::Vector2f& position,
   const std::string& text,

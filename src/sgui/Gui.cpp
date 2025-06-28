@@ -448,7 +448,7 @@ bool Gui::beginWindow (
   const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
 
   // draw title box and window name
-  mRender.draw <Widget::TitleBox> (drawBox, state);
+  mRender.draw <Widget::TitleBox> (drawBox, {state});
   const auto textWidth = titleSizeOf (settings.title).x;
   const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
   const auto titlePos = sgui::round (sf::Vector2f {position.x + shiftX, position.y});
@@ -505,7 +505,7 @@ bool Gui::beginWindow (
   // draw window box and handle hovering of the window
   const auto windowBox = sf::FloatRect (mCursorPosition, settings.size);
   const auto windowStatus = itemStatus (windowBox, name);
-  mRender.draw <Widget::Box> (windowBox, ItemState::Neutral);
+  mRender.draw <Widget::Box> (windowBox);
   mCursorPosition += mPadding;
   mCursorPosition.y += 1.5f * mPadding.y;
 
@@ -576,7 +576,7 @@ void Gui::beginPanel (
   // draw panel box if requested
   const auto state = interactWithMouse (settings, panelBox, name, options.info);
   if (settings.visible) {
-    mRender.draw <Widget::Box> (panelBox, state);
+    mRender.draw <Widget::Box> (panelBox, {state});
   }
 
   // update cursor position
@@ -645,7 +645,7 @@ void Gui::beginMenu ()
 
   // get menu bar status
   const auto box = sf::FloatRect (menuPos, menuSize);
-  mRender.draw <Widget::MenuBox> (box, ItemState::Neutral);
+  mRender.draw <Widget::MenuBox> (box);
 
   // scroll through panel if requested
   auto& panel = mGroups.top ();
@@ -712,7 +712,7 @@ bool Gui::menuItem (
       id = itemId;
     }
   }
-  mRender.draw <Widget::MenuItemBox> (box, state);
+  mRender.draw <Widget::MenuItemBox> (box, {state});
   parentMenu.isActive = clicked;
 
   // draw a description over it
@@ -795,7 +795,7 @@ void Gui::separation ()
   const auto box = sf::FloatRect (position, size);
 
   // render line
-  mRender.draw <Widget::Separation> (box, ItemState::Neutral);
+  mRender.draw <Widget::Separation> (box);
   updateSpacing (size);
 }
 
@@ -831,7 +831,8 @@ bool Gui::iconButton (
   const auto clicked = button <Widget::IconButton> (size, {"", options.info, position});
 
   // draw an icon over it
-  mRender.drawIcon (sf::FloatRect (position, size), iconName);
+  const auto box = sf::FloatRect (position, size);
+  mRender.draw <Widget::Icon> (box, {iconName});
   return clicked;
 }
 
@@ -841,22 +842,14 @@ bool Gui::iconTextButton (
   const std::string& text,
   const WidgetOptions& options)
 {
-  // compute text position
-  auto position = computeRelativePosition (mCursorPosition, options.displacement);
-
-  // construct a button adapted to the icon
-  const auto height = buttonHeight ();
-  const auto size = height * sf::Vector2f (6.f, 1.f);
-  const auto clicked = button <Widget::IconTextButton> (size, {"", options.info, position});
-
-  // draw an icon over it
-  position.x += 0.5f * mPadding.x;
+  // draw an icon with a button
   const auto iconSize = sf::Vector2f (1.f, 1.f) * buttonHeight ();
-  mRender.drawIcon (sf::FloatRect (position, iconSize), iconName);
+  const auto clicked = iconButton (iconName, iconSize, options);
 
   // add a shifted text besides it
+  sameLine ();
   const auto shift = sf::Vector2f (iconSize.x, 0);
-  const auto textPos = sgui::round (position + shift + mPadding);
+  const auto textPos = sgui::round (mCursorPosition + shift + mPadding);
   mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
   return clicked;
 }
@@ -872,7 +865,7 @@ void Gui::icon (
 
   // draw icon and handle icon hovering and tooltip
   const auto box = sf::FloatRect (position, size);
-  mRender.drawIcon (box, name);
+  mRender.draw <Widget::Icon> (box, {name});
   itemStatus (box, name, false, options.info);
 
   // update cursor position
@@ -905,7 +898,7 @@ void Gui::checkBox (
   if (checked) {
     state = ItemState::Active;
   }
-  mRender.draw <Widget::CheckBox> (box, state);
+  mRender.draw <Widget::CheckBox> (box, {state});
 
   // draw text next to the checkbox
   auto textWidth = 0.f;
@@ -1029,7 +1022,7 @@ void Gui::inputText (
     }
   }
   // draw text box
-  mRender.draw <Widget::TextBox> (box, state);
+  mRender.draw <Widget::TextBox> (box, {state});
   
   // clip text outside of the box
   const auto clipBox = handleParentClipBox (box);
@@ -1088,7 +1081,7 @@ void Gui::inputKey (
 
   // draw char and box
   const auto text = std::string (1, key);
-  mRender.draw <Widget::TextBox> (box, state);
+  mRender.draw <Widget::TextBox> (box, {state});
   mRender.drawText (sgui::round (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
@@ -1111,9 +1104,10 @@ void Gui::progressBar (
   const auto name = initializeActivable ("ProgressBar");
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
-  // draw progress bar
+  // draw progress bar and its filling
   const auto box = sf::FloatRect (position, size);
-  mRender.drawProgressBar (box, sgui::clamp (0.f, 1.f, progress));
+  mRender.draw <Widget::ProgressBar> (box);
+  mRender.draw <Widget::ProgressFilling> (box, { sgui::clamp (0.f, 1.f, progress) });
 
   // handle icon hovering
   itemStatus (sf::FloatRect (position, size), name, false, options.info);
@@ -1322,9 +1316,9 @@ bool Gui::dropListItem (
 
   // draw item
   if (selectedName == itemName) {
-    mRender.draw <Widget::ItemBox> (box, ItemState::Active);
+    mRender.draw <Widget::ItemBox> (box, {ItemState::Active});
   } else {
-    mRender.draw <Widget::ItemBox> (box, state);
+    mRender.draw <Widget::ItemBox> (box, {state});
   }
   mRender.drawText (sgui::round (box.position + mPadding), itemName, mStyle.fontColor, mStyle.fontSize.normal);
 
@@ -1412,7 +1406,7 @@ sf::Vector2f Gui::scroller (
   // get scroller status, we always steal active state over the previous widget
   const auto box = sf::FloatRect (pos, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, Tooltip (), true);
-  mRender.draw <Widget::Scroller> (box, state, horizontal);
+  mRender.draw <Widget::Scroller> (box, {state, horizontal});
 
   // if active, compute current scrolling
   if (mGuiState.activeItem == name) {
@@ -1463,7 +1457,7 @@ float Gui::sliderBar (
     barBox.position.y += shift;
     barBox.size.y = barBox.size.x;
   }
-  mRender.draw <Widget::SliderBar> (barBox, state, horizontal);
+  mRender.draw <Widget::SliderBar> (barBox, {state, horizontal});
 
   // return shift for further uses
   return shift;
@@ -1497,7 +1491,7 @@ float Gui::scrollerBar (
       barBox.position.y = std::min (barBox.position.y + barShift, maxPosY - barBox.size.y);
     }
   }
-  mRender.draw <Widget::ScrollerBar> (barBox, state, horizontal);
+  mRender.draw <Widget::ScrollerBar> (barBox, {state, horizontal});
 
   // return shift for further uses
   return shift;
