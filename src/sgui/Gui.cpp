@@ -1550,40 +1550,63 @@ sf::Vector2f Gui::computePosition (
   const Panel& panel,
   const Constraints& constraint)
 {
-  // get parent shift and size
+  // get parent box shift and size
   auto positionShift = sf::Vector2f ();
   auto windowSize = mWindowSize;
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
-    positionShift += parent.position;
+    positionShift = parent.position;
     windowSize = parent.size;
   }
   
   // to compute constrained position
   auto pos = panel.position;
-
-  // center element if requested
   const auto halfSize = panel.size / 2.f;
   const auto center = windowSize / 2.f;
-  if (constraint.centeredVertically) {
-    pos.y = center.y - halfSize.y;
-  }
-  if (constraint.centeredHorizontally) {
-    pos.x = center.x - halfSize.x;
+
+  // constrain horizontal position with alignment 
+  const auto isAlignedLaterally = constraint.horizontal != HorizontalAlignment::None;
+  if (isAlignedLaterally) {
+    if (constraint.horizontal == HorizontalAlignment::Center) {
+      pos.x = center.x - halfSize.x;
+    }
+    if (constraint.horizontal == HorizontalAlignment::Right) {
+      pos.x = windowSize.x - panel.size.x;
+    }
+    if (constraint.horizontal == HorizontalAlignment::Left) {
+      pos.x = 0.f;
+    }
+  // fix element relative to window size
+  } else {
+    if (constraint.relativePosition.x > 0.01f) {
+      pos.x = windowSize.x * constraint.relativePosition.x;
+    }
   }
 
+  // constraint vertical position
+  const auto isAlignedVertically = constraint.vertical != VerticalAlignment::None;
+  if (isAlignedVertically) {
+    if (constraint.vertical == VerticalAlignment::Center) {
+      pos.y = center.y - halfSize.y;
+    }
+    if (constraint.vertical == VerticalAlignment::Bottom) {
+      pos.y = windowSize.y - panel.size.y;
+    }
+    if (constraint.vertical == VerticalAlignment::Top) {
+      pos.y = 0.f;
+    }
   // fix element relative to window size
-  if (constraint.relativePosition.x > 0.01f) {
-    pos.x += windowSize.x * constraint.relativePosition.x;
-  }
-  if (constraint.relativePosition.y > 0.01f) {
-    pos.y += windowSize.y * constraint.relativePosition.y;
+  } else {
+    if (constraint.relativePosition.y > 0.01f) {
+      pos.y = windowSize.y * constraint.relativePosition.y;
+    }
   }
 
   // if there are no constraints or position set, return cursor position
-  if (pos.length () < 0.01f) {
+  if (pos.length () < 0.01f && !isAlignedVertically && !isAlignedLaterally) {
     return mCursorPosition;
   }
+
   // else return constrained position
   return pos + positionShift;
 }

@@ -8,6 +8,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "sgui/Widgets/Options.h"
+
 // for readability
 using json = nlohmann::json;
 
@@ -19,7 +21,6 @@ struct Style;
 struct Panel;
 struct Window;
 struct FontSize;
-struct Constraints;
 struct LayoutEntry;
 
 /**
@@ -63,5 +64,25 @@ void from_json (const json& j, Icon& icon);
  */
 void to_json (json& j, const LayoutEntry& entry);
 void from_json (const json& j, LayoutEntry& entry);
+
+/**
+ * convert VerticalAlignment to/from json
+ */
+NLOHMANN_JSON_SERIALIZE_ENUM (VerticalAlignment, {
+  {VerticalAlignment::None,   "VerticalAlignment::None"},
+  {VerticalAlignment::Top,    "VerticalAlignment::Top"},
+  {VerticalAlignment::Bottom, "VerticalAlignment::Bottom"},
+  {VerticalAlignment::Center, "VerticalAlignment::Center"},
+})
+
+/**
+ * convert HOrizontalAlignment to/from json
+ */
+NLOHMANN_JSON_SERIALIZE_ENUM (HorizontalAlignment, {
+  {HorizontalAlignment::None,   "HorizontalAlignment::None"},
+  {HorizontalAlignment::Left,   "HorizontalAlignment::Left"},
+  {HorizontalAlignment::Right,  "HorizontalAlignment::Right"},
+  {HorizontalAlignment::Center, "HorizontalAlignment::Center"},
+})
 
 } // namespace sgui

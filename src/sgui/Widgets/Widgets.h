@@ -1,16 +1,10 @@
-/**
-  widgets.h
-  Purpose: list widget textures available in gui, and their states
-  @author A. J.
-*/
-
 #pragma once
 
 namespace sgui
 {
 
 /**
- * list widget textures available in gui
+ * @brief List widget textures available in gui
  */
 enum class Widget
 {
@@ -40,7 +34,7 @@ enum class Widget
 
 
 /**
- * list gui elements states
+ * @brief List gui elements states
  */
 enum class ItemState
 {

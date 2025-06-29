@@ -8,6 +8,7 @@ set (SRC
   ${INCROOT}/Internals.h
   ${SRCROOT}/Panel.cpp
   ${INCROOT}/Panel.h
+  ${INCROOT}/Options.h
   ${SRCROOT}/ScrollerInformation.cpp
   ${INCROOT}/ScrollerInformation.h
   ${INCROOT}/Style.h

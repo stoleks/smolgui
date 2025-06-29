@@ -47,7 +47,7 @@ int main()
   /**
    * Window initialization
    */
-  auto window = sf::RenderWindow (sf::VideoMode ({1920u, 1080u}), "Smolgui Demo");
+  auto window = sf::RenderWindow (sf::VideoMode ({1900u, 1000u}), "Smolgui Demo");
   window.setFramerateLimit (60);
 
   /**
@@ -72,11 +72,9 @@ int main()
   panel2.title = texts.get ("closableWindow");
   panel2.closable = true;
   auto panel3 = sgui::Panel ();
-  panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, 0.f);
+  panel3.position = panel2.position + sf::Vector2f (panel2.size.x + 10.f, -60.f);
   panel3.size = {128.f, 40.f};
   panel3.movable = true;
-  auto constraint = sgui::Constraints ();
-  constraint.centeredVertically = true;
   auto sliderValue = 0.1f;
   auto inputValue = 0.f;
   auto multiLine = texts.get ("textMultiLine");
@@ -201,11 +199,34 @@ int main()
         gui.endWindow ();
       }
 
+      auto constraint = sgui::Constraints ();
+      constraint.vertical = sgui::VerticalAlignment::Center;
       gui.beginPanel (panel3, constraint);
       gui.text ("Just a panel");
       gui.text ("With scrollable");
       gui.addSpacing ({0.f, 12.f});
       gui.text ("text");
+      gui.endPanel ();
+      
+      constraint.vertical = sgui::VerticalAlignment::Bottom;
+      gui.beginPanel (panel3, constraint);
+      gui.text ("Bottom panel");
+      gui.endPanel ();
+      
+      constraint.vertical = sgui::VerticalAlignment::Top;
+      gui.beginPanel (panel3, constraint);
+      gui.text ("Top panel");
+      gui.endPanel ();
+      
+      auto horiConstraint = sgui::Constraints ();
+      horiConstraint.horizontal = sgui::HorizontalAlignment::Left;
+      gui.beginPanel (panel3, horiConstraint);
+      gui.text ("Left panel");
+      gui.endPanel ();
+      
+      horiConstraint.horizontal = sgui::HorizontalAlignment::Right;
+      gui.beginPanel (panel3, horiConstraint);
+      gui.text ("Right panel");
       gui.endPanel ();
     }
     gui.endFrame ();

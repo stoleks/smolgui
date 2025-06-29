@@ -77,15 +77,15 @@ void from_json (const json& j, Panel& panel) {
  */
 void to_json (json& j, const Constraints& constraint) {
   j = json {
-    ToJson (constraint, centeredVertically),
-    ToJson (constraint, centeredHorizontally),
+    ToJson (constraint, vertical),
+    ToJson (constraint, horizontal),
     ToJson (constraint, relativePosition)
   };
 }
 
 void from_json (const json& j, Constraints& constraint) {
-  FromJson (constraint, centeredVertically);
-  FromJson (constraint, centeredHorizontally);
+  FromJson (constraint, vertical);
+  FromJson (constraint, horizontal);
   FromJson (constraint, relativePosition);
 }
 
