@@ -27,13 +27,14 @@ struct Panel
          const bool closed = false,
          const bool reduced = false);
   // data
-  bool clipped  = true;
-  bool closable = false;
-  bool closed   = false;
-  bool hasMenu  = false;
-  bool movable  = true;
-  bool reduced  = false;
-  bool visible  = true;
+  bool clipped    = true;
+  bool closable   = false;
+  bool closed     = false;
+  bool hasMenu    = false;
+  bool movable    = true;
+  bool reduced    = false;
+  bool visible    = true;
+  bool scrollable = true;
   sf::Vector2f size = {};
   sf::Vector2f position = {};
   std::string title = "";

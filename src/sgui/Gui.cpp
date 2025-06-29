@@ -583,7 +583,9 @@ void Gui::beginPanel (
   mCursorPosition = position + mPadding + sf::Vector2f (0.f, 1.5f*mPadding.y);
 
   // scroll through panel if requested
-  scrollThroughPanel (panel, panelBox, state, options.horizontal);
+  if (settings.scrollable) {
+    scrollThroughPanel (panel, panelBox, state, options.horizontal);
+  }
 }
 
 /////////////////////////////////////////////////
