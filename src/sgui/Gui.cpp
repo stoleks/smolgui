@@ -776,13 +776,13 @@ bool Gui::tooltipNeedReset ()
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-void Gui::separation ()
+void Gui::separation (const float thick)
 {
   // compute line position and size
   auto size = sf::Vector2f ();
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
-    const auto thickness = 0.75f * buttonHeight ();
+    const auto thickness = thick * buttonHeight ();
     if (parent.horizontal) {
       size.x = thickness;
       size.y = parent.size.y - 3.f*mPadding.y;
@@ -973,15 +973,15 @@ void Gui::inputText (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("InputText");
-  const auto basePosition = mCursorPosition;
-  auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto basePosition = computeRelativePosition (mCursorPosition, options.displacement);
 
   // draw description before the box
   auto descriptionSize = sf::Vector2f ();
+  auto boxPosition = basePosition;
   if (options.description != "") {
-    mRender.drawText (sgui::round (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
+    mRender.drawText (sgui::round (basePosition), options.description, mStyle.fontColor, mStyle.fontSize.normal);
     descriptionSize = normalSizeOf (options.description);
-    position.x += descriptionSize.x;
+    boxPosition.x += descriptionSize.x + mPadding.x;
   }
 
   // format text to fit in the parent box or the requested box
@@ -991,13 +991,13 @@ void Gui::inputText (
   if (!mGroups.empty ()) {
     auto width = mGroups.top ().size.x - 2.f*mPadding.x - descriptionSize.x;
     if (width < 0.f) {
-      position.y += descriptionSize.y;
+      boxPosition.y += descriptionSize.y;
       width += descriptionSize.x;
     }
     if (boxLength < 0.01f) {
       boxSize = sf::Vector2f (width, normalTextHeight ());
     } else {
-      boxSize.x = std::min (boxSize.x, width - mPadding.x);
+      boxSize.x = std::min (boxSize.x, width - 2.f*mPadding.x);
     }
   } else if (boxLength < 0.01f) {
     const auto width = normalSizeOf ("sample text length").x;
@@ -1006,7 +1006,7 @@ void Gui::inputText (
   }
 
   // get status of the widget
-  const auto box = sf::FloatRect (position, boxSize);
+  const auto box = sf::FloatRect (boxPosition, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   // take keyboard focus if clicked
   if (mGuiState.activeItem == name) {
@@ -1026,23 +1026,25 @@ void Gui::inputText (
   
   // clip text outside of the box
   const auto clipBox = handleParentClipBox (box);
-  beginGroup (options.horizontal, position, boxSize);
-  auto& textPanel = mGroups.top ();
-  auto& groupLayer = textPanel.clippingLayer;
-  groupLayer = setClipping (clipBox);
-
-  // draw formatted text and scroll through it if necessary
-  const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
-  mCursorPosition = position;
-  scrollThroughPanel (textPanel, box, state, options.horizontal);
-  mRender.drawText (sgui::round (mCursorPosition + mPadding), formatted, mStyle.fontColor, mStyle.fontSize.normal);
-  updateSpacing (normalSizeOf (formatted));
+  beginGroup (options.horizontal, boxPosition, boxSize); 
+  {
+    auto& textPanel = mGroups.top ();
+    auto& groupLayer = textPanel.clippingLayer;
+    groupLayer = setClipping (clipBox);
+    // draw formatted text and scroll through it if necessary
+    const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
+    mCursorPosition = boxPosition;
+    scrollThroughPanel (textPanel, box, state, options.horizontal);
+    const auto textPosition = sgui::round (mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y));
+    mRender.drawText (textPosition, formatted, mStyle.fontColor, mStyle.fontSize.normal);
+    updateSpacing (normalSizeOf (formatted));
+  }
   endGroup  ();
   removeClipping ();
 
   // update cursor position and remove clipping
   mCursorPosition = basePosition;
-  updateSpacing (boxSize + sf::Vector2f (descriptionSize.x, 0.f));
+  updateSpacing (mPadding + sf::Vector2f { boxSize.x + descriptionSize.x, boxSize.y });
 }
 
 /////////////////////////////////////////////////
@@ -1085,7 +1087,7 @@ void Gui::inputKey (
   mRender.drawText (sgui::round (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // update cursor position
-  updateSpacing ({boxSize.x + descrWidth, boxSize.y});
+  updateSpacing ({ boxSize.x + descrWidth, boxSize.y });
 }
 
 
@@ -1320,7 +1322,8 @@ bool Gui::dropListItem (
   } else {
     mRender.draw <Widget::ItemBox> (box, {state});
   }
-  mRender.drawText (sgui::round (box.position + mPadding), itemName, mStyle.fontColor, mStyle.fontSize.normal);
+  const auto textPos = sgui::round (box.position + mPadding);
+  mRender.drawText (textPos, itemName, mStyle.fontColor, mStyle.fontSize.normal);
 
   // return selection status
   return status;
@@ -1685,7 +1688,7 @@ float Gui::titleTextHeight () const
 /////////////////////////////////////////////////
 float Gui::normalTextHeight () const
 {
-  return mStyle.fontSize.normal + 4.f*mPadding.y;
+  return mStyle.fontSize.normal + 6.f*mPadding.y;
 }
 
 /////////////////////////////////////////////////

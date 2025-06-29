@@ -60,7 +60,7 @@ int main()
   gui.setView (window);
 
   /**
-   * Some gui settings
+   * Some gui settings and data
    */
   auto panel = sgui::Panel ();
   panel.position = { 16.f, 256.f};
@@ -81,6 +81,8 @@ int main()
   auto inputValue = 0.f;
   auto multiLine = texts.get ("textMultiLine");
   auto oneLine = texts.get ("textOneLine");
+  auto oneLine2 = texts.get ("textOneLine");
+  auto oneLine3 = texts.get ("textOneLine");
   auto vector = sf::Vector2f ();
   auto vector3 = sf::Vector3f ();
   bool displayFunction = false;
@@ -190,8 +192,12 @@ int main()
         gui.inputText (oneLine, {}, {texts.get ("oneLine")});
         gui.separation ();
         gui.inputNumber (inputValue, {"Input number with text!"});
+        gui.inputText (oneLine2, {}, {texts.get ("oneLine")});
         gui.inputVector2 (vector, {"Input vector2: "});
+        gui.inputText (oneLine3, {}, {texts.get ("oneLine")});
         gui.inputVector3 (vector3, {"Input vector3: "});
+        gui.inputText (oneLine3, {}, {texts.get ("oneLine")});
+        gui.inputVector2 (vector, {"Input vector2: "});
         gui.endWindow ();
       }
 

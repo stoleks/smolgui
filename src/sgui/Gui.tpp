@@ -137,7 +137,7 @@ void Gui::inputNumber (
   // draw label and number
   const auto numStr = label + toString (number);
   const auto numWidth = normalSizeOf (numStr).x;
-  auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, 0);
+  auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
   mRender.drawText (sgui::round (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
 
   // draw description

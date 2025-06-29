@@ -211,12 +211,12 @@ public:
          const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
-  // as a general note for all widgets, position (if different from zero) will
-  // override automatic placement and are relative to group
+  // as a general note for all widgets, displacement in options (if different from zero) 
+  // will override automatic placement and are relative to group
   /**
    * @brief draw a simple line that span the current group width
    */
-  void separation ();
+  void separation (const float thickness = 0.75f);
   /**
    * @brief display a button that return true if pressed
    */
