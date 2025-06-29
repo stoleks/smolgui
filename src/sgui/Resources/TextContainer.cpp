@@ -1,6 +1,8 @@
 #include "TextContainer.h"
 #include "LoadLookupTable.h"
 
+#include <spdlog/spdlog.h>
+
 namespace sgui
 {
 /////////////////////////////////////////////////
@@ -79,13 +81,17 @@ void TextContainer::remove (const std::string& entry)
 /////////////////////////////////////////////////
 std::string& TextContainer::get (const std::string& entry)
 {
-  return m_texts.at (m_activeTongue).at (entry);
+  return const_cast <std::string&> (std::as_const (*this).get (entry));
 }
 
 /////////////////////////////////////////////////
 const std::string& TextContainer::get (const std::string& entry) const
 {
-  return m_texts.at (m_activeTongue).at (entry);
+  if (has (entry)) {
+    return m_texts.at (m_activeTongue).at (entry);
+  }
+  spdlog::warn ("TextContainer::get : entry {} doesn't exist, will return entry as is", entry);
+  return entry;
 }
 
 /////////////////////////////////////////////////

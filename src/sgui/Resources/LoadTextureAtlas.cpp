@@ -20,14 +20,8 @@ bool loadFromFile (
   // save json data into atlas
   for (auto& entry : allEntries.items ()) {
     const auto key = entry.key ();
-    // get atlas dimension
-    if (key == "TextureDimension") {
-      atlas.setTextureDimension (entry.value ().get <sf::Vector2u> ());
-    // get every atlas entries
-    } else {
-      auto frames = entry.value ().get <Frames> ();
-      atlas.add (key, std::move (frames.texture), frames.count);
-    }
+    auto frames = entry.value ().get <Frames> ();
+    atlas.add (key, std::move (frames.texture), frames.count);
   }
   return true;
 }
@@ -39,7 +33,6 @@ void saveInFile (
 {
   json out;
   // save data into json
-  out ["TextureDimension"] = atlas.textureDimension ();
   for (const auto& entry : atlas) {
     out [entry.first] = entry.second;
   }
@@ -51,15 +44,15 @@ void saveInFile (
 /////////////////////////////////////////////////
 void to_json (json& j, const Frames& frames) {
   j = json {
-    {"count",   frames.count},
-    {"texture", frames.texture}
+    ToJson (frames, count),
+    ToJson (frames, texture)
   };
 }
 
 /////////////////////////////////////////////////
 void from_json (const json& j, Frames& frames) {
-  j.at ("count")  .get_to (frames.count);
-  j.at ("texture").get_to (frames.texture);
+  FromJson (frames, count);
+  FromJson (frames, texture);
 }
 
 } // namespace sgui

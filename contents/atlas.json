@@ -1,9 +1,4 @@
 {
-  "TextureDimension": {
-    "x": 2048,
-    "y": 1024
-  },
-
   "Button::Neu": { "count": 1, "texture": { "position": { "x": 0, "y":   0 }, "size": { "x": 128, "y": 128 } } },
   "Button::Hov": { "count": 1, "texture": { "position": { "x": 0, "y": 128 }, "size": { "x": 128, "y": 128 } } },
   "Button::Act": { "count": 1, "texture": { "position": { "x": 0, "y": 256 }, "size": { "x": 128, "y": 128 } } },
@@ -88,9 +83,15 @@
   "MenuItemBox::Hov": { "count": 1, "texture": { "position": { "x": 1920, "y": 128 }, "size": { "x": 128, "y": 128 } } },
   "MenuItemBox::Act": { "count": 1, "texture": { "position": { "x": 1920, "y": 256 }, "size": { "x": 128, "y": 128 } } },
 
-  "ItemBox::Neu": { "count": 1, "texture": { "position": { "x": 1920, "y":   0 }, "size": { "x": 128, "y": 128 } } },
-  "ItemBox::Hov": { "count": 1, "texture": { "position": { "x": 1920, "y": 128 }, "size": { "x": 128, "y": 128 } } },
-  "ItemBox::Act": { "count": 1, "texture": { "position": { "x": 1920, "y": 256 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Neu::Left": { "count": 1, "texture": { "position": { "x": 1920, "y":   0 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Neu::Cent": { "count": 1, "texture": { "position": { "x": 1920, "y":   0 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Neu::Righ": { "count": 1, "texture": { "position": { "x": 1920, "y":   0 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Hov::Left": { "count": 1, "texture": { "position": { "x": 1920, "y": 128 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Hov::Cent": { "count": 1, "texture": { "position": { "x": 1920, "y": 128 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Hov::Righ": { "count": 1, "texture": { "position": { "x": 1920, "y": 128 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Act::Left": { "count": 1, "texture": { "position": { "x": 1920, "y": 256 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Act::Cent": { "count": 1, "texture": { "position": { "x": 1920, "y": 256 }, "size": { "x": 128, "y": 128 } } },
+  "ItemBox::Act::Righ": { "count": 1, "texture": { "position": { "x": 1920, "y": 256 }, "size": { "x": 128, "y": 128 } } },
 
   "FootnoteBox::Neu": { "count": 1, "texture": { "position": { "x": 0, "y": 384 }, "size": { "x": 128, "y": 128 } } },
   "FootnoteBox::Hov": { "count": 1, "texture": { "position": { "x": 0, "y": 512 }, "size": { "x": 128, "y": 128 } } },

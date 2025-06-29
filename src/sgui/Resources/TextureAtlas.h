@@ -56,15 +56,6 @@ public:
    */
   void remove (const std::string& entry);
   /**
-   * @brief Get texture dimension of the atlas
-   * @return Size of the texture image.
-   */
-  const sf::Vector2u& textureDimension () const;
-  /**
-   * @brief Set texture dimension of the atlas
-   */
-  void setTextureDimension (const sf::Vector2u& dim);
-  /**
    * @brief Get number of textures stored in the atlas
    * @return Number of textures stored.
    */

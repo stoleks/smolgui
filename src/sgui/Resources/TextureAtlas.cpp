@@ -45,21 +45,6 @@ void TextureAtlas::remove (
 }
 
 /**
- * getter and setter
- */
-/////////////////////////////////////////////////
-const sf::Vector2u& TextureAtlas::textureDimension () const
-{
-  return mTextureDimension;
-}
-
-/////////////////////////////////////////////////
-void TextureAtlas::setTextureDimension (const sf::Vector2u& dim)
-{
-  mTextureDimension = dim;
-}
-
-/**
  * get entry information
  */
 /////////////////////////////////////////////////
