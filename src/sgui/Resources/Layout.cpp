@@ -1,5 +1,6 @@
 #include "Layout.h"
-#include "LoadLayout.h"
+
+#include "sgui/Serialization/LoadLayout.h"
 
 namespace sgui
 {

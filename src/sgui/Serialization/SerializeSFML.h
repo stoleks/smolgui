@@ -1,9 +1,3 @@
-/**
-  SerializeSFML.h
-  Purpose: Serialize/deserialize sfml object in json
-  @author: A. J.
-*/
-
 #pragma once
 
 #include <nlohmann/json.hpp>
@@ -21,8 +15,7 @@ namespace sf
 /**
  * convert color to/from json
  */
-void to_json (json& j, const sf::Color& color);
-void from_json (const json& j, sf::Color& color);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Color, r, g, b, a);
 
 /**
  * convert Vector2 to/from json

@@ -1,69 +1,43 @@
-/**
-  SerializeGUI.h
-  Purpose: Serialize/deserialize gui objects
-  @author: A. J.
-*/
-
 #pragma once
 
 #include <nlohmann/json.hpp>
-
-#include "sgui/Widgets/Options.h"
+#include "sgui/Widgets/Panel.h"
+#include "sgui/Resources/Layout.h"
+#include "sgui/Resources/TextureAtlas.h"
 
 // for readability
 using json = nlohmann::json;
 
 namespace sgui
 {
-// forward declaration
-struct Icon;
-struct Style;
-struct Panel;
-struct Window;
-struct FontSize;
-struct LayoutEntry;
-
 /**
- * convert FontSize to/from json
+ * Fontsize
  */
-void to_json (json& j, const FontSize& size);
-void from_json (const json& j, FontSize& size);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (FontSize, normal, title, subtitle, footnote);
 /**
- * convert Style to/from json
+ * Style
  */
-void to_json (json& j, const Style& style);
-void from_json (const json& j, Style& style);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Style, fontSize, fontColor, itemSpacing, itemInnerSpacing);
 /**
- * convert Panel to/from json
+ * Panel
  */
-void to_json (json& j, const Panel& panel);
-void from_json (const json& j, Panel& panel);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Panel, movable, visible, closable, size, position, title);
 /**
- * convert Constraints to/from json
+ * Constraints
  */
-void to_json (json& j, const Constraints& constraint);
-void from_json (const json& j, Constraints& constraint);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Constraints, vertical, horizontal, relativePosition);
 /**
- * convert Window to/from json
+ * Window
  */
-void to_json (json& j, const Window& window);
-void from_json (const json& j, Window& window);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Window, panel, constraints);
 /**
- * convert Icon to/from json
+ * Icon
  */
-void to_json (json& j, const Icon& icon);
-void from_json (const json& j, Icon& icon);
-
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Icon, name, position);
 /**
- * convert LayoutEntry to/from json
+ * LayoutEntry
  */
-void to_json (json& j, const LayoutEntry& entry);
-void from_json (const json& j, LayoutEntry& entry);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (LayoutEntry, icon, panel, position, constraints, window);
 
 /**
  * convert VerticalAlignment to/from json
@@ -74,7 +48,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM (VerticalAlignment, {
   {VerticalAlignment::Bottom, "VerticalAlignment::Bottom"},
   {VerticalAlignment::Center, "VerticalAlignment::Center"},
 })
-
 /**
  * convert HOrizontalAlignment to/from json
  */

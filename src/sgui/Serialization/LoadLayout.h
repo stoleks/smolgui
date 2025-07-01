@@ -1,9 +1,3 @@
-/**
-  LoadLayout.h
-  Purpose: save and load gui layout from json.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <string>

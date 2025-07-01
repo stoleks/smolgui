@@ -3,15 +3,23 @@ set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Serialization)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Serialization)
 
 # all source files
-set (SRC
-  ${SRCROOT}/LoadJson.cpp
-  ${INCROOT}/LoadJson.h
+set (SERIALIZE_SRC
   ${INCROOT}/SerializeCore.h
-  ${SRCROOT}/SerializeGUI.cpp
   ${INCROOT}/SerializeGUI.h
-  ${SRCROOT}/SerializeSFML.cpp
   ${INCROOT}/SerializeSFML.h
 )
-source_group ("" FILES ${SRC})
+source_group ("" FILES ${SERIALIZE_SRC})
 
-target_sources (${PROJECT_NAME} PRIVATE ${SRC})
+set (LOAD_SRC
+  ${INCROOT}/LoadLookupTable.h
+  ${SRCROOT}/LoadJson.cpp
+  ${INCROOT}/LoadJson.h
+  ${SRCROOT}/LoadLayout.cpp
+  ${INCROOT}/LoadLayout.h
+  ${SRCROOT}/LoadTextureAtlas.cpp
+  ${INCROOT}/LoadTextureAtlas.h
+)
+source_group ("load resources" FILES ${LOAD_SRC})
+
+target_sources (${PROJECT_NAME}
+  PRIVATE ${SERIALIZE_SRC} ${LOAD_SRC})

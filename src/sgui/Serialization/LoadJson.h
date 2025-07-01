@@ -1,8 +1,3 @@
-/**
-  loadJson.h
-  Purpose: simple functions to load/save json in file
-*/
-
 #pragma once
 
 #include <iomanip>

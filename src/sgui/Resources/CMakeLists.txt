@@ -2,16 +2,6 @@
 set(INCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Resources)
 set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Resources)
 
-# all source files
-set (LOAD_SRC
-  ${SRCROOT}/LoadLayout.cpp
-  ${INCROOT}/LoadLayout.h
-  ${INCROOT}/LoadLookupTable.h
-  ${SRCROOT}/LoadTextureAtlas.cpp
-  ${INCROOT}/LoadTextureAtlas.h
-)
-source_group ("load resources" FILES ${LOAD_SRC})
-
 set (SRC
   ${SRCROOT}/Layout.cpp
   ${INCROOT}/Layout.h
@@ -27,5 +17,4 @@ set (SRC
 )
 source_group ("" FILES ${SRC})
 
-target_sources (${PROJECT_NAME}
-  PRIVATE ${SRC} ${LOAD_SRC})
+target_sources (${PROJECT_NAME} PRIVATE ${SRC})

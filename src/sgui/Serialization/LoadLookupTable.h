@@ -1,9 +1,3 @@
-/**
-  LoadLookupTable.h
-  Purpose : Implement basic routines to save and load lookup table.
-  @author A. J.
-*/
-
 #pragma once
 
 #include "sgui/Serialization/LoadJson.h"

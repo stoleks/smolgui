@@ -2,7 +2,6 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Layout.h"
 #include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"
 #include "sgui/Serialization/SerializeSFML.h"

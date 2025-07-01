@@ -48,9 +48,9 @@ struct Window
 {
   Window () = default;
   // data
-  Panel panel;
-  Constraints constraints;
-  WidgetOptions options;
+  Panel panel = {};
+  Constraints constraints = {};
+  WidgetOptions options = {};
 };
 
 } // namespace sgui

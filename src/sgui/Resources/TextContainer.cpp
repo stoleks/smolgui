@@ -1,6 +1,6 @@
 #include "TextContainer.h"
-#include "LoadLookupTable.h"
 
+#include "sgui/Serialization/LoadLookupTable.h"
 #include <spdlog/spdlog.h>
 
 namespace sgui

@@ -1,9 +1,3 @@
-/**
-  serializeCore.h
-  Purpose : Implement to/from json conversion for LookupTable and ObjectPool.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <unordered_map>
