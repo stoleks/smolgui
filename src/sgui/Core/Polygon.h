@@ -51,4 +51,4 @@ constexpr sf::FloatRect boundingBox (const Polygon<N>& polygon);
 } // namespace sgui
 
 
-#include "polygon.tpp"
+#include "Polygon.tpp"

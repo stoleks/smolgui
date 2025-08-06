@@ -102,4 +102,4 @@ private:
 
 } // namespace sgui
 
-#include "objectPool.tpp"
+#include "ObjectPool.tpp"

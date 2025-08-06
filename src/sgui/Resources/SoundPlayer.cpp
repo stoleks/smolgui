@@ -1,4 +1,4 @@
-#include "soundPlayer.h"
+#include "SoundPlayer.h"
 
 #include <SFML/Audio/Listener.hpp>
 

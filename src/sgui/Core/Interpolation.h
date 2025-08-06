@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <string>
+#include <cstdint>
 #include <type_traits>
 
 // forward declaration

@@ -84,4 +84,4 @@ namespace sgui {
   using TextHolder    = ResourcesHolder <TextContainer>;
 }
 
-#include "resourcesHolder.tpp"
+#include "ResourcesHolder.tpp"

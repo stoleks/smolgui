@@ -9,9 +9,9 @@ set (SRC
   ${INCROOT}/GuiRender.tpp
   ${SRCROOT}/Plotter.cpp
   ${INCROOT}/Plotter.h
-  ${SRCROOT}/primitiveShapeRender.cpp
-  ${INCROOT}/primitiveShapeRender.tpp
-  ${INCROOT}/primitiveShapeRender.h
+  ${SRCROOT}/PrimitiveShapeRender.cpp
+  ${INCROOT}/PrimitiveShapeRender.tpp
+  ${INCROOT}/PrimitiveShapeRender.h
 )
 source_group ("" FILES ${SRC})
 

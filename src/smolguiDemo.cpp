@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "sgui/sgui.h"
-#include "sgui/parser/Formula.h"
+#include "sgui/Parser/Formula.h"
 
 int main()
 {

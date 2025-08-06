@@ -9,7 +9,7 @@
 #include <SFML/Graphics/Transformable.hpp>
 
 #include "TextureMeshes.h"
-#include "meshFunctions.h"
+#include "MeshFunctions.h"
 #include "sgui/Core/Shapes.h"
 #include "sgui/Widgets/Widgets.h"
 #include "sgui/Resources/TextureAtlas.h"

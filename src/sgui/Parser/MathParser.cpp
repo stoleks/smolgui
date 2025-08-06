@@ -1,6 +1,7 @@
 #include "MathParser.h"
 
 #include <stack>
+#include <cstdint>
 #include <iostream>
 
 namespace sgui
