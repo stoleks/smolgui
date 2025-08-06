@@ -2,6 +2,7 @@
 
 #include <nlohmann/json.hpp>
 #include "sgui/Resources/TextureAtlas.h"
+#include "SerializeSFML.h"
 
 // for readability
 using json = nlohmann::json;

@@ -4,6 +4,7 @@
 #include "sgui/Widgets/Panel.h"
 #include "sgui/Resources/Layout.h"
 #include "sgui/Resources/TextureAtlas.h"
+#include "SerializeSFML.h"
 
 // for readability
 using json = nlohmann::json;
