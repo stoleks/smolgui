@@ -49,6 +49,16 @@ int main()
   gui.setView (window);
 
   /**
+   * check that texture size is valid
+   */
+  const auto tex = std::string ("Icon::reduce");
+  const auto texSize = gui.textureSize (tex);
+  spdlog::info ("Size of {} is ({}, {}), it should be (128, 128)", tex, texSize.x, texSize.y);
+  const auto tex2 = std::string ("Separation::Act::Cent");
+  const auto texSize2 = gui.textureSize (tex2);
+  spdlog::info ("Size of {} is ({}, {}), it should be (64, 128)", tex2, texSize2.x, texSize2.y);
+
+  /**
    * Load gui layout and set data
    */
   auto mainPanel = layout.get <sgui::Panel> ("mainPanel");
@@ -102,13 +112,16 @@ int main()
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
         gui.separation ();
-        // Display a function
+        gui.text ("Centered text !", {sgui::HorizontalAlignment::Center});
+        gui.separation ();
+        // set function
         const auto phaseMax = 10.f;
         const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
         gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
         gui.progressBar (sliderValue / phaseMax, gui.normalSizeOf ("b").y * sf::Vector2f (24.f, 4.f));
         gui.sameLine ();
         gui.text (fmt::format ("{} %", sliderValue / phaseMax * 100.f));
+        // display it
         gui.checkBox (displayFunction, {"Display a function"});
         if (displayFunction) {
           auto func = [t, sliderValue] (float x) {
