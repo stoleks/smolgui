@@ -162,7 +162,7 @@ void Gui::inputVector2 (
   // draw description
   auto disp = options.displacement;
   if (options.description != "") {
-    text (options.description, options.displacement);
+    text (options.description, {}, options);
     sameLine ();
     disp = sf::Vector2f ();
   }
@@ -184,7 +184,7 @@ void Gui::inputVector3 (
   // draw description
   auto disp = options.displacement;
   if (options.description != "") {
-    text (options.description, options.displacement);
+    text (options.description, {}, options);
     sameLine ();
     disp = sf::Vector2f ();
   }

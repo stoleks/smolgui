@@ -28,13 +28,23 @@ enum class HorizontalAlignment
   None
 };
 
+/**
+ * @brief Text type
+ */
+enum class TextType {
+  Footnote,
+  Subtitle,
+  Normal,
+  Title
+};
+
+
 /////////////////////////////////////////////////
 /**
  * @brief Store constraints on position for gui panel. Alignment always precede relative position.
  */
 struct Constraints
 {
-  Constraints () = default;
   // data, zero means no constraints for position
   VerticalAlignment vertical = VerticalAlignment::None;
   HorizontalAlignment horizontal = HorizontalAlignment::None;
@@ -96,6 +106,20 @@ struct WidgetOptions
   sf::Vector2f displacement = {};
   std::string description = "";
   Tooltip info = {};
+};
+
+/**
+ * @brief Store text options : boxSize, centered, type, etc.
+ */
+struct TextOptions
+{
+  TextOptions () = default;
+  TextOptions (const sf::Vector2f& size) : boxSize (size) {}
+  // data
+  VerticalAlignment vertical = VerticalAlignment::None;
+  HorizontalAlignment horizontal = HorizontalAlignment::None;
+  TextType type = TextType::Normal;
+  sf::Vector2f boxSize = {};
 };
 
 } // namespace sgui

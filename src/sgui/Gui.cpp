@@ -921,15 +921,22 @@ void Gui::checkBox (
 /////////////////////////////////////////////////
 void Gui::text (
   const std::string& text,
-  const sf::Vector2f& boxSize,
+  const TextOptions& textOptions,
   const WidgetOptions& options)
 {
   // compute text position
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // format the text to fit in the box if one is furnished
-  const auto fontSize = mStyle.fontSize.normal;
-  const auto formatted = formatText (text, boxSize, fontSize);
+  auto fontSize = mStyle.fontSize.normal;
+  if (textOptions.type == TextType::Title) {
+    fontSize = mStyle.fontSize.title;
+  } else if (textOptions.type == TextType::Subtitle) {
+    fontSize = mStyle.fontSize.subtitle;
+  } else if (textOptions.type == TextType::Footnote) {
+    fontSize = mStyle.fontSize.footnote;
+  }
+  const auto formatted = formatText (text, textOptions.boxSize, fontSize);
 
   // draw text and update cursor position
   mRender.drawText (sgui::round (position), formatted, mStyle.fontColor, fontSize);
@@ -950,7 +957,7 @@ void Gui::inputColor (
   // draw description
   auto disp = options.displacement;
   if (options.description != "") {
-    text (options.description, options.displacement);
+    text (options.description, {}, options);
     sameLine ();
     disp = sf::Vector2f ();
   }
@@ -970,7 +977,7 @@ void Gui::inputColor (
 /////////////////////////////////////////////////
 void Gui::inputText (
   std::string& text,
-  const sf::Vector2f& boxSizeParam,
+  const TextOptions& textOptions,
   const WidgetOptions& options)
 {
   // initialize widget name and position
@@ -987,8 +994,8 @@ void Gui::inputText (
   }
 
   // format text to fit in the parent box or the requested box
-  auto boxSize = boxSizeParam;
-  const auto boxLength = boxSizeParam.length ();
+  auto boxSize = textOptions.boxSize;
+  const auto boxLength = boxSize.length ();
   const auto textWidth = normalSizeOf (text).x;
   if (!mGroups.empty ()) {
     auto width = mGroups.top ().size.x - 2.f*mPadding.x - descriptionSize.x;

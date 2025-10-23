@@ -186,7 +186,7 @@ int main()
         gui.text ("Decrease normal font size");
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
-        gui.inputText (multiLine, {256.f, 64.f}, {texts.get ("multiLine")});
+        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
         gui.inputText (oneLine, {}, {texts.get ("oneLine")});
         gui.separation ();
         gui.inputNumber (inputValue, {"Input number with text!"});

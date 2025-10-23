@@ -263,7 +263,7 @@ public:
    */
   void text (
          const std::string& text,
-         const sf::Vector2f& boxSize = {},
+         const TextOptions& textOptions = {},
          const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
@@ -311,7 +311,7 @@ public:
    */
   void inputText (
          std::string& text,
-         const sf::Vector2f& boxSize = {},
+         const TextOptions& textOptions = {},
          const WidgetOptions& options = {});
   /**
    * @brief modify a specific character
