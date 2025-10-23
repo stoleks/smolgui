@@ -109,7 +109,7 @@ void Gui::inputNumber (
   // compute text box dimension
   auto width = normalSizeOf (label + "10000").x;
   if (!fixedWidth) {
-    width = std::max (width, normalSizeOf (label + toString (number)).x);
+    width = std::max (width, normalSizeOf (label + toString (number, 2)).x);
   }
   const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, normalTextHeight ());
 
@@ -135,7 +135,7 @@ void Gui::inputNumber (
   mRender.draw <Widget::TextBox> (box, {state});
 
   // draw label and number
-  const auto numStr = label + toString (number);
+  const auto numStr = label + toString (number, 2);
   const auto numWidth = normalSizeOf (numStr).x;
   auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
   mRender.drawText (sgui::round (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
