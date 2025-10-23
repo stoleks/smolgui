@@ -114,6 +114,8 @@ struct WidgetOptions
 struct TextOptions
 {
   TextOptions () = default;
+  TextOptions (const VerticalAlignment alignment) : vertical (alignment) {}
+  TextOptions (const HorizontalAlignment alignment) : horizontal (alignment) {}
   TextOptions (const sf::Vector2f& size) : boxSize (size) {}
   // data
   VerticalAlignment vertical = VerticalAlignment::None;

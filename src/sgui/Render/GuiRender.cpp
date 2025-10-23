@@ -192,6 +192,13 @@ void GuiRender::unsetTooltipMode ()
   mTooltipMode = false;
 }
 
+/////////////////////////////////////////////////
+sf::Vector2f GuiRender::textureSize (const std::string& texture) const
+{
+  const auto mesh = mTexturesUV.texture (texture);
+  return mesh[4].texCoords - mesh[0].texCoords;
+}
+
 
 /////////////////////////////////////////////////
 // Implementation of draw interfaces

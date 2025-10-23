@@ -234,6 +234,18 @@ bool Gui::isActive () const
     || mGuiState.keyboardFocus != NullItemID;
 }
 
+/////////////////////////////////////////////////
+sf::Vector2f Gui::parentGroupSize ()
+{
+  return getParentGroup ().size;
+}
+
+/////////////////////////////////////////////////
+sf::Vector2f Gui::textureSize (const std::string& texture) const
+{
+  return mRender.textureSize (texture);
+}
+
 
 /**
  * ----------------------------------------------
@@ -925,7 +937,18 @@ void Gui::text (
   const WidgetOptions& options)
 {
   // compute text position
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  
+  // center text vertically if asked
+  const auto parent = getParentGroup ();
+  const auto textSize = normalSizeOf (text);
+  if (textOptions.vertical == VerticalAlignment::Center) {
+    position.y = parent.position.y + 0.5f*(parent.size.y - textSize.y);
+  }
+  // or horizontally
+  if (textOptions.horizontal == HorizontalAlignment::Center) {
+    position.x = parent.position.x + 0.5f*(parent.size.x - textSize.x);
+  }
 
   // format the text to fit in the box if one is furnished
   auto fontSize = mStyle.fontSize.normal;

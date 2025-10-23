@@ -144,6 +144,14 @@ public:
    *   called before endFrame.
    */
   bool isActive () const;
+  /**
+   * @brief to get size of the active parent group
+   */
+  sf::Vector2f parentGroupSize ();
+  /**
+   * @brief to get texture size as stored in the uv mapper
+   */
+  sf::Vector2f textureSize (const std::string& texture) const;
 
   ///////////////////////////////////////////////
   /**

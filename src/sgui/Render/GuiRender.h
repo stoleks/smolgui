@@ -121,6 +121,10 @@ public:
    * @brief unset specific render for tooltip
    */
   void unsetTooltipMode ();
+  /**
+   * @brief allow access to a texture size, as stored in the atlas
+   */
+  sf::Vector2f textureSize (const std::string& texture) const;
 private:
   /**
    * to initialize clipping layers and their mesh
