@@ -2,8 +2,8 @@
 #include <chrono>
 #include <thread>
 
-#include "sgui/sgui.h"
-#include "sgui/Parser/Formula.h"
+#include "sgui/Gui.h"
+#include "sgui/Resources/Layout.h"
 
 int main()
 {
@@ -16,7 +16,6 @@ int main()
   auto fonts = sgui::FontHolder ();
   fonts.load ("normal", ContentsDir"/Luciole-Regular.ttf");
   fonts.load ("bold",   ContentsDir"/Luciole-Bold.ttf");
-  fonts.load ("math",   ContentsDir"/latinmodern-math.otf");
   // textures atlas
   auto atlas = sgui::TextureAtlas ();
   atlas.loadFromFile (ContentsDir"/atlas.json");
@@ -31,18 +30,9 @@ int main()
   texts.loadFromFile (ContentsDir"/english_demo.json", "english");
   texts.loadFromFile (ContentsDir"/french_demo.json", "french");
   texts.setTongue ("english");
-  // sounds
-  auto sounds = sgui::SoundHolder ();
-  sounds.load ("Button",       ContentsDir"/wood1.wav");
-  sounds.load ("CheckBox",     ContentsDir"/wood2.wav");
-  sounds.load ("Slider",       ContentsDir"/wood2.wav");
-  sounds.load ("Scroller",     ContentsDir"/wood1.wav");
-  sounds.load ("MenuItem",     ContentsDir"/wood2.wav");
-  sounds.load ("InputText",    ContentsDir"/metallic1.wav");
-  sounds.load ("InputKey",     ContentsDir"/metallic2.wav");
-  sounds.load ("InputNumber",  ContentsDir"/metallic1.wav");
-  sounds.load ("DropList",     ContentsDir"/metallic2.wav");
-  sounds.load ("DropListItem", ContentsDir"/metallic1.wav");
+  // layout
+  auto layout = sgui::Layout ();
+  layout.loadFromFile (ContentsDir"/layout.json");
   
   /**
    * Window initialization
@@ -55,32 +45,19 @@ int main()
    */
   auto gui = sgui::Gui ();
   gui.setResources (fonts.get ("normal"), texture, atlas);
-  gui.setSounds (sounds);
   gui.setStyle (style);
   gui.setView (window);
 
   /**
-   * Some gui settings and data
+   * Load gui layout and set data
    */
-  auto mainPanel = sgui::Panel ();
-  mainPanel.position = { 200.f, 256.f};
-  mainPanel.size = {600.f, 640.f};
-  mainPanel.title = texts.get ("mainWindow");
-  auto closablePanel = sgui::Panel ();
-  closablePanel.position = mainPanel.position + sf::Vector2f (mainPanel.size.x + 10.f, 0.f);
-  closablePanel.size = {600.f, 520.f};
-  closablePanel.title = texts.get ("closableWindow");
-  closablePanel.closable = true;
+  auto mainPanel = layout.get <sgui::Panel> ("mainPanel");
+  auto closablePanel = layout.get <sgui::Panel> ("closablePanel");
+  auto constrainedPanel = layout.get <sgui::Panel> ("constrainedPanels");
   // data
   auto sliderValue = 0.1f;
-  auto inputValue = 0.f;
-  auto multiLine = texts.get ("textMultiLine");
-  auto oneLine = texts.get ("textOneLine");
-  auto oneLine2 = texts.get ("textOneLine");
-  auto oneLine3 = texts.get ("textOneLine");
-  auto vector = sf::Vector2f ();
-  auto vector3 = sf::Vector3f ();
   bool displayFunction = false;
+  bool compactLayout = false;
 
   /**
    * Main App loop
@@ -115,7 +92,6 @@ int main()
      */
     gui.beginFrame ();
     {
-      // first window
       if (gui.beginWindow (closablePanel)) {
         // Open or close
         gui.text ("A window");
@@ -150,7 +126,7 @@ int main()
         gui.slider (mainPanel.size.y, 50.f, 700.f, {"Slider from 0 to 700, value is : " + std::to_string (mainPanel.size.y)});
         gui.endWindow ();
       }
-      // second window
+
       if (gui.beginWindow (mainPanel)) {
         auto getText = false;
         if (gui.textButton ("Switch to french")) {
@@ -162,8 +138,6 @@ int main()
           getText = true;
         }
         if (getText) {
-          multiLine = texts.get ("textMultiLine");
-          oneLine = texts.get ("textOneLine");
           mainPanel.title = texts.get ("mainWindow");
           closablePanel.title = texts.get ("closableWindow");
         }
@@ -183,18 +157,42 @@ int main()
         gui.text ("Decrease normal font size");
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
-        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
-        gui.inputText (oneLine, {}, {texts.get ("oneLine")});
-        gui.separation ();
-        gui.inputNumber (inputValue, {"Input number with text!"});
-        gui.inputText (oneLine2, {}, {texts.get ("oneLine")});
-        gui.inputVector2 (vector, {"Input vector2: "});
-        gui.inputText (oneLine3, {}, {texts.get ("oneLine")});
-        gui.inputVector3 (vector3, {"Input vector3: "});
-        gui.inputText (oneLine3, {}, {texts.get ("oneLine")});
-        gui.inputVector2 (vector, {"Input vector2: "});
+        gui.checkBox (compactLayout, {"Compact layout"});
+        if (gui.textButton ("Save layout")) {
+          layout.saveInFile (compactLayout);
+        }
         gui.endWindow ();
       }
+
+      // scrollabel centered panel
+      auto constraint = layout.get <sgui::Constraints> ("alignment");
+      constraint.vertical = sgui::VerticalAlignment::Center;
+      gui.beginPanel (constrainedPanel, constraint); {
+        gui.text ("Scrollable panel,");
+        gui.addSpacing ({0.f, 12.f});
+        gui.text ("with text.");
+      } gui.endPanel ();
+      // bottom panel
+      constraint.vertical = sgui::VerticalAlignment::Bottom;
+      gui.beginPanel (constrainedPanel, constraint); {
+        gui.text ("Bottom panel");
+      } gui.endPanel ();
+      // top panel
+      constraint.vertical = sgui::VerticalAlignment::Top;
+      gui.beginPanel (constrainedPanel, constraint); {
+        gui.text ("Top panel");
+      } gui.endPanel ();
+      // left panel
+      constraint.vertical = sgui::VerticalAlignment::None;
+      constraint.horizontal = sgui::HorizontalAlignment::Left;
+      gui.beginPanel (constrainedPanel, constraint); {
+        gui.text ("Left panel");
+      } gui.endPanel ();
+      // right panel
+      constraint.horizontal = sgui::HorizontalAlignment::Right;
+      gui.beginPanel (constrainedPanel, constraint); {
+        gui.text ("Right panel");
+      } gui.endPanel ();
     }
     gui.endFrame ();
 
@@ -203,11 +201,6 @@ int main()
      */
     window.clear ();
     window.draw (gui);
-    // TEST
-    const auto expression ("(3 * 4) / (#sin(x - 5 / #sqrt(3) + #sqrt (4 * e^(x-6)) + 4) + 5)");
-    sgui::Formula formula (fonts.get ("math"));
-    formula.printFormula (expression, window, gui.style ());
-    // TEST
     window.display ();
   }
 }

@@ -1,0 +1,52 @@
+{
+  "Constraints::alignment": {
+    "horizontal": "HorizontalAlignment::None",
+    "relativePosition": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "vertical": "VerticalAlignment::Center"
+  },
+  "Panel::closablePanel": {
+    "closable": true,
+    "movable": true,
+    "position": {
+      "x": 820.0,
+      "y": 256.0
+    },
+    "size": {
+      "x": 600.0,
+      "y": 520.0
+    },
+    "title": "Printable cards",
+    "visible": true
+  },
+  "Panel::constrainedPanels": {
+    "closable": false,
+    "movable": true,
+    "position": {
+      "x": 1440.0,
+      "y": 256.0
+    },
+    "size": {
+      "x": 128.0,
+      "y": 40.0
+    },
+    "title": "",
+    "visible": true
+  },
+  "Panel::mainPanel": {
+    "closable": false,
+    "movable": true,
+    "position": {
+      "x": 200.0,
+      "y": 256.0
+    },
+    "size": {
+      "x": 600.0,
+      "y": 640.0
+    },
+    "title": "mainWindow",
+    "visible": true
+  }
+}

@@ -62,7 +62,7 @@ public:
   /**
    * @brief save all layouts in their respecting file
    */
-  void saveInFile ();
+  void saveInFile (const bool compact = false);
   /**
    * @brief get entries names in a layout
    */

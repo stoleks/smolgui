@@ -37,6 +37,27 @@ set_target_properties(${DEMO_APP}
 )
 
 ####
+# Build small serialization demo
+set (SERIAL_APP serializationDemo)
+add_executable (${SERIAL_APP} serializationDemo.cpp)
+
+target_link_libraries (${SERIAL_APP} PRIVATE
+  SFML::Graphics
+  nlohmann_json
+  spdlog
+  SmolGui
+)
+
+target_compile_definitions (${SERIAL_APP} PRIVATE ContentsDir="${PROJECT_SOURCE_DIR}/contents")
+target_compile_features(${SERIAL_APP} PRIVATE cxx_std_17)
+
+set_target_properties(${SERIAL_APP}
+  PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/build/bin/"
+)
+
+
+####
 # Build texture test
 set (TEX_APP testTexture)
 add_executable (${TEX_APP} testTexture.cpp)

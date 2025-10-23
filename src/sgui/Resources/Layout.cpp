@@ -15,10 +15,10 @@ bool Layout::loadFromFile (const std::string& set)
 }
 
 /////////////////////////////////////////////////
-void Layout::saveInFile ()
+void Layout::saveInFile (const bool compact)
 {
   for (const auto& set : m_setFilenames) {
-    sgui::saveInFile (*this, set);
+    sgui::saveInFile (*this, set, compact);
   }
 }
 
