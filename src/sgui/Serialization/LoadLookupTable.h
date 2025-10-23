@@ -29,14 +29,19 @@ template <typename Key,
           typename Type>
 void saveInFile (
   const std::unordered_map <Key, Type>& table,
-  const std::string& file)
+  const std::string& file,
+  const bool compact = false)
 {
   // parse in json
   json out = table;
 
   // write in file
   auto output = std::ofstream (file);
-  output << std::setw (2) << out << std::endl;
+  if (compact) {
+    output << out << std::endl;
+  } else {
+    output << std::setw (2) << out << std::endl;
+  }
   output.close ();
 }
 

@@ -61,7 +61,8 @@ bool loadFromFile (
 /////////////////////////////////////////////////
 void saveInFile (
   const Layout& layout,
-  const std::string& file)
+  const std::string& file,
+  const bool compact)
 {
   json out;
 
@@ -91,7 +92,7 @@ void saveInFile (
   }
 
   // write json
-  saveInFile (out, file);
+  saveInFile (out, file, compact);
 }
 
 } // namespace sgui

@@ -29,7 +29,8 @@ bool loadFromFile (
 /////////////////////////////////////////////////
 void saveInFile (
   const TextureAtlas& atlas,
-  const std::string& file)
+  const std::string& file,
+  const bool compact)
 {
   json out;
   // save data into json
@@ -37,7 +38,7 @@ void saveInFile (
     out [entry.first] = entry.second;
   }
   // write json
-  saveInFile (out, file);
+  saveInFile (out, file, compact);
 }
 
 } // namespace sgui

@@ -23,6 +23,7 @@ bool loadFromFile (
 
 void saveInFile (
   const TextureAtlas& atlas,
-  const std::string& file);
+  const std::string& file,
+  const bool compact = false);
 
 } // namespace sgui

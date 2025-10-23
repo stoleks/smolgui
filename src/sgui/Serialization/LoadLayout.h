@@ -16,6 +16,7 @@ bool loadFromFile (
 
 void saveInFile (
   const Layout& layout,
-  const std::string& file);
+  const std::string& file,
+  const bool compact = false);
 
 } // namespace sgui
