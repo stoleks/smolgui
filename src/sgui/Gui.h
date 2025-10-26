@@ -107,6 +107,13 @@ public:
    */
   sf::Vector2f footnoteSizeOf (const std::string& text) const;
   /**
+   * @brief to have standard height size across gui code
+   */
+  float subtitleTextHeight () const;
+  float titleTextHeight () const;
+  float normalTextHeight () const;
+  float buttonHeight () const;
+  /**
    * @brief get active panel or window size
    */
   sf::Vector2f activePanelSize () const;
@@ -417,11 +424,6 @@ private:
   void draw (
          sf::RenderTarget& target,
          sf::RenderStates states) const override;
-  // to have standard height size across the gui code
-  float subtitleTextHeight () const;
-  float titleTextHeight () const;
-  float normalTextHeight () const;
-  float buttonHeight () const;
   // to remove or add last vertical or horizontal spacing
   void addLastVerticalSpacing (const float amount = 1.f);
   void addLastHorizontalSpacing (const float amount = 1.f);
