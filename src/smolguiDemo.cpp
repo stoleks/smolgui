@@ -64,11 +64,12 @@ int main()
    */
   auto mainPanel = sgui::Panel ();
   mainPanel.position = { 200.f, 256.f};
-  mainPanel.size = {600.f, 640.f};
+  mainPanel.size = { 0.315f, 0.64f };
   mainPanel.title = texts.get ("mainWindow");
+  mainPanel.hasMenu = true;
   auto closablePanel = sgui::Panel ();
-  closablePanel.position = mainPanel.position + sf::Vector2f (mainPanel.size.x + 10.f, 0.f);
-  closablePanel.size = {600.f, 520.f};
+  closablePanel.position = mainPanel.position + sf::Vector2f (mainPanel.size.x*window.getSize ().x + 10.f, 0.f);
+  closablePanel.size = { 0.315f, 0.5f };
   closablePanel.title = texts.get ("closableWindow");
   closablePanel.closable = true;
   // data
@@ -147,20 +148,22 @@ int main()
         }
         // Change window size
         gui.separation ();
-        gui.slider (mainPanel.size.y, 50.f, 700.f, {"Slider from 0 to 700, value is : " + std::to_string (mainPanel.size.y)});
+        gui.slider (mainPanel.size.y, 0.05f, 0.7f, {"Slider from 0.05 to 0.7, value is : " + std::to_string (mainPanel.size.y)});
         gui.endWindow ();
       }
       // second window
       if (gui.beginWindow (mainPanel)) {
         auto getText = false;
-        if (gui.textButton ("Switch to french")) {
+        gui.beginMenu ();
+        if (gui.menuItem ("Switch to french")) {
           texts.setTongue ("french");
           getText = true;
         }
-        if (gui.textButton ("Switch to english")) {
+        if (gui.menuItem ("Switch to english")) {
           texts.setTongue ("english");
           getText = true;
         }
+        gui.endMenu ();
         if (getText) {
           multiLine = texts.get ("textMultiLine");
           oneLine = texts.get ("textOneLine");

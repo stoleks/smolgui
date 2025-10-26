@@ -85,14 +85,6 @@ constexpr OutputType remap (
   const OutputType& maxOutput,
   const InputType& value);
 
-/**
- * @brief convert floating point value into string without useless zero after dot
- */
-template <typename Type>
-std::string toString (
-  const Type number,
-  const uint32_t precision = 0u);
-
 } // namespace sgui
 
 #include "Interpolation.tpp"

@@ -237,6 +237,9 @@ bool Gui::isActive () const
 /////////////////////////////////////////////////
 sf::Vector2f Gui::parentGroupSize ()
 {
+  if (mGroups.empty ()) {
+    return mWindowSize;
+  }
   return getParentGroup ().size;
 }
 
@@ -447,12 +450,13 @@ bool Gui::beginWindow (
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
+  const auto windowSize = settings.size.componentWiseMul (parentGroupSize ());
   const auto position = computePosition (settings, constraints);
-  beginGroup (options.horizontal, position, settings.size);
+  beginGroup (options.horizontal, position, windowSize);
   auto& thisWindow = mGroups.top ();
 
   // handle mouse interaction
-  const auto titleBoxSize = sf::Vector2f (settings.size.x, titleTextHeight ());
+  const auto titleBoxSize = sf::Vector2f (windowSize.x, titleTextHeight ());
   const auto reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
   const auto titleBoxWithoutButtons = sf::FloatRect (position, titleBoxSize - reduceCloseButtonWidth);
   const auto drawBox = sf::FloatRect (position, titleBoxSize);
@@ -498,7 +502,7 @@ bool Gui::beginWindow (
   // set clipping layer
   auto& groupLayer = thisWindow.clippingLayer;
   const auto activeShift = sf::Vector2f (0.f, titleBoxSize.y);
-  const auto panelBox = sf::FloatRect (position + activeShift, settings.size);
+  const auto panelBox = sf::FloatRect (position + activeShift, windowSize);
   if (settings.hasMenu) {
     groupLayer = setClipping (panelBox, 0.f, buttonHeight ());
   } else {
@@ -508,14 +512,14 @@ bool Gui::beginWindow (
   // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
     thisWindow.menuBarPosition = mCursorPosition;
-    thisWindow.menuBarSize = sf::Vector2f (settings.size.x, buttonHeight ());
+    thisWindow.menuBarSize = sf::Vector2f (windowSize.x, buttonHeight ());
     thisWindow.hasMenuBar = settings.hasMenu;
     // update cursor position
     mCursorPosition.y += buttonHeight ();
   }
 
   // draw window box and handle hovering of the window
-  const auto windowBox = sf::FloatRect (mCursorPosition, settings.size);
+  const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
   const auto windowStatus = itemStatus (windowBox, name);
   mRender.draw <Widget::Box> (windowBox);
   mCursorPosition += mPadding;
@@ -574,9 +578,10 @@ void Gui::beginPanel (
 
   // compute position and create a new group
   const auto position = computePosition (settings, constraints);
-  const auto panelBox = sf::FloatRect (position, settings.size);
+  const auto panelSize = settings.size.componentWiseMul (parentGroupSize ());
+  const auto panelBox = sf::FloatRect (position, panelSize);
   const auto clipBox = handleParentClipBox (panelBox);
-  beginGroup (options.horizontal, position, settings.size);
+  beginGroup (options.horizontal, position, panelSize);
 
   // add clipping layer for the panel box
   auto& panel = mGroups.top ();
@@ -703,8 +708,8 @@ bool Gui::menuItem (
   const auto itemPos = parentMenu.lastItemPosition;
 
   // construct menu item box
-  const auto width = 3.f*mPadding.x + subtitleSizeOf (text).x;
-  const auto height = subtitleTextHeight ();
+  const auto width = 3.f*mPadding.x + normalSizeOf (text).x;
+  const auto height = buttonHeight ();
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
   parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
 
@@ -731,7 +736,7 @@ bool Gui::menuItem (
 
   // draw a description over it
   const auto textPos = sgui::round (itemPos + 1.5f*mPadding);
-  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.subtitle);
+  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
 
   // go back to previous clipping layer
   mRender.moveToClippingLayer (layerId);
@@ -826,7 +831,7 @@ bool Gui::textButton (
 {
   // compute text position and construct a button adapted to the text
   const auto position = computeRelativePosition (mCursorPosition + 1.5f*mPadding, options.displacement);
-  const auto width = std::max (normalSizeOf (text).x + 3.f*mPadding.x, 6.f*buttonHeight ());
+  const auto width = std::max (normalSizeOf (text).x + 5.f*mPadding.x, 6.f*buttonHeight ());
   const auto size = sf::Vector2f (width, buttonHeight ());
   const auto clicked = button <Widget::TextButton> (size, options);
 
@@ -1565,7 +1570,7 @@ void Gui::endGroup ()
 {
   // check if there is in fact stacked group...
   if (mGroups.empty ()) {
-    spdlog::warn ("Cannot remove group from empty stack in Gui::enGroup ()");
+    spdlog::warn ("Cannot remove group from empty stack in Gui::endGroup ()");
     return;
   }
   mGroups.pop ();
@@ -1583,13 +1588,8 @@ sf::Vector2f Gui::computePosition (
   const Constraints& constraint)
 {
   // get parent box shift and size
-  auto positionShift = sf::Vector2f ();
-  auto windowSize = mWindowSize;
-  if (!mGroups.empty ()) {
-    const auto& parent = mGroups.top ();
-    positionShift = parent.position;
-    windowSize = parent.size;
-  }
+  const auto parent = getParentGroup ();
+  const auto windowSize = parentGroupSize ();
   
   // to compute constrained position
   auto pos = panel.position;
@@ -1603,7 +1603,7 @@ sf::Vector2f Gui::computePosition (
       pos.x = center.x - halfSize.x;
     }
     if (constraint.horizontal == HorizontalAlignment::Right) {
-      pos.x = windowSize.x - panel.size.x;
+      pos.x = windowSize.x * (1.f - panel.size.x);
     }
     if (constraint.horizontal == HorizontalAlignment::Left) {
       pos.x = 0.f;
@@ -1622,7 +1622,7 @@ sf::Vector2f Gui::computePosition (
       pos.y = center.y - halfSize.y;
     }
     if (constraint.vertical == VerticalAlignment::Bottom) {
-      pos.y = windowSize.y - panel.size.y;
+      pos.y = windowSize.y * (1.f - panel.size.y);
     }
     if (constraint.vertical == VerticalAlignment::Top) {
       pos.y = 0.f;
@@ -1640,7 +1640,7 @@ sf::Vector2f Gui::computePosition (
   }
 
   // else return constrained position
-  return pos + positionShift;
+  return pos + parent.position;
 }
 
 /////////////////////////////////////////////////
@@ -1927,6 +1927,11 @@ void Gui::updateScrolling (const sf::Vector2f& spacing)
 /////////////////////////////////////////////////
 Impl::GroupData Gui::getParentGroup () 
 {
+  // if there are no parent, return a default group
+  if (mGroups.empty ()) {
+    return Impl::GroupData ();
+  }
+
   // if parent is a menu we skip it
   auto parent = mGroups.top ();
   if (parent.menuItemCount != 0) {
