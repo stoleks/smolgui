@@ -406,6 +406,12 @@ void Gui::update (
 }
 
 /////////////////////////////////////////////////
+void Gui::setScreenSize (const sf::Vector2f& size)
+{
+  mWindowSize = size;
+}
+
+/////////////////////////////////////////////////
 void Gui::updateTimer (const sf::Time& deltaT)
 {
   const auto dt = deltaT.asSeconds ();

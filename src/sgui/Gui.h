@@ -76,6 +76,11 @@ public:
          const sf::RenderWindow& window,
          const std::optional <sf::Event>& event);
   /**
+   * @brief set screen size, its required for panel and window 
+   * to call it if no Gui::update was called
+   */
+  void setScreenSize (const sf::Vector2f& size);
+  /**
    * @brief to allow apparition of tooltip and animation to occur.
    * @param deltaT is the current time of the frame
    */
