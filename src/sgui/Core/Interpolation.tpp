@@ -78,29 +78,4 @@ constexpr OutputType remap (
   return clampedLerp (minOutput, maxOutput, t);
 }
 
-/////////////////////////////////////////////////
-template <typename Type>
-std::string toString (
-  const Type num,
-  const uint32_t precision)
-{
-  // convert number into string
-  auto numStr = std::to_string (num);
-  // remove extra zero of the string
-  const auto dotPos = numStr.find_first_of ('.');
-  if (dotPos != std::string::npos) {
-    auto zeroPos = numStr.size () - 1;
-    while (numStr[zeroPos] == '0' && zeroPos > dotPos){
-      --zeroPos;
-    }
-    numStr.erase (zeroPos + 1, std::string::npos);
-  }
-  if (precision > 0u) {
-    if (dotPos + precision < numStr.size ()) {
-      numStr.erase (dotPos + precision, std::string::npos);
-    }
-  }
-  return numStr;
-}
-
 } // namespace sgui

@@ -55,15 +55,15 @@ struct GroupData
   bool isActive = false;
   bool horizontal = false;
   bool hasMenuBar = false;
-  uint32_t groupId;
-  uint32_t clippingLayer;
-  uint32_t menuItemCount;
-  sf::Vector2f lastItemPosition;
-  sf::Vector2f menuBarPosition;
-  sf::Vector2f menuBarSize;
-  sf::Vector2f innerPosition;
-  sf::Vector2f position;
-  sf::Vector2f size;
+  uint32_t groupId = 0u;
+  uint32_t clippingLayer = 0u;
+  uint32_t menuItemCount = 0u;
+  sf::Vector2f lastItemPosition = {};
+  sf::Vector2f menuBarPosition = {};
+  sf::Vector2f menuBarSize = {};
+  sf::Vector2f innerPosition = {};
+  sf::Vector2f position = {};
+  sf::Vector2f size = {};
 };
 
 } // namespace sgui

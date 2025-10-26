@@ -62,6 +62,7 @@ int main()
    * Load gui layout and set data
    */
   auto mainPanel = layout.get <sgui::Panel> ("mainPanel");
+  mainPanel.hasMenu = true;
   auto closablePanel = layout.get <sgui::Panel> ("closablePanel");
   auto constrainedPanel = layout.get <sgui::Panel> ("constrainedPanels");
   // data
@@ -136,20 +137,23 @@ int main()
         }
         // Change window size
         gui.separation ();
-        gui.slider (mainPanel.size.y, 50.f, 700.f, {"Slider from 0 to 700, value is : " + std::to_string (mainPanel.size.y)});
+        gui.slider (mainPanel.size.y, 0.05f, 0.7f, {"Slider from 0.05 to 0.7, value is : " + std::to_string (mainPanel.size.y)});
         gui.endWindow ();
       }
 
       if (gui.beginWindow (mainPanel)) {
         auto getText = false;
-        if (gui.textButton ("Switch to french")) {
+        // use menu to change tongue
+        gui.beginMenu ();
+        if (gui.menuItem ("Switch to french")) {
           texts.setTongue ("french");
           getText = true;
         }
-        if (gui.textButton ("Switch to english")) {
+        if (gui.menuItem ("Switch to english")) {
           texts.setTongue ("english");
           getText = true;
         }
+        gui.endMenu ();
         if (getText) {
           mainPanel.title = texts.get ("mainWindow");
           closablePanel.title = texts.get ("closableWindow");
@@ -180,32 +184,32 @@ int main()
       // scrollabel centered panel
       auto constraint = layout.get <sgui::Constraints> ("alignment");
       constraint.vertical = sgui::VerticalAlignment::Center;
-      gui.beginPanel (constrainedPanel, constraint); {
-        gui.text ("Scrollable panel,");
-        gui.addSpacing ({0.f, 12.f});
-        gui.text ("with text.");
-      } gui.endPanel ();
+      gui.beginPanel (constrainedPanel, constraint);
+      gui.text ("Scrollable panel,");
+      gui.addSpacing ({0.f, 12.f});
+      gui.text ("with text.");
+      gui.endPanel ();
       // bottom panel
       constraint.vertical = sgui::VerticalAlignment::Bottom;
-      gui.beginPanel (constrainedPanel, constraint); {
-        gui.text ("Bottom panel");
-      } gui.endPanel ();
+      gui.beginPanel (constrainedPanel, constraint);
+      gui.text ("Bottom panel");
+      gui.endPanel ();
       // top panel
       constraint.vertical = sgui::VerticalAlignment::Top;
-      gui.beginPanel (constrainedPanel, constraint); {
-        gui.text ("Top panel");
-      } gui.endPanel ();
+      gui.beginPanel (constrainedPanel, constraint);
+      gui.text ("Top panel");
+      gui.endPanel ();
       // left panel
       constraint.vertical = sgui::VerticalAlignment::None;
       constraint.horizontal = sgui::HorizontalAlignment::Left;
-      gui.beginPanel (constrainedPanel, constraint); {
-        gui.text ("Left panel");
-      } gui.endPanel ();
+      gui.beginPanel (constrainedPanel, constraint);
+      gui.text ("Left panel");
+      gui.endPanel ();
       // right panel
       constraint.horizontal = sgui::HorizontalAlignment::Right;
-      gui.beginPanel (constrainedPanel, constraint); {
-        gui.text ("Right panel");
-      } gui.endPanel ();
+      gui.beginPanel (constrainedPanel, constraint);
+      gui.text ("Right panel");
+      gui.endPanel ();
     }
     gui.endFrame ();
 
