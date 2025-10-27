@@ -266,7 +266,7 @@ public:
   /**
    * @brief display square box that can be checked
    */
-  void checkBox (
+  bool checkBox (
          bool& checked,
          const WidgetOptions& options = {});
   /**

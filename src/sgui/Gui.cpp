@@ -903,7 +903,7 @@ void Gui::icon (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-void Gui::checkBox (
+bool Gui::checkBox (
   bool& checked,
   const WidgetOptions& options)
 {
@@ -934,6 +934,8 @@ void Gui::checkBox (
   }
   // update cursor position
   updateSpacing ({size.x + textWidth, size.y});
+
+  return checked;
 }
 
 /**
