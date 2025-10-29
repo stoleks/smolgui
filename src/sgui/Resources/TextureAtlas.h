@@ -58,6 +58,10 @@ public:
    */
   void remove (const std::string& entry);
   /**
+   * @brief Clear all textures from the atlas
+   */
+  void clear ();
+  /**
    * @brief Get number of textures stored in the atlas
    * @return Number of textures stored.
    */

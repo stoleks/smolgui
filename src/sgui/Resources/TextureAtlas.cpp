@@ -37,10 +37,15 @@ void TextureAtlas::add (
 }
 
 /////////////////////////////////////////////////
-void TextureAtlas::remove (
-  const std::string& entry)
+void TextureAtlas::remove (const std::string& entry)
 {
   mAtlas.erase (entry);
+}
+
+/////////////////////////////////////////////////
+void TextureAtlas::clear ()
+{
+  mAtlas.clear ();
 }
 
 /**
