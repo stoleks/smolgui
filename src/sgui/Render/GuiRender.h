@@ -43,12 +43,15 @@ public:
    * @brief Set resources used in render. It should be called before any `draw` call
    * @param font Font used
    * @param sprite Texture used
-   * @param atlas Texture atlas used
    */
   void setResources (
          sf::Font& font,
-         sf::Texture& sprite,
-         const TextureAtlas& atlas);
+         sf::Texture& sprite);
+  /**
+   * @brief Set texture atlas used in render. It should be called before any `draw` call
+   * @param atlas Texture atlas used
+   */
+  void setTextureAtlas (const TextureAtlas& atlas);
   /**
    * @brief Clear all widgets and text
    */

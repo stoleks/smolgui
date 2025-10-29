@@ -11,21 +11,23 @@ namespace sgui
 /////////////////////////////////////////////////
 void GuiRender::setResources (
   sf::Font& font,
-  sf::Texture& texture,
-  const TextureAtlas& atlas)
+  sf::Texture& texture)
 {
   // get texture and font
   mGuiFont = &font;
   mGuiTexture = &texture;
-
-  // pre-compute texture quad
-  mTexturesUV.computeTextureMapping (atlas);
 
   // initialize clipping layer
   mBaseView = sf::View ();
   initializeClippingLayers ();
 }
 
+/////////////////////////////////////////////////
+void GuiRender::setTextureAtlas (const TextureAtlas& atlas)
+{
+  // pre-compute texture quad
+  mTexturesUV.computeTextureMapping (atlas);
+}
 
 /////////////////////////////////////////////////
 void GuiRender::clear ()

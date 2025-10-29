@@ -19,10 +19,15 @@ namespace sgui
 /////////////////////////////////////////////////
 void Gui::setResources (
   sf::Font& font,
-  sf::Texture& widgetTexture,
-  const TextureAtlas& widgetAtlas)
+  sf::Texture& widgetTexture)
 {
-  mRender.setResources (font, widgetTexture, widgetAtlas);
+  mRender.setResources (font, widgetTexture);
+}
+
+/////////////////////////////////////////////////
+void Gui::setTextureAtlas (const TextureAtlas& atlas)
+{
+  mRender.setTextureAtlas (atlas);
 }
 
 /////////////////////////////////////////////////

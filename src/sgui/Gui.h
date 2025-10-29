@@ -36,8 +36,11 @@ public:
    */
   void setResources (
          sf::Font& font,
-         sf::Texture& widgetTexture,
-         const TextureAtlas& widgetAtlas);
+         sf::Texture& widgetTexture);
+  /**
+   * @brief this must be called once before the event loop to set texture atlas
+   */
+  void setTextureAtlas (const TextureAtlas& widgetAtlas);
   /**
    * @brief this must be called once if user want to have sound effects
    */

@@ -34,7 +34,6 @@ public:
   auto end ()   { return std::end (mTextureMeshes); }
   auto begin () const { return std::cbegin (mTextureMeshes); }
   auto end ()   const { return std::cend (mTextureMeshes); }
-
 private:
   // For a clearer internal interface
   struct FrameAndIndex {

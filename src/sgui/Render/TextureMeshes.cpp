@@ -12,7 +12,8 @@ void TextureMeshes::computeTextureMapping (
   const TextureAtlas& map)
 {
   // cache every textures specified in the atlas
-  uint32_t count = 0;
+  uint32_t count = 0u;
+  mTextureMeshes.clear ();
   mTextureMeshes.resize (map.texturesCount ());
   for (const auto& entry : map) {
     // keep track of texture index

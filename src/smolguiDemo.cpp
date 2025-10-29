@@ -54,7 +54,8 @@ int main()
    * Gui initialization
    */
   auto gui = sgui::Gui ();
-  gui.setResources (fonts.get ("normal"), texture, atlas);
+  gui.setResources (fonts.get ("normal"), texture);
+  gui.setTextureAtlas (atlas);
   gui.setSounds (sounds);
   gui.setStyle (style);
   gui.setView (window);
