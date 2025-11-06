@@ -2,7 +2,6 @@
 
 #include <stack>
 #include <string>
-#include <spdlog/spdlog.h>
 
 #include "sgui/Widgets/Style.h"
 #include "sgui/Widgets/Panel.h"
@@ -548,11 +547,6 @@ private:
   // to check and inform about wrong use of begin/end
   void checkBeginAndEndMatch (
          uint32_t& counter,
-         const std::string& open,
-         const std::string& close);
-  template <typename Type>
-  void checkGroupIsClosed (
-         std::stack<Type>& stack,
          const std::string& open,
          const std::string& close);
   // to process sfml events and store it in the internal state

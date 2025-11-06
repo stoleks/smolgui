@@ -1,43 +1,3 @@
-smol gui
-==========
-A small immediate gui library based on [SFML](https://github.com/SFML/SFML)
-
-Dependencies
------
-
-* [SFML](https://github.com/SFML/SFML)
-* [nlohmann-json](https://github.nlohmann/json.git)
-* [spdlog](https://github.com/gabime/spdlog)
-
-Building and integrating into your CMake project
------
-
-Using FetchContent you can integrate this library like this
-```cmake
-include (FetchContent)
-
-FetchContent_Declare (SmolGui
-  GIT_REPOSITORY https://github.com/stoleks/smolgui
-  GIT_TAG        v0.9.6
-  GIT_PROGRESS TRUE
-)
-
-FetchContent_MakeAvailable (smolGui)
-
-target_link_libraries (project
-  PUBLIC
-    SmolGui
-)
-```
-
-It will integrates SFML::Graphics, spdlog and nlohmann_json with it.
-
-Example code
------
-
-You can find more complete examples in the examples folder.
-
-```cpp
 #include "sgui/sgui.h"
 
 int main()
@@ -97,6 +57,3 @@ int main()
     window.display ();
   }
 }
-```
-
-![Screenshot of minimal demo](https://github.com/stoleks/https://github.com/stoleks/smolgui/tree/main/contents/minimalDemo.png?raw=true)

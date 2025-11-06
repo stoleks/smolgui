@@ -58,3 +58,8 @@ target_include_directories (${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/src")
 ####
 # get sources from subdirectories
 add_subdirectory (src)
+
+option (BUILD_EXAMPLES "Build the examples." OFF)
+if (BUILD_EXAMPLES)
+  add_subdirectory (examples)
+endif()

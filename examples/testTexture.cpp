@@ -4,21 +4,11 @@
 
 int main ()
 {
-  /**
-   * load texture atlas and texture
-   */
-  auto atlas = sgui::TextureAtlas ();
-  atlas.loadFromFile (ContentsDir"/atlas.json");
-  // texture
-  auto texture = sf::Texture ();
-  const std::string textureFile = ContentsDir"/widgets.png";
-  if (!texture.loadFromFile (textureFile)) {
-    spdlog::error ("Unable to load {}", textureFile);
-  }
+  // load texture atlas and texture
+  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
+  auto texture = sf::Texture (ContentsDir"/widgets.png");
   
-  /**
-   * build a vertex array that display all textures
-   */
+  // build a vertex array that display all textures
   sf::VertexArray sprites;
   sprites.setPrimitiveType (sf::PrimitiveType::Triangles);
   auto textureMeshes = sgui::TextureMeshes ();
@@ -30,9 +20,7 @@ int main ()
     }
   }
   
-  /**
-   * open window and draw vertex array
-   */
+  // open window and draw vertex array
   auto window = sf::RenderWindow (sf::VideoMode ({1920u, 1080u}), "Smolgui Demo");
   window.setFramerateLimit (60);
   auto view = window.getDefaultView ();

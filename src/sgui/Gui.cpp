@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 #include "sgui/Core/Interpolation.h"
 #include "sgui/Resources/Layout.h"
@@ -305,11 +306,15 @@ void Gui::endFrame (const float tooltipDelay)
   checkBeginAndEndMatch (mBeginMenuCount, "beginMenu", "endMenu");
 
   // manage all ill-closed group and anchors
-  checkGroupIsClosed (mGroups, "beginGroup", "endGroup");
-  checkGroupIsClosed (mAnchors, "setAnchor", "backToAnchor");
-  while (!mAnchorsScroll.empty ()) {
-    mAnchorsScroll.pop ();
+  if (!mGroups.empty ()) {
+    spdlog::error ("A beginGroup was called without its endGroup counterpart !");
+    while (!mGroups.empty ()) mGroups.pop ();
   }
+  if (!mAnchors.empty ()) {
+    spdlog::error ("A setAnchor was called whithout its backToAnchor counterpart !");
+    while (!mAnchors.empty ()) mAnchors.pop ();
+  }
+  while (!mAnchorsScroll.empty ()) mAnchorsScroll.pop ();
 
   // reset inputs
   if (!mInputState.updated) {

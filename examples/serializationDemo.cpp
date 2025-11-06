@@ -16,15 +16,9 @@ int main()
   auto fonts = sgui::FontHolder ();
   fonts.load ("normal", ContentsDir"/Luciole-Regular.ttf");
   fonts.load ("bold",   ContentsDir"/Luciole-Bold.ttf");
-  // textures atlas
-  auto atlas = sgui::TextureAtlas ();
-  atlas.loadFromFile (ContentsDir"/atlas.json");
-  // texture
-  auto texture = sf::Texture ();
-  const std::string textureFile = ContentsDir"/widgets.png";
-  if (!texture.loadFromFile (textureFile)) {
-    spdlog::error ("Unable to load {}", textureFile);
-  }
+  // texture and atlas
+  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
+  auto texture = sf::Texture (ContentsDir"/widgets.png");
   // texts
   auto texts = sgui::TextContainer ();
   texts.loadFromFile (ContentsDir"/english_demo.json", "english");
@@ -37,7 +31,7 @@ int main()
   /**
    * Window initialization
    */
-  auto window = sf::RenderWindow (sf::VideoMode ({1900u, 1000u}), "Smolgui Demo");
+  auto window = sf::RenderWindow (sf::VideoMode ({1900u, 1000u}), "Serialization Demo");
   window.setFramerateLimit (60);
 
   /**

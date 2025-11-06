@@ -250,25 +250,4 @@ Type Gui::convertKeyIntoNumber (
   return number;
 }
 
-
-/**
- * ----------------------------------------------
- * to check that a stack is empty
- * ----------------------------------------------
- */
-/////////////////////////////////////////////////
-template <typename Type>
-void Gui::checkGroupIsClosed (
-  std::stack<Type>& stack,
-  const std::string& open,
-  const std::string& close)
-{
-  if (!stack.empty ()) {
-    spdlog::error ("A {} was called without its {} counterpart !", open, close);
-  }
-  while (!stack.empty ()) {
-    stack.pop ();
-  }
-}
-
 } // namespace sgui
