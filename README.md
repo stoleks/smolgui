@@ -99,4 +99,4 @@ int main()
 }
 ```
 
-![Screenshot of minimal demo](https://github.com/stoleks/https://github.com/stoleks/smolgui/tree/main/contents/minimalDemo.png?raw=true)
+![Screenshot of minimal demo](https://github.com/stoleks/smolgui/blob/main/examples/minimalDemo.png)
