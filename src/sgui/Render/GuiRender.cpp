@@ -61,9 +61,10 @@ sf::Vector2f GuiRender::textSize (
   const std::string& text,
   const uint32_t fontSize) const
 {
-  const auto content = sf::Text (*mGuiFont, text, fontSize);
-  const auto bound = content.getLocalBounds ();
-  return bound.size;
+  auto content = sf::Text (*mGuiFont);
+  content.setCharacterSize (fontSize);
+  content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
+  return content.getLocalBounds ().size;
 }
 
 
