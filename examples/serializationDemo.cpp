@@ -108,7 +108,7 @@ int main()
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
         gui.separation ();
-        gui.text ("Centered text !", {sgui::HorizontalAlignment::Center});
+        gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
         gui.separation ();
         // set function
         const auto phaseMax = 10.f;
