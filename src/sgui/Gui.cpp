@@ -287,6 +287,7 @@ void Gui::endFrame (const float tooltipDelay)
   if (mInputState.mouseRightReleased) {
     mGuiState.activeItem = NullItemID;
     mGuiState.keyboardFocus = NullItemID;
+    mGuiState.comboBoxFocus = NullItemID;
   }
 
   // reset same line counter
@@ -296,6 +297,7 @@ void Gui::endFrame (const float tooltipDelay)
   mPlotCount = 0u;
   mGroupCount = 0u;
   mWidgetCount = 0u;
+  mComboBoxCount = 0u;
   for (auto& scrollData : mGroupsScrollerInformation) {
     scrollData.newCycle ();
   }
@@ -1358,6 +1360,71 @@ void Gui::dropList (
 }
 
 /////////////////////////////////////////////////
+std::string Gui::comboBox (
+  const std::vector <std::string>& list,
+  const WidgetOptions& options)
+{
+  // if list is empty we quit and do nothing
+  if (list.empty ()) return "";
+
+  // initialize widget name and position
+  const auto comboBoxId = mComboBoxCount;
+  mComboBoxCount++;
+  const auto name = initializeActivable ("ComboBox");
+  const auto initialPos = computeRelativePosition (mCursorPosition, options.displacement);
+  if (!mComboBoxActiveItem.has (comboBoxId)) {
+    mComboBoxActiveItem.emplace (comboBoxId, 0u);
+  }
+
+  // compute combo box width
+  auto maxWidth = 0.f;
+  for (const auto& text : list) {
+    maxWidth = std::max (maxWidth, normalSizeOf (text).x);
+  }
+  const auto itemWidth = maxWidth + 2.f*mPadding.x;
+  const auto itemSize = sf::Vector2f (itemWidth, normalTextHeight ());
+  
+  // compute if combo box is open
+  const auto box = sf::FloatRect (initialPos, itemSize);
+  const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  if (state == ItemState::Active) {
+    mGuiState.comboBoxFocus = name;
+  }
+  const auto isOpen = (state == ItemState::Active) || (mGuiState.activeItem == name) || (mGuiState.comboBoxFocus == name);
+
+  // get selected text of the combo box
+  auto& selected = mComboBoxActiveItem.get (comboBoxId);
+  auto text = list.front ();
+  if (selected < list.size ()) {
+    text = list.at (selected);
+  }
+  // compute each drop list item if combo box is active
+  auto counter = 0u;
+  if (isOpen) {
+    for (const auto& itemName : list) {
+      // get item status and update selected value
+      const auto itemPos = initialPos + sf::Vector2f (0.f, (counter + 1u)*itemSize.y);
+      if (dropListItem (text, itemName, itemPos, itemSize)) {
+        mGuiState.comboBoxFocus = NullItemID;
+        selected = counter;
+      }
+      counter++;
+    }
+  }
+
+  // draw combo box selected text
+  const auto textPos = sgui::round (box.position + mPadding);
+  mRender.draw <Widget::ItemBox> (box, {state});
+  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
+
+  // update cursor position
+  updateSpacing (sf::Vector2f (itemSize.x, (counter + 1) * itemSize.y));
+
+  // return selected item
+  return text;
+}
+
+/////////////////////////////////////////////////
 bool Gui::dropListItem (
   const std::string& selectedName,
   const std::string& itemName,
@@ -1369,7 +1436,7 @@ bool Gui::dropListItem (
   // get item status
   const auto box = sf::FloatRect (itemPosition, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-  const auto status = (state == ItemState::Active) && (mGuiState.activeItem == name);
+  const auto status = (state == ItemState::Active) || (mGuiState.activeItem == name);
 
   // draw item
   if (selectedName == itemName) {

@@ -19,6 +19,7 @@ struct InternalItemState
   ItemID activeItem = NullItemID;
   ItemID hoveredItem = NullItemID;
   ItemID keyboardFocus = NullItemID;
+  ItemID comboBoxFocus = NullItemID;
   sf::FloatRect hoveredItemBox;
   Tooltip tooltip;
 };

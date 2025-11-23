@@ -367,6 +367,12 @@ public:
          const std::vector<std::string>& list,
          const uint32_t phantomElements = 0,
          const WidgetOptions& options = {});
+  /**
+   * @brief display selected item and all others selectables items when clicked
+   */
+  std::string comboBox (
+         const std::vector <std::string>& list,
+         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -575,6 +581,7 @@ private:
   uint32_t mPlotCount = 0u;
   uint32_t mGroupCount = 0u;
   uint32_t mWidgetCount = 0u;
+  uint32_t mComboBoxCount = 0u;
   uint32_t mBeginMenuCount = 0u;
   uint32_t mBeginPanelCount = 0u;
   uint32_t mBeginWindowCount = 0u;
@@ -602,6 +609,7 @@ private:
   std::stack <float> mAnchorsScroll;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
+  ObjectPool <uint32_t> mComboBoxActiveItem;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
   ObjectPool <Impl::ScrollerInformation> mGroupsScrollerInformation;
 };

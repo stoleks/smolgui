@@ -21,6 +21,7 @@ int main()
   auto mainPanel = sgui::Panel ({ 0.f, 0.f}, { 1.f, 1.f });
   mainPanel.title = std::string("Main window");
   auto timer = sf::Clock ();
+  auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
   while (window.isOpen ())
   {
     // Inputs
@@ -47,6 +48,8 @@ int main()
       if (gui.iconTextButton ("minus", "Decrease normal font size")) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
+      const auto selected = gui.comboBox (combo);
+      gui.text (selected);
       gui.inputColor (style.fontColor, {"Font color: "});
       gui.endWindow ();
     }

@@ -169,6 +169,8 @@ int main()
         gui.text ("Decrease normal font size");
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
+        const auto list = std::vector <std::string> {"One", "Two", "Three"};
+        gui.comboBox (list);
         gui.checkBox (compactLayout, {"Compact layout"});
         if (gui.textButton ("Save layout")) {
           layout.saveInFile (compactLayout);
