@@ -22,6 +22,7 @@ struct Panel
          const bool movable = true,
          const bool visible = true,
          const bool closable = false,
+         const bool hasHeader = true,
          const bool hasMenu = false,
          const bool clipped = true,
          const bool closed = false,
@@ -30,6 +31,7 @@ struct Panel
   bool clipped    = true;
   bool closable   = false;
   bool closed     = false;
+  bool hasHeader  = true;
   bool hasMenu    = false;
   bool movable    = true;
   bool reduced    = false;

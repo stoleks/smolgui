@@ -9,6 +9,7 @@
   },
   "Panel::closablePanel": {
     "closable": true,
+    "hasHeader": true,
     "movable": true,
     "position": {
       "x": 820.0,
@@ -18,7 +19,7 @@
       "x": 0.315,
       "y": 0.5
     },
-    "title": "Printable cards",
+    "title": "Closable panel",
     "visible": true
   },
   "Panel::constrainedPanels": {
@@ -37,6 +38,7 @@
   },
   "Panel::mainPanel": {
     "closable": false,
+    "hasHeader": true,
     "movable": true,
     "position": {
       "x": 200.0,

@@ -307,6 +307,7 @@ void Gui::endFrame (const float tooltipDelay)
     while (!mAnchors.empty ()) mAnchors.pop ();
   }
   while (!mAnchorsScroll.empty ()) mAnchorsScroll.pop ();
+  while (!mMenuClippingLayer.empty ()) mMenuClippingLayer.pop ();
 
   // reset inputs
   if (!mInputState.updated) {
@@ -453,43 +454,50 @@ bool Gui::beginWindow (
   beginGroup (options.horizontal, position, windowSize);
   auto& thisWindow = mGroups.top ();
 
-  // handle mouse interaction
-  const auto titleBoxSize = sf::Vector2f (windowSize.x, titleTextHeight ());
-  const auto reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
-  const auto titleBoxWithoutButtons = sf::FloatRect (position, titleBoxSize - reduceCloseButtonWidth);
-  const auto drawBox = sf::FloatRect (position, titleBoxSize);
-  setClipping (drawBox, 0.f);
-  const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
-
-  // draw title box and window name
-  mRender.draw <Widget::TitleBox> (drawBox, {state});
-  const auto textWidth = titleSizeOf (settings.title).x;
-  const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
-  const auto titlePos = sgui::round (sf::Vector2f {position.x + shiftX, position.y});
-  mRender.drawText (titlePos, settings.title, mStyle.fontColor, mStyle.fontSize.title);
-
-  // reduce or close window
-  if (settings.closable) {
-    // reduce
-    const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
-    mCursorPosition = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
-    if (button <Widget::TitleButton> (buttonSize)) {
-      settings.reduced = !(settings.reduced);
+  // handle window header
+  mCursorPosition = position;
+  if (settings.hasHeader) {
+    // handle mouse interaction
+    const auto titleBoxSize = sf::Vector2f (windowSize.x, titleTextHeight ());
+    auto reduceCloseButtonWidth = sf::Vector2f ();
+    if (settings.closable) {
+      reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
     }
-    addLastVerticalSpacing (-1.f);
-    icon ("reduce", buttonSize);
+    const auto titleBoxWithoutButtons = sf::FloatRect (mCursorPosition, titleBoxSize - reduceCloseButtonWidth);
+    const auto drawBox = sf::FloatRect (mCursorPosition, titleBoxSize);
+    mRender.setCurrentClippingLayer (drawBox);
+    const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
 
-    // close
-    addLastVerticalSpacing (-1.f);
-    addLastHorizontalSpacing ();
-    addSpacing ({-1.f, 0.f});
-    if (button <Widget::TitleButton> (buttonSize)) {
-      settings.closed = true;
+    // draw title box and window name
+    mRender.draw <Widget::TitleBox> (drawBox, {state});
+    const auto textWidth = titleSizeOf (settings.title).x;
+    const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
+    const auto titlePos = sgui::round (sf::Vector2f {mCursorPosition.x + shiftX, mCursorPosition.y});
+    mRender.drawText (titlePos, settings.title, mStyle.fontColor, mStyle.fontSize.title);
+
+    // reduce or close window
+    if (settings.closable) {
+      // reduce
+      const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
+      mCursorPosition = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
+      if (button <Widget::TitleButton> (buttonSize)) {
+        settings.reduced = !(settings.reduced);
+      }
+      addLastVerticalSpacing (-1.f);
+      icon ("reduce", buttonSize);
+
+      // close
+      addLastVerticalSpacing (-1.f);
+      addLastHorizontalSpacing ();
+      addSpacing ({-1.f, 0.f});
+      if (button <Widget::TitleButton> (buttonSize)) {
+        settings.closed = true;
+      }
+      addLastVerticalSpacing (-1.f);
+      icon ("close", buttonSize);
     }
-    addLastVerticalSpacing (-1.f);
-    icon ("close", buttonSize);
+    mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
   }
-  mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
 
   // if window is reduced skip box drawing
   if (settings.reduced) {
@@ -497,27 +505,21 @@ bool Gui::beginWindow (
     return false;
   }
 
-  // set clipping layer
-  auto& groupLayer = thisWindow.clippingLayer;
-  const auto activeShift = sf::Vector2f (0.f, titleBoxSize.y);
-  const auto panelBox = sf::FloatRect (position + activeShift, windowSize);
-  if (settings.hasMenu) {
-    groupLayer = setClipping (panelBox, 0.f, buttonHeight ());
-  } else {
-    groupLayer = setClipping (panelBox, 0.f);
-  }
-
   // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
+    const auto menuBox = sf::FloatRect (mCursorPosition, {windowSize.x, buttonHeight () + 2.f*mPadding.y});
+    mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
     thisWindow.menuBarPosition = mCursorPosition;
-    thisWindow.menuBarSize = sf::Vector2f (windowSize.x, buttonHeight ());
+    thisWindow.menuBarSize = menuBox.size;
     thisWindow.hasMenuBar = settings.hasMenu;
-    // update cursor position
     mCursorPosition.y += buttonHeight ();
   }
 
-  // draw window box and handle hovering of the window
+  // set clipping layer
   const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
+  thisWindow.clippingLayer = mRender.setCurrentClippingLayer (windowBox);
+
+  // draw window box and handle hovering of the window
   const auto windowStatus = itemStatus (windowBox, name);
   mRender.draw <Widget::Box> (windowBox);
   mCursorPosition += mPadding;
@@ -583,8 +585,7 @@ void Gui::beginPanel (
   // add clipping layer for the panel box
   auto& panel = mGroups.top ();
   if (settings.clipped) {
-    auto& groupLayer = panel.clippingLayer;
-    groupLayer = setClipping (clipBox);
+    panel.clippingLayer = mRender.setCurrentClippingLayer (clipBox);
   }
 
   // draw panel box if requested
@@ -656,11 +657,16 @@ void Gui::beginMenu ()
   if (!mGroupsActiveItem.has (thisMenu.groupId)) {
     mGroupsActiveItem.emplace (thisMenu.groupId, 0u);
   }
-  thisMenu.clippingLayer = parent.clippingLayer;
 
-  // get menu bar status
+  // ensure that we are on the right clipping layer
+  const auto layerId = mRender.currentClippingLayer ();
+  thisMenu.clippingLayer = mMenuClippingLayer.top ();
+  mMenuClippingLayer.pop ();
+  mRender.moveToClippingLayer (thisMenu.clippingLayer);
+  // get menu bar status, draws it and go back to the previous clipping layer
   const auto box = sf::FloatRect (menuPos, menuSize);
   mRender.draw <Widget::MenuBox> (box);
+  mRender.moveToClippingLayer (layerId);
 
   // scroll through panel if requested
   auto& panel = mGroups.top ();
@@ -728,11 +734,9 @@ bool Gui::menuItem (
   mRender.draw <Widget::MenuItemBox> (box, {state});
   parentMenu.isActive = clicked;
 
-  // draw a description over it
+  // draw a description over it and go back to previous clipping layer
   const auto textPos = sgui::round (itemPos + 1.5f*mPadding);
   mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
-
-  // go back to previous clipping layer
   mRender.moveToClippingLayer (layerId);
 
   // update cursor position and return item status
@@ -1062,7 +1066,7 @@ void Gui::inputText (
   beginGroup (options.horizontal, boxPosition, boxSize); 
   auto& textPanel = mGroups.top ();
   auto& groupLayer = textPanel.clippingLayer;
-  groupLayer = setClipping (clipBox);
+  groupLayer = mRender.setCurrentClippingLayer (clipBox);
   // draw formatted text and scroll through it if necessary
   const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
   mCursorPosition = boxPosition;
@@ -1700,24 +1704,6 @@ sf::Vector2f Gui::computePosition (
 
   // else return constrained position
   return pos + parent.position;
-}
-
-/////////////////////////////////////////////////
-uint32_t Gui::setClipping (
-  const sf::FloatRect& panelBox,
-  const float activeHeight,
-  const float menuHeight,
-  const bool isPanel)
-{
-  // compute clip position and size
-  auto layerBox = panelBox;
-  layerBox.size.y += activeHeight + menuHeight;
-  if (isPanel) {
-    layerBox.position.y -= activeHeight;
-  }
-
-  // set clipping layer and return its id
-  return mRender.setCurrentClippingLayer (layerBox);
 }
   
 /////////////////////////////////////////////////

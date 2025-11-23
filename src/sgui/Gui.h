@@ -452,11 +452,6 @@ private:
   sf::Vector2f computePosition (
          const Panel& settings,
          const Constraints& constraint);
-  uint32_t setClipping (
-         const sf::FloatRect& baseBox,
-         const float activeHeight = 0.f,
-         const float menuHeight = 0.f,
-         const bool isPanel = false);
   // for nested clipping layer, this need to be called before beginGroup.
   sf::FloatRect handleParentClipBox (const sf::FloatRect& box);
   // this need to be called after endGroup to clean clipping layer.
@@ -598,6 +593,7 @@ private:
   Impl::InternalItemState mGuiState;
   // gui internal data
   std::stack <sf::Vector2f> mAnchors;
+  std::stack <uint32_t> mMenuClippingLayer;
   std::stack <float> mAnchorsScroll;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;

@@ -22,7 +22,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Style, fontSize, fontColor, ite
 /**
  * Panel
  */
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Panel, movable, visible, closable, size, position, title);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Panel, movable, visible, closable, hasHeader, size, position, title);
 /**
  * Constraints
  */

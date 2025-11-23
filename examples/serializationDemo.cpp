@@ -101,13 +101,18 @@ int main()
       if (gui.beginWindow (closablePanel)) {
         // Open or close
         gui.text ("A window");
-        gui.sameLine ();
         if (gui.textButton ("Open/Close")) {
           mainPanel.closed = !mainPanel.closed;
         }
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
         gui.separation ();
+        if (gui.textButton ("Add/remove header")) {
+          mainPanel.hasHeader = !mainPanel.hasHeader;
+        }
+        if (gui.textButton ("Add/remove closable options")) {
+          closablePanel.closable = !closablePanel.closable;
+        }
         gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
         gui.separation ();
         // set function
