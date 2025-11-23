@@ -451,8 +451,6 @@ bool Gui::beginWindow (
   // compute position and create a new global group
   const auto windowSize = settings.size.componentWiseMul (parentGroupSize ());
   const auto position = computePosition (settings, constraints);
-  beginGroup (options.horizontal, position, windowSize);
-  auto& thisWindow = mGroups.top ();
 
   // handle window header
   mCursorPosition = position;
@@ -498,6 +496,13 @@ bool Gui::beginWindow (
     }
     mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
   }
+  
+  // we need to check if window has a menu to compute correct position
+  if (settings.hasMenu) {
+    mCursorPosition += sf::Vector2f (0.f, buttonHeight ());
+  }
+  beginGroup (options.horizontal, mCursorPosition, windowSize);
+  auto& thisWindow = mGroups.top ();
 
   // if window is reduced skip box drawing
   if (settings.reduced) {
@@ -512,7 +517,6 @@ bool Gui::beginWindow (
     thisWindow.menuBarPosition = mCursorPosition;
     thisWindow.menuBarSize = menuBox.size;
     thisWindow.hasMenuBar = settings.hasMenu;
-    mCursorPosition.y += buttonHeight ();
   }
 
   // set clipping layer
@@ -1669,7 +1673,7 @@ sf::Vector2f Gui::computePosition (
       pos.x = windowSize.x * (1.f - panel.size.x);
     }
     if (constraint.horizontal == HorizontalAlignment::Left) {
-      pos.x = 0.f;
+      pos.x = parent.position.x;
     }
   // fix element relative to window size
   } else {
@@ -1688,7 +1692,7 @@ sf::Vector2f Gui::computePosition (
       pos.y = windowSize.y * (1.f - panel.size.y);
     }
     if (constraint.vertical == VerticalAlignment::Top) {
-      pos.y = 0.f;
+      pos.y = parent.position.y;
     }
   // fix element relative to window size
   } else {
@@ -1703,7 +1707,7 @@ sf::Vector2f Gui::computePosition (
   }
 
   // else return constrained position
-  return pos + parent.position;
+  return pos;
 }
   
 /////////////////////////////////////////////////
