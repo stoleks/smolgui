@@ -5,8 +5,9 @@
 
 #include "sgui/Widgets/Style.h"
 #include "sgui/Widgets/Panel.h"
-#include "sgui/Widgets/Internals.h"
-#include "sgui/Widgets/ScrollerInformation.h"
+#include "sgui/Internals/ScrollerInformation.h"
+#include "sgui/Internals/GuiGroup.h"
+#include "sgui/Internals/GuiStates.h"
 
 #include "sgui/Core/ObjectPool.h"
 #include "sgui/Core/Interpolation.h"
