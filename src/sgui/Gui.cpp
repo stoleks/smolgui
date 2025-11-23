@@ -1669,7 +1669,7 @@ sf::Vector2f Gui::computePosition (
       pos.x = windowSize.x * (1.f - panel.size.x);
     }
     if (constraint.horizontal == HorizontalAlignment::Left) {
-      pos.x = 0.f;
+      pos.x = parent.position.x;
     }
   // fix element relative to window size
   } else {
@@ -1688,7 +1688,7 @@ sf::Vector2f Gui::computePosition (
       pos.y = windowSize.y * (1.f - panel.size.y);
     }
     if (constraint.vertical == VerticalAlignment::Top) {
-      pos.y = 0.f;
+      pos.y = parent.position.y;
     }
   // fix element relative to window size
   } else {
@@ -1703,7 +1703,7 @@ sf::Vector2f Gui::computePosition (
   }
 
   // else return constrained position
-  return pos + parent.position;
+  return pos;
 }
   
 /////////////////////////////////////////////////
