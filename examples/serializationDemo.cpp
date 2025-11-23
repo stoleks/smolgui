@@ -180,9 +180,14 @@ int main()
         if (gui.textButton ("Save layout")) {
           layout.saveInFile (compactLayout);
         }
+        // top panel
+        auto constraint = layout.get <sgui::Constraints> ("alignment");
+        constraint.vertical = sgui::VerticalAlignment::Top;
+        gui.beginPanel (constrainedPanel, constraint);
+        gui.text ("Top in win");
+        gui.endPanel ();
         gui.endWindow ();
       }
-
       // scrollabel centered panel
       auto constraint = layout.get <sgui::Constraints> ("alignment");
       constraint.vertical = sgui::VerticalAlignment::Center;

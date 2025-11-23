@@ -512,9 +512,10 @@ bool Gui::beginWindow (
 
   // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
-    const auto menuBox = sf::FloatRect (mCursorPosition, {windowSize.x, buttonHeight () + 2.f*mPadding.y});
+    const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, buttonHeight ());
+    const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, buttonHeight () + 2.f*mPadding.y});
     mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
-    thisWindow.menuBarPosition = mCursorPosition;
+    thisWindow.menuBarPosition = menuPosition;
     thisWindow.menuBarSize = menuBox.size;
     thisWindow.hasMenuBar = settings.hasMenu;
   }
@@ -1663,7 +1664,8 @@ sf::Vector2f Gui::computePosition (
   const auto halfSize = panel.size / 2.f;
   const auto center = windowSize / 2.f;
 
-  // constrain horizontal position with alignment 
+  // constrain horizontal position with alignment
+  auto parentShift = parent.position;
   const auto isAlignedLaterally = constraint.horizontal != HorizontalAlignment::None;
   if (isAlignedLaterally) {
     if (constraint.horizontal == HorizontalAlignment::Center) {
@@ -1675,6 +1677,7 @@ sf::Vector2f Gui::computePosition (
     if (constraint.horizontal == HorizontalAlignment::Left) {
       pos.x = parent.position.x;
     }
+    parentShift.x = 0.f;
   // fix element relative to window size
   } else {
     if (constraint.relativePosition.x > 0.01f) {
@@ -1694,6 +1697,7 @@ sf::Vector2f Gui::computePosition (
     if (constraint.vertical == VerticalAlignment::Top) {
       pos.y = parent.position.y;
     }
+    parentShift.y = 0.f;
   // fix element relative to window size
   } else {
     if (constraint.relativePosition.y > 0.01f) {
@@ -1707,7 +1711,7 @@ sf::Vector2f Gui::computePosition (
   }
 
   // else return constrained position
-  return pos;
+  return pos + parentShift;
 }
   
 /////////////////////////////////////////////////
