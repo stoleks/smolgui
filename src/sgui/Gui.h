@@ -8,6 +8,7 @@
 #include "sgui/Internals/ScrollerInformation.h"
 #include "sgui/Internals/GuiGroup.h"
 #include "sgui/Internals/GuiStates.h"
+#include "sgui/Internals/Counters.h"
 
 #include "sgui/Core/ObjectPool.h"
 #include "sgui/Core/Interpolation.h"
@@ -551,11 +552,6 @@ private:
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
   Impl::GroupData getParentGroup ();
-  // to check and inform about wrong use of begin/end
-  void checkBeginAndEndMatch (
-         uint32_t& counter,
-         const std::string& open,
-         const std::string& close);
   // to process sfml events and store it in the internal state
   void handleMouseInputs (
          const sf::RenderWindow& window,
@@ -579,13 +575,8 @@ private:
   int32_t mResetDifference = 0;
   int32_t mPreviousResetCount = 0;
   // counters to keep track of gui objects
-  uint32_t mPlotCount = 0u;
-  uint32_t mGroupCount = 0u;
-  uint32_t mWidgetCount = 0u;
-  uint32_t mComboBoxCount = 0u;
-  uint32_t mBeginMenuCount = 0u;
-  uint32_t mBeginPanelCount = 0u;
-  uint32_t mBeginWindowCount = 0u;
+  Impl::Counters mCounters = {};
+  Impl::GroupChecker mChecker = {};
   // alignement data
   sf::Vector2f mCursorPosition = {};
   sf::Vector2f mPadding = {6.f, 1.5f};

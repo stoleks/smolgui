@@ -294,24 +294,14 @@ void Gui::endFrame (const float tooltipDelay)
   mResetCount = 0u;
   mPreviousResetCount = 0u;
   // reset widget count and scroll data
-  mPlotCount = 0u;
-  mGroupCount = 0u;
-  mWidgetCount = 0u;
-  mComboBoxCount = 0u;
+  mCounters.reset ();
+  mChecker.reset ();
   for (auto& scrollData : mGroupsScrollerInformation) {
     scrollData.newCycle ();
   }
 
-  // inform user if they didn't closed correctly something
-  checkBeginAndEndMatch (mBeginWindowCount, "beginWindow", "endWindow");
-  checkBeginAndEndMatch (mBeginPanelCount, "beginPanel", "endPanel");
-  checkBeginAndEndMatch (mBeginMenuCount, "beginMenu", "endMenu");
-
   // manage all ill-closed group and anchors
-  if (!mGroups.empty ()) {
-    spdlog::error ("A beginGroup was called without its endGroup counterpart !");
-    while (!mGroups.empty ()) mGroups.pop ();
-  }
+  while (!mGroups.empty ()) mGroups.pop ();
   if (!mAnchors.empty ()) {
     spdlog::error ("A setAnchor was called whithout its backToAnchor counterpart !");
     while (!mAnchors.empty ()) mAnchors.pop ();
@@ -332,16 +322,6 @@ void Gui::endFrame (const float tooltipDelay)
   // remove stopped sounds
   mSoundPlayer.removeStoppedSounds ();
   mPreviousWidgetSoundId = mActiveWidgetSoundId;
-}
-
-/////////////////////////////////////////////////
-void Gui::checkBeginAndEndMatch (
-  uint32_t& counter,
-  const std::string& open,
-  const std::string& close)
-{
-  if (counter > 0u) spdlog::error ("A {} was called without its {} counterpart !", open, close);
-  counter = 0u;
 }
 
 /////////////////////////////////////////////////
@@ -464,7 +444,7 @@ bool Gui::beginWindow (
 
   mResetCount = 0;
   mPreviousResetCount = 0;
-  mBeginWindowCount++;
+  mChecker.begin (GroupType::Window);
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
@@ -574,10 +554,9 @@ void Gui::endWindow ()
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
-    // remove clipping
+    // remove clipping and track window not closed
     removeClipping ();
-    // track window not closed by user
-    mBeginWindowCount--;
+    mChecker.end (GroupType::Window);
   } else {
     spdlog::warn ("There is no window to end");
   }
@@ -591,7 +570,7 @@ void Gui::beginPanel (
 {
   mResetCount = 0;
   mPreviousResetCount = 0;
-  mBeginPanelCount++;
+  mChecker.begin (GroupType::Panel);
   const auto name = initializeActivable ("Panel");
 
   // compute position and create a new group
@@ -639,10 +618,9 @@ void Gui::endPanel ()
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
-    // remove clipping layer
+    // remove clipping layer and track panel not closed by user
     removeClipping ();
-    // track box not closed by user
-    mBeginPanelCount--;
+    mChecker.end (GroupType::Panel);
   } else {
     spdlog::warn ("There is no panel to end");
   }
@@ -664,7 +642,7 @@ void Gui::beginMenu ()
   }
 
   // assign unique id to the widget
-  mBeginMenuCount++;
+  mChecker.begin (GroupType::Menu);
   const auto name = initializeActivable ("MenuBar");
 
   // construct a menu bar according to the parent size
@@ -702,11 +680,9 @@ void Gui::endMenu ()
     mLastSpacing.x = 0.f;
     mLastSpacing.y = menuSpacing;
 
-    // end group
+    // end group and track menu not closed
     endGroup ();
-
-    // track menu not closed by user
-    mBeginMenuCount--;
+    mChecker.end (GroupType::Menu);
   } else {
     spdlog::warn ("There are no menu to end");
   }
@@ -1084,18 +1060,16 @@ void Gui::inputText (
   // clip text outside of the box
   const auto clipBox = handleParentClipBox (box);
   beginGroup (options.horizontal, boxPosition, boxSize); 
-  {
-    auto& textPanel = mGroups.top ();
-    auto& groupLayer = textPanel.clippingLayer;
-    groupLayer = setClipping (clipBox);
-    // draw formatted text and scroll through it if necessary
-    const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
-    mCursorPosition = boxPosition;
-    scrollThroughPanel (textPanel, box, state, options.horizontal);
-    const auto textPosition = sgui::round (mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y));
-    mRender.drawText (textPosition, formatted, mStyle.fontColor, mStyle.fontSize.normal);
-    updateSpacing (normalSizeOf (formatted));
-  }
+  auto& textPanel = mGroups.top ();
+  auto& groupLayer = textPanel.clippingLayer;
+  groupLayer = setClipping (clipBox);
+  // draw formatted text and scroll through it if necessary
+  const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
+  mCursorPosition = boxPosition;
+  scrollThroughPanel (textPanel, box, state, options.horizontal);
+  const auto textPosition = sgui::round (mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y));
+  mRender.drawText (textPosition, formatted, mStyle.fontColor, mStyle.fontSize.normal);
+  updateSpacing (normalSizeOf (formatted));
   endGroup  ();
   removeClipping ();
 
@@ -1217,11 +1191,11 @@ void Gui::plot (
   const sf::Color& lineColor)
 {
   // cache plot data to avoid useless computation
-  if (!mPlotsData.has (mPlotCount)) {
+  if (!mPlotsData.has (mCounters.plot)) {
     cachePlotData (slope);
   }
-  plot (mPlotsData.get (mPlotCount), thickness, lineColor);
-  mPlotCount++;
+  plot (mPlotsData.get (mCounters.plot), thickness, lineColor);
+  mCounters.plot++;
 }
 
 /////////////////////////////////////////////////
@@ -1231,11 +1205,11 @@ void Gui::plot (
   const sf::Color& lineColor)
 {
   // cache plot data to avoid useless computation
-  if (!mPlotsData.has (mPlotCount)) {
+  if (!mPlotsData.has (mCounters.plot)) {
     cachePlotData (slope);
   }
-  plot (mPlotsData.get (mPlotCount), thickness, lineColor);
-  mPlotCount++;
+  plot (mPlotsData.get (mCounters.plot), thickness, lineColor);
+  mCounters.plot++;
 }
 
 /////////////////////////////////////////////////
@@ -1266,7 +1240,7 @@ void Gui::cachePlotData (const std::function<float (float)>& slope)
     const auto x = sgui::lerp (range.min, range.max, i / max);
     slopeData.emplace_back (x, slope (x));
   }
-  mPlotsData.emplace (mPlotCount, std::move (slopeData));
+  mPlotsData.emplace (mCounters.plot, std::move (slopeData));
 }
 
 /////////////////////////////////////////////////
@@ -1279,7 +1253,7 @@ void Gui::cachePlotData (const std::function<sf::Vector2f (float)>& slope)
     const auto x = sgui::lerp (range.min, range.max, i / max);
     slopeData.emplace_back (slope (x));
   }
-  mPlotsData.emplace (mPlotCount, std::move (slopeData));
+  mPlotsData.emplace (mCounters.plot, std::move (slopeData));
 }
 
 /////////////////////////////////////////////////
@@ -1368,8 +1342,8 @@ std::string Gui::comboBox (
   if (list.empty ()) return "";
 
   // initialize widget name and position
-  const auto comboBoxId = mComboBoxCount;
-  mComboBoxCount++;
+  const auto comboBoxId = mCounters.comboBox;
+  mCounters.comboBox++;
   const auto name = initializeActivable ("ComboBox");
   const auto initialPos = computeRelativePosition (mCursorPosition, options.displacement);
   if (!mComboBoxActiveItem.has (comboBoxId)) {
@@ -1643,8 +1617,8 @@ void Gui::beginGroup (
   newGroup.menuItemCount = 0;
   newGroup.clippingLayer = 0;
   newGroup.menuBarSize = sf::Vector2f (0, 0);
-  newGroup.groupId = mGroupCount;
-  mGroupCount++;
+  newGroup.groupId = mCounters.group;
+  mCounters.group++;
 
   // add it to the stack
   mGroups.emplace (std::move (newGroup));
@@ -1965,9 +1939,9 @@ std::string Gui::formatText (
 /////////////////////////////////////////////////
 std::string Gui::initializeActivable (const std::string& key)
 {
-  mWidgetCount++;
+  mCounters.widget++;
   mActiveWidgetSoundId = key;
-  return key + std::to_string (mWidgetCount - 1);
+  return key + std::to_string (mCounters.widget - 1);
 }
 
 /////////////////////////////////////////////////

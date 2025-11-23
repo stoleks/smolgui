@@ -7,6 +7,8 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Internals)
 set (SRC
   ${SRCROOT}/ScrollerInformation.cpp
   ${INCROOT}/ScrollerInformation.h
+  ${SRCROOT}/Counters.cpp
+  ${INCROOT}/Counters.h
   ${INCROOT}/GuiStates.h
   ${INCROOT}/GuiGroup.h
 )

@@ -1,10 +1,3 @@
-/**
-  objectPool.h
-  Purpose: implement a generic pool of objects that are stored continuously in
-    memory without fragmentation, and its more or less thread safe
-  @author A. J.
-*/
-
 #pragma once
 
 #include <vector>
@@ -14,6 +7,10 @@
 
 namespace sgui
 {
+/**  
+ * @brief: implement a generic pool of objects that are stored continuously in
+    memory without fragmentation, and its more or less thread safe
+  */
 template <typename Object,
           typename ObjectId = uint32_t>
 class ObjectPool
