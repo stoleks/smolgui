@@ -9,12 +9,9 @@
 namespace sgui
 {
 /////////////////////////////////////////////////
-void GuiRender::setResources (
-  sf::Font& font,
-  sf::Texture& texture)
+void GuiRender::setResources (sf::Texture& texture)
 {
-  // get texture and font
-  mGuiFont = &font;
+  // get texture
   mGuiTexture = &texture;
 
   // initialize clipping layer
@@ -59,9 +56,10 @@ void GuiRender::initializeMeshArray ()
 /////////////////////////////////////////////////
 sf::Vector2f GuiRender::textSize (
   const std::string& text,
+  const sf::Font& font,
   const uint32_t fontSize) const
 {
-  auto content = sf::Text (*mGuiFont);
+  auto content = sf::Text (font);
   content.setCharacterSize (fontSize);
   content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
   return content.getLocalBounds ().size;
@@ -159,10 +157,11 @@ void GuiRender::drawText (
   const sf::Vector2f& position,
   const std::string& text,
   const sf::Color& textColor,
+  const sf::Font& font,
   const uint32_t fontSize)
 {
   // set text properties
-  auto content = sf::Text (*mGuiFont);
+  auto content = sf::Text (font);
   content.setCharacterSize (fontSize);
   content.setPosition (position);
   content.setFillColor (textColor);

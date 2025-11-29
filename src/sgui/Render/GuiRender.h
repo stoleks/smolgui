@@ -41,12 +41,9 @@ class GuiRender : public sf::Drawable, public sf::Transformable
 public:
   /**
    * @brief Set resources used in render. It should be called before any `draw` call
-   * @param font Font used
    * @param sprite Texture used
    */
-  void setResources (
-         sf::Font& font,
-         sf::Texture& sprite);
+  void setResources (sf::Texture& sprite);
   /**
    * @brief Set texture atlas used in render. It should be called before any `draw` call
    * @param atlas Texture atlas used
@@ -64,6 +61,7 @@ public:
    */
   sf::Vector2f textSize (
          const std::string& text,
+         const sf::Font& font,
          const uint32_t fontSize) const;
   /**
    * @brief Update view on which the gui is drawn
@@ -111,6 +109,7 @@ public:
          const sf::Vector2f& position,
          const std::string& text,
          const sf::Color& textColor,
+         const sf::Font& font,
          const uint32_t fontSize);
   /**
    * @brief get draw calls count
@@ -194,7 +193,6 @@ private:
   sf::View mBaseView;
   std::vector <sf::View> mClippingLayers;
   // font and texture
-  sf::Font* mGuiFont;
   sf::Texture* mGuiTexture;
   // widget mesh
   std::vector <sf::VertexArray> mWidgets;

@@ -125,7 +125,7 @@ int main()
       const auto phaseMax = 10.f;
       const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
       gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
-      gui.progressBar (sliderValue / phaseMax, gui.normalSizeOf ("b").y * sf::Vector2f (24.f, 4.f));
+      gui.progressBar (sliderValue / phaseMax, gui.textSize ("b").y * sf::Vector2f (24.f, 4.f));
       gui.sameLine ();
       gui.text (fmt::format ("{} %", sliderValue / phaseMax * 100.f));
       gui.checkBox (displayFunction, {"Display a function"});

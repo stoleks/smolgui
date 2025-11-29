@@ -46,7 +46,7 @@ void Gui::slider (
   } else {
     dimVector.y = options.length;
   }
-  const auto size = normalTextHeight () * dimVector;
+  const auto size = textHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.info);
   mRender.draw <Widget::Slider> (box, {state, isHorizontal});
@@ -60,9 +60,9 @@ void Gui::slider (
   // draw text next to the slider
   auto textWidth = 0.f;
   if (options.description != "") {
-    const auto descrPos = sgui::round (position + sf::Vector2f (size.x + mPadding.x, 0.f));
-    mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
-    textWidth = normalSizeOf (options.description).x;
+    const auto descrPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
+    handleTextDrawing (descrPos, options.description);
+    textWidth = textSize (options.description).x;
   }
   // update cursor position
   updateSpacing ({size.x + textWidth, size.y});
@@ -107,11 +107,11 @@ void Gui::inputNumber (
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // compute text box dimension
-  auto width = normalSizeOf (label + "10000").x;
+  auto width = textSize (label + "10000").x;
   if (!fixedWidth) {
-    width = std::max (width, normalSizeOf (label + fmt::format ("{}", number)).x);
+    width = std::max (width, textSize (label + fmt::format ("{}", number)).x);
   }
-  const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, normalTextHeight ());
+  const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, textHeight ());
 
   // get status of the widget
   const auto box = sf::FloatRect (position, boxSize);
@@ -136,16 +136,16 @@ void Gui::inputNumber (
 
   // draw label and number
   const auto numStr = label + fmt::format ("{}", number);
-  const auto numWidth = normalSizeOf (numStr).x;
-  auto numberPos = position + sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
-  mRender.drawText (sgui::round (numberPos), numStr, mStyle.fontColor, mStyle.fontSize.normal);
+  const auto numWidth = textSize (numStr).x;
+  const auto shiftToCenter = sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
+  handleTextDrawing (position + shiftToCenter, numStr);
 
   // draw description
   auto textWidth = 0.f;
   if (options.description != "") {
-    const auto descrPos = sgui::round (position + sf::Vector2f (boxSize.x + mPadding.x, 0));
-    mRender.drawText (descrPos, options.description, mStyle.fontColor, mStyle.fontSize.normal);
-    textWidth = normalSizeOf (options.description).x;
+    const auto descrPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
+    handleTextDrawing (descrPos, options.description);
+    textWidth = textSize (options.description).x;
   }
   // update cursor position
   updateSpacing ({boxSize.x + textWidth, boxSize.y});

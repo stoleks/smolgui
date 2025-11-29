@@ -22,7 +22,14 @@ void Gui::setResources (
   sf::Font& font,
   sf::Texture& widgetTexture)
 {
-  mRender.setResources (font, widgetTexture);
+  mFont = &font; 
+  mRender.setResources (widgetTexture);
+}
+
+/////////////////////////////////////////////////
+void Gui::setFontawesome (sf::Font& fontawesome)
+{
+  mFontawesome = &fontawesome;
 }
 
 /////////////////////////////////////////////////
@@ -83,27 +90,11 @@ void Gui::setView (sf::RenderTarget& target)
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-sf::Vector2f Gui::normalSizeOf (const std::string& text) const
+sf::Vector2f Gui::textSize (
+  const std::string& text,
+  const TextType type) const
 {
-  return mRender.textSize (text, mStyle.fontSize.normal);
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::titleSizeOf (const std::string& text) const
-{
-  return mRender.textSize (text, mStyle.fontSize.title);
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::subtitleSizeOf (const std::string& text) const
-{
-  return mRender.textSize (text, mStyle.fontSize.subtitle);
-}
-
-/////////////////////////////////////////////////
-sf::Vector2f Gui::footnoteSizeOf (const std::string& text) const
-{
-  return mRender.textSize (text, mStyle.fontSize.footnote);
+  return mRender.textSize (text, *mFont, getFontSize (type));
 }
 
 /////////////////////////////////////////////////
@@ -114,6 +105,12 @@ sf::Vector2f Gui::activePanelSize () const
     return parent.size;
   }
   return mWindowSize;
+}
+
+/////////////////////////////////////////////////
+float Gui::textHeight (const TextType type) const
+{
+  return getFontSize (type) + 6.f*mPadding.y;
 }
 
 
@@ -456,7 +453,7 @@ bool Gui::beginWindow (
   mCursorPosition = position;
   if (settings.hasHeader) {
     // handle mouse interaction
-    const auto titleBoxSize = sf::Vector2f (windowSize.x, titleTextHeight ());
+    const auto titleBoxSize = sf::Vector2f (windowSize.x, textHeight (TextType::Title));
     auto reduceCloseButtonWidth = sf::Vector2f ();
     if (settings.closable) {
       reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
@@ -468,10 +465,10 @@ bool Gui::beginWindow (
 
     // draw title box and window name
     mRender.draw <Widget::TitleBox> (drawBox, {state});
-    const auto textWidth = titleSizeOf (settings.title).x;
+    const auto textWidth = textSize (settings.title, TextType::Title).x;
     const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
-    const auto titlePos = sgui::round (sf::Vector2f {mCursorPosition.x + shiftX, mCursorPosition.y});
-    mRender.drawText (titlePos, settings.title, mStyle.fontColor, mStyle.fontSize.title);
+    const auto titlePos = sf::Vector2f {mCursorPosition.x + shiftX, mCursorPosition.y};
+    handleTextDrawing (titlePos, settings.title, TextType::Title);
 
     // reduce or close window
     if (settings.closable) {
@@ -499,7 +496,7 @@ bool Gui::beginWindow (
   
   // we need to check if window has a menu to compute correct position
   if (settings.hasMenu) {
-    mCursorPosition += sf::Vector2f (0.f, buttonHeight ());
+    mCursorPosition += sf::Vector2f (0.f, textHeight ());
   }
   beginGroup (options.horizontal, mCursorPosition, windowSize);
   auto& thisWindow = mGroups.top ();
@@ -512,8 +509,8 @@ bool Gui::beginWindow (
 
   // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
-    const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, buttonHeight ());
-    const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, buttonHeight () + 2.f*mPadding.y});
+    const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, textHeight ());
+    const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, textHeight () + 2.f*mPadding.y});
     mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
     thisWindow.menuBarPosition = menuPosition;
     thisWindow.menuBarSize = menuBox.size;
@@ -557,7 +554,7 @@ void Gui::endWindow ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
-    updateScrolling (2.f * normalSizeOf ("B"));
+    updateScrolling (2.f * textSize ("B"));
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -620,7 +617,7 @@ void Gui::endPanel ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
-    updateScrolling (2.f * normalSizeOf ("B"));
+    updateScrolling (2.f * textSize ("B"));
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -713,8 +710,8 @@ bool Gui::menuItem (
   const auto itemPos = parentMenu.lastItemPosition;
 
   // construct menu item box
-  const auto width = 3.f*mPadding.x + normalSizeOf (text).x;
-  const auto height = buttonHeight ();
+  const auto width = 3.f*mPadding.x + textSize (text).x;
+  const auto height = textHeight ();
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
   parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
 
@@ -740,8 +737,7 @@ bool Gui::menuItem (
   parentMenu.isActive = clicked;
 
   // draw a description over it and go back to previous clipping layer
-  const auto textPos = sgui::round (itemPos + 1.5f*mPadding);
-  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
+  handleTextDrawing (itemPos + 1.5f*mPadding, text);
   mRender.moveToClippingLayer (layerId);
 
   // update cursor position and return item status
@@ -804,7 +800,7 @@ void Gui::separation (const float thick)
   auto size = sf::Vector2f ();
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
-    const auto thickness = thick * buttonHeight ();
+    const auto thickness = thick * textHeight ();
     if (parent.horizontal) {
       size.x = thickness;
       size.y = parent.size.y - 3.f*mPadding.y;
@@ -834,12 +830,12 @@ bool Gui::textButton (
 {
   // compute text position and construct a button adapted to the text
   const auto position = computeRelativePosition (mCursorPosition + 1.5f*mPadding, options.displacement);
-  const auto width = std::max (normalSizeOf (text).x + 5.f*mPadding.x, 6.f*buttonHeight ());
-  const auto size = sf::Vector2f (width, buttonHeight ());
+  const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
+  const auto size = sf::Vector2f (width, textHeight ());
   const auto clicked = button <Widget::TextButton> (size, options);
 
   // draw a text over it
-  mRender.drawText (sgui::round (position), text, mStyle.fontColor, mStyle.fontSize.normal);
+  handleTextDrawing (position, text);
   return clicked;
 }
 
@@ -849,7 +845,7 @@ bool Gui::iconButton (
   const WidgetOptions& options)
 {
   // button part
-  const auto size = sf::Vector2f (1.f, 1.f) * buttonHeight ();
+  const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
   const auto clicked = button <Widget::IconButton> (size, options);
 
@@ -870,9 +866,8 @@ bool Gui::iconTextButton (
   const auto clicked = iconButton (iconName, options);
 
   // add a shifted text besides it
-  const auto shift = sf::Vector2f (buttonHeight (), 0);
-  const auto textPos = sgui::round (position + shift + mPadding);
-  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
+  const auto shift = sf::Vector2f (textHeight (), 0);
+  handleTextDrawing (position + shift + mPadding, text);
   return clicked;
 }
 
@@ -909,7 +904,7 @@ bool Gui::checkBox (
   const auto position = computeRelativePosition (mCursorPosition, options.displacement);
 
   // get status of the widget,
-  const auto size = normalTextHeight () * sf::Vector2f (2.f, 1.f);
+  const auto size = textHeight () * sf::Vector2f (2.f, 1.f);
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
   // check or uncheck if asked
@@ -926,8 +921,8 @@ bool Gui::checkBox (
   auto textWidth = 0.f;
   if (options.description != "") {
     const auto descriptionPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
-    mRender.drawText (sgui::round (descriptionPos), options.description, mStyle.fontColor, mStyle.fontSize.normal);
-    textWidth = normalSizeOf (options.description).x;
+    handleTextDrawing (descriptionPos, options.description);
+    textWidth = textSize (options.description).x;
   }
   // update cursor position
   updateSpacing ({size.x + textWidth, size.y});
@@ -951,31 +946,22 @@ void Gui::text (
   
   // center text vertically if asked
   const auto parent = getParentGroup ();
-  const auto textSize = normalSizeOf (text);
+  const auto normalTextSize = textSize (text);
   if (textOptions.vertical == VerticalAlignment::Center) {
-    position.y = parent.position.y + 0.5f*(parent.size.y - textSize.y);
+    position.y = parent.position.y + 0.5f*(parent.size.y - normalTextSize.y);
   }
   // or horizontally
   if (textOptions.horizontal == HorizontalAlignment::Center) {
-    position.x = parent.position.x + 0.5f*(parent.size.x - textSize.x);
+    position.x = parent.position.x + 0.5f*(parent.size.x - normalTextSize.x);
   }
 
   // format the text to fit in the box if one is furnished
-  auto fontSize = mStyle.fontSize.normal;
-  if (textOptions.type == TextType::Title) {
-    fontSize = mStyle.fontSize.title;
-  } else if (textOptions.type == TextType::Subtitle) {
-    fontSize = mStyle.fontSize.subtitle;
-  } else if (textOptions.type == TextType::Footnote) {
-    fontSize = mStyle.fontSize.footnote;
-  }
-  const auto formatted = formatText (text, textOptions.boxSize, fontSize);
-
+  const auto formatted = formatText (text, textOptions.boxSize, textOptions.type);
+  
   // draw text and update cursor position
-  mRender.drawText (sgui::round (position), formatted, mStyle.fontColor, fontSize);
-  updateSpacing (normalSizeOf (formatted));
+  handleTextDrawing (position, formatted, textOptions.type);
+  updateSpacing (textSize (formatted));
 }
-
 
 /**
  * ----------------------------------------------
@@ -1021,15 +1007,15 @@ void Gui::inputText (
   auto descriptionSize = sf::Vector2f ();
   auto boxPosition = basePosition;
   if (options.description != "") {
-    mRender.drawText (sgui::round (basePosition), options.description, mStyle.fontColor, mStyle.fontSize.normal);
-    descriptionSize = normalSizeOf (options.description);
+    handleTextDrawing (basePosition, options.description);
+    descriptionSize = textSize (options.description);
     boxPosition.x += descriptionSize.x + mPadding.x;
   }
 
   // format text to fit in the parent box or the requested box
   auto boxSize = textOptions.boxSize;
   const auto boxLength = boxSize.length ();
-  const auto textWidth = normalSizeOf (text).x;
+  const auto textWidth = textSize (text).x;
   if (!mGroups.empty ()) {
     auto width = mGroups.top ().size.x - 2.f*mPadding.x - descriptionSize.x;
     if (width < 0.f) {
@@ -1037,13 +1023,13 @@ void Gui::inputText (
       width += descriptionSize.x;
     }
     if (boxLength < 0.01f) {
-      boxSize = sf::Vector2f (width, normalTextHeight ());
+      boxSize = sf::Vector2f (width, textHeight ());
     } else {
       boxSize.x = std::min (boxSize.x, width - 2.f*mPadding.x);
     }
   } else if (boxLength < 0.01f) {
-    const auto width = normalSizeOf ("sample text length").x;
-    boxSize = sf::Vector2f (width, normalTextHeight ());
+    const auto width = textSize ("sample text length").x;
+    boxSize = sf::Vector2f (width, textHeight ());
     boxSize.x = std::max (boxSize.x, textWidth + 2.5f*mPadding.x);
   }
 
@@ -1073,12 +1059,12 @@ void Gui::inputText (
   auto& groupLayer = textPanel.clippingLayer;
   groupLayer = mRender.setCurrentClippingLayer (clipBox);
   // draw formatted text and scroll through it if necessary
-  const auto formatted = formatText (text, boxSize, mStyle.fontSize.normal);
+  const auto formatted = formatText (text, boxSize);
   mCursorPosition = boxPosition;
   scrollThroughPanel (textPanel, box, state, options.horizontal);
-  const auto textPosition = sgui::round (mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y));
-  mRender.drawText (textPosition, formatted, mStyle.fontColor, mStyle.fontSize.normal);
-  updateSpacing (normalSizeOf (formatted));
+  const auto textPosition = mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y);
+  handleTextDrawing (textPosition, formatted);
+  updateSpacing (textSize (formatted));
   endGroup  ();
   removeClipping ();
 
@@ -1099,13 +1085,13 @@ void Gui::inputKey (
   // draw description before the box
   auto descrWidth = 0.f;
   if (options.description != "") {
-    mRender.drawText (sgui::round (position), options.description, mStyle.fontColor, mStyle.fontSize.normal);
-    const auto descrWidth = normalSizeOf (options.description).x;
+    handleTextDrawing (position, options.description);
+    const auto descrWidth = textSize (options.description).x;
     position.x += descrWidth;
   }
 
   // get widget status
-  const auto boxSize = normalTextHeight () * sf::Vector2f (1.f, 1.f);
+  const auto boxSize = textHeight () * sf::Vector2f (1.f, 1.f);
   const auto box = sf::FloatRect (position, boxSize);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
 
@@ -1124,7 +1110,7 @@ void Gui::inputKey (
   // draw char and box
   const auto text = std::string (1, key);
   mRender.draw <Widget::TextBox> (box, {state});
-  mRender.drawText (sgui::round (position + mPadding), text, mStyle.fontColor, mStyle.fontSize.normal);
+  handleTextDrawing (position + mPadding, text);
 
   // update cursor position
   updateSpacing ({ boxSize.x + descrWidth, boxSize.y });
@@ -1317,10 +1303,10 @@ void Gui::dropList (
   // compute drop list width
   auto maxWidth = 0.f;
   for (const auto& text : list) {
-    maxWidth = std::max (maxWidth, normalSizeOf (text).x);
+    maxWidth = std::max (maxWidth, textSize (text).x);
   }
   const auto itemWidth = 2.f*mPadding.x + maxWidth;
-  const auto itemSize = sf::Vector2f (itemWidth, normalTextHeight ());
+  const auto itemSize = sf::Vector2f (itemWidth, textHeight ());
 
   // compute each drop list item
   auto counter = 0u;
@@ -1362,10 +1348,10 @@ std::string Gui::comboBox (
   // compute combo box width
   auto maxWidth = 0.f;
   for (const auto& text : list) {
-    maxWidth = std::max (maxWidth, normalSizeOf (text).x);
+    maxWidth = std::max (maxWidth, textSize (text).x);
   }
   const auto itemWidth = maxWidth + 2.f*mPadding.x;
-  const auto itemSize = sf::Vector2f (itemWidth, normalTextHeight ());
+  const auto itemSize = sf::Vector2f (itemWidth, textHeight ());
   
   // compute if combo box is open
   const auto box = sf::FloatRect (initialPos, itemSize);
@@ -1396,10 +1382,8 @@ std::string Gui::comboBox (
   }
 
   // draw combo box selected text
-  const auto textPos = sgui::round (box.position + mPadding);
   mRender.draw <Widget::ItemBox> (box, {state});
-  mRender.drawText (textPos, text, mStyle.fontColor, mStyle.fontSize.normal);
-
+  handleTextDrawing (box.position + mPadding, text);
   // update cursor position
   updateSpacing (sf::Vector2f (itemSize.x, (counter + 1) * itemSize.y));
 
@@ -1427,8 +1411,7 @@ bool Gui::dropListItem (
   } else {
     mRender.draw <Widget::ItemBox> (box, {state});
   }
-  const auto textPos = sgui::round (box.position + mPadding);
-  mRender.drawText (textPos, itemName, mStyle.fontColor, mStyle.fontSize.normal);
+  handleTextDrawing (box.position + mPadding, itemName);
 
   // return selection status
   return status;
@@ -1477,9 +1460,9 @@ void Gui::scrollThroughPanel (
     }
     // reduce group size to account for scroller
     if (horizontal) {
-      panel.size.y -= normalTextHeight ();
+      panel.size.y -= textHeight ();
     } else {
-      panel.size.x -= normalTextHeight ();
+      panel.size.x -= textHeight ();
     }
   }
   panel.innerPosition = mCursorPosition;
@@ -1501,13 +1484,13 @@ sf::Vector2f Gui::scroller (
   auto extraSize = scrollSize + (2.f * mPadding.y);
   if (horizontal) {
     pos = sf::Vector2f (panelBox.position.x, panelBox.position.y + panelBox.size.y);
-    pos.y -= normalTextHeight ();
-    size.y = normalTextHeight ();
+    pos.y -= textHeight ();
+    size.y = textHeight ();
     extraSize -= size.x;
   } else {
     pos = sf::Vector2f (panelBox.position.x + panelBox.size.x, panelBox.position.y);
-    pos.x -= normalTextHeight ();
-    size.x = normalTextHeight ();
+    pos.x -= textHeight ();
+    size.x = textHeight ();
     extraSize -= size.y;
   }
 
@@ -1584,7 +1567,7 @@ float Gui::scrollerBar (
   // scrollbar is a square box so width = height = smallest side
   auto barBox = parentBox;
   if (extraSize > 0.f) {
-    const auto minSize = buttonHeight ();
+    const auto minSize = textHeight ();
     if (horizontal) {
       barBox.size.x = std::max (minSize, barBox.size.x - extraSize);
       shift = extraSize * percent;
@@ -1778,36 +1761,6 @@ ItemState Gui::interactWithMouse (
 
 /**
  * ----------------------------------------------
- * standard height
- * ----------------------------------------------
- */
-/////////////////////////////////////////////////
-float Gui::subtitleTextHeight () const
-{
-  return mStyle.fontSize.subtitle + 4.f*mPadding.y;
-}
-
-/////////////////////////////////////////////////
-float Gui::titleTextHeight () const
-{
-  return mStyle.fontSize.title + 4.f*mPadding.y;
-}
-
-/////////////////////////////////////////////////
-float Gui::normalTextHeight () const
-{
-  return mStyle.fontSize.normal + 6.f*mPadding.y;
-}
-
-/////////////////////////////////////////////////
-float Gui::buttonHeight () const
-{
-  return mStyle.fontSize.normal + 6.f*mPadding.y;
-}
-
-
-/**
- * ----------------------------------------------
  * to compute item status (active, hovered, neutral)
  * ----------------------------------------------
  */
@@ -1896,10 +1849,60 @@ void Gui::handleKeyInput (
 }
 
 /////////////////////////////////////////////////
+void Gui::handleTextDrawing (
+  const sf::Vector2f& position,
+  const std::string& text,
+  const TextType type)
+{
+  const auto fontSize = getFontSize (type);
+
+  // if fontawesome is set, searches fontawesome unicode in the string (delimited by "_" pair)
+  if (mFontawesome) {
+    const auto firstMarkerPos = text.find ("_");
+    if (firstMarkerPos != std::string::npos) {
+      const auto secondMarkerPos = text.find ("_", firstMarkerPos + 1);
+      if (secondMarkerPos != std::string::npos) {
+        auto firstPart = std::string ("");
+        if (firstMarkerPos > 0) {
+          firstPart = text.substr (0, firstMarkerPos - 1);
+        }
+        // draw text without icon
+        const auto textWithoutIcon = firstPart + "    " + text.substr (secondMarkerPos + 1);
+        mRender.drawText (sgui::round (position), textWithoutIcon, mStyle.fontColor, *mFont, fontSize);
+        // draw fontawesome icon at the right place
+        const auto firstPartSize = textSize (firstPart, type);
+        const auto iconPos = position + sf::Vector2f (firstPartSize.x + mPadding.x, 0.f);
+        const auto fontawesomeIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
+        mRender.drawText (sgui::round (iconPos), fontawesomeIcon, mStyle.fontColor, *mFontawesome, fontSize);
+        return;
+      }
+    }
+  }
+
+  // render plain text if fontawesome is not set or no icons are found
+  mRender.drawText (sgui::round (position), text, mStyle.fontColor, *mFont, fontSize);
+}
+
+/////////////////////////////////////////////////
+uint32_t Gui::getFontSize (const TextType type) const
+{
+  if (type == TextType::Title) {
+    return mStyle.fontSize.title;
+  }
+  if (type == TextType::Subtitle) {
+    return mStyle.fontSize.subtitle;
+  }
+  if (type == TextType::Footnote) {
+    return mStyle.fontSize.footnote;
+  }
+  return mStyle.fontSize.normal;
+}
+
+/////////////////////////////////////////////////
 std::string Gui::formatText (
   const std::string& input,
   const sf::Vector2f& boxSize,
-  const uint32_t fontSize)
+  const TextType type)
 {
   // if input is contrained by a box
   if (boxSize.length () > 0.01f) {
@@ -1911,7 +1914,7 @@ std::string Gui::formatText (
     while (in >> word) {
       // add a new line if current word outpass box boundaries
       line += " " + word;
-      const auto lineWidth = mRender.textSize (line, fontSize).x;
+      const auto lineWidth = textSize (line, type).x;
       if (lineWidth >= 0.98f*boxSize.x) {
         formattedText += "\n" + word;
         line = word;

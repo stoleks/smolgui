@@ -8,6 +8,7 @@ Dependencies
 * [SFML](https://github.com/SFML/SFML)
 * [nlohmann-json](https://github.nlohmann/json.git)
 * [spdlog](https://github.com/gabime/spdlog)
+* [IconFontCppHeaders](https://github.com/juliettef/IconFontCppHeaders)
 
 Building and integrating into your CMake project
 -----

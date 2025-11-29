@@ -39,6 +39,10 @@ public:
          sf::Font& font,
          sf::Texture& widgetTexture);
   /**
+   * @brief if you want to use icons from fontawesome
+   */
+  void setFontawesome (sf::Font& fontawesome);
+  /**
    * @brief this must be called once before the event loop to set texture atlas
    */
   void setTextureAtlas (const TextureAtlas& widgetAtlas);
@@ -102,26 +106,13 @@ public:
   /**
    * @brief get normal size of text in gui
    */
-  sf::Vector2f normalSizeOf (const std::string& text) const;
-  /**
-   * @brief get title size of text in gui
-   */
-  sf::Vector2f titleSizeOf (const std::string& text) const;
-  /**
-   * @brief get subtitle size of text in gui
-   */
-  sf::Vector2f subtitleSizeOf (const std::string& text) const;
-  /**
-   * @brief get footnote size of text in gui
-   */
-  sf::Vector2f footnoteSizeOf (const std::string& text) const;
+  sf::Vector2f textSize (
+      const std::string& text,
+      const TextType type = TextType::Normal) const;
   /**
    * @brief to have standard height size across gui code
    */
-  float subtitleTextHeight () const;
-  float titleTextHeight () const;
-  float normalTextHeight () const;
-  float buttonHeight () const;
+  float textHeight (const TextType type = TextType::Normal) const;
   /**
    * @brief get active panel or window size
    */
@@ -536,7 +527,14 @@ private:
   std::string formatText (
          const std::string& text,
          const sf::Vector2f& boxSize,
-         const uint32_t fontSize);
+         const TextType type = TextType::Normal);
+  // get font size
+  uint32_t getFontSize (const TextType type) const;
+  // format text for fontawesome use
+  void handleTextDrawing (
+         const sf::Vector2f& position,
+         const std::string& text,
+         const TextType fontSize = TextType::Normal);
   // to compute widget name 
   std::string initializeActivable (const std::string& key);
   // to compute position relative to the cursor/group
@@ -585,6 +583,8 @@ private:
   SoundPlayer mSoundPlayer;
   // render for gui, plot and primitive shape
   Style mStyle;
+  sf::Font* mFont;
+  sf::Font* mFontawesome = nullptr;
   Plotter mPlotter;
   GuiRender mRender;
   PrimitiveShapeRender mColorRender;

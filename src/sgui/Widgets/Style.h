@@ -14,10 +14,10 @@ struct FontSize
 {
   FontSize () = default;
   // data
-  uint32_t footnote = 8u;
-  uint32_t subtitle = 10u;
-  uint32_t normal   = 12u;
-  uint32_t title    = 16u;
+  uint32_t footnote = 10u;
+  uint32_t subtitle = 14u;
+  uint32_t normal   = 16u;
+  uint32_t title    = 18u;
 };
 
 /**
@@ -27,10 +27,10 @@ struct Style
 {
   Style () = default;
   // font related
-  FontSize fontSize;
-  sf::Color fontColor = sf::Color::Black;
+  FontSize fontSize = {};
+  sf::Color fontColor = sf::Color::White;
   // widget related
-  float itemSpacing = 4.8f;
+  float itemSpacing = 5.f;
   float itemInnerSpacing = 4.f;
 };
 
