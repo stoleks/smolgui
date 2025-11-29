@@ -1858,9 +1858,9 @@ void Gui::handleTextDrawing (
 
   // if fontawesome is set, searches fontawesome unicode in the string (delimited by "_" pair)
   if (mFontawesome) {
-    const auto firstMarkerPos = text.find ("_");
+    const auto firstMarkerPos = text.find ("|");
     if (firstMarkerPos != std::string::npos) {
-      const auto secondMarkerPos = text.find ("_", firstMarkerPos + 1);
+      const auto secondMarkerPos = text.find ("|", firstMarkerPos + 1);
       if (secondMarkerPos != std::string::npos) {
         auto firstPart = std::string ("");
         if (firstMarkerPos > 0) {
