@@ -6,7 +6,7 @@ Dependencies
 -----
 
 * [SFML](https://github.com/SFML/SFML)
-* [nlohmann-json](https://github.nlohmann/json.git)
+* [nlohmann-json](https://github.com/nlohmann/json)
 * [spdlog](https://github.com/gabime/spdlog)
 * [IconFontCppHeaders](https://github.com/juliettef/IconFontCppHeaders)
 
