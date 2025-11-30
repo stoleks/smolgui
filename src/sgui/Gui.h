@@ -343,23 +343,8 @@ public:
          const float progress,
          const sf::Vector2f& size,
          const WidgetOptions& options = {});
-  /**
-   * @brief display an animated 'wheel' for loading with undefined time limit
-   */
-  void spinningWheel (
-         const bool complete,
-         const sf::Vector2f& size,
-         const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
-  /**
-   * @brief display all item of a list and allow to select one
-   */
-  void dropList (
-         uint32_t& selected,
-         const std::vector<std::string>& list,
-         const uint32_t phantomElements = 0,
-         const WidgetOptions& options = {});
   /**
    * @brief display selected item and all others selectables items when clicked
    */

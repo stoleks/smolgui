@@ -122,7 +122,7 @@ float Gui::textHeight (const TextType type) const
 /////////////////////////////////////////////////
 void Gui::addSpacing (const sf::Vector2f& amount)
 {
-  const auto spacing = static_cast<float> (mStyle.fontSize.normal) * amount;
+  const auto spacing = textHeight () * amount;
   mCursorPosition += spacing;
   updateScrolling (spacing);
 }
@@ -1283,51 +1283,9 @@ void Gui::handlePlotBound ()
 
 /**
  * ----------------------------------------------
- * drop list
+ * combo box
  * ----------------------------------------------
  */
-/////////////////////////////////////////////////
-void Gui::dropList (
-  uint32_t& selected,
-  const std::vector<std::string>& list,
-  const uint32_t phantomElements,
-  const WidgetOptions& options)
-{
-  // if list is empty we quit and do nothing
-  if (list.empty ()) return;
-
-  // initialize widget name and position
-  const auto globalName = initializeActivable ("DropList");
-  const auto initialPos = computeRelativePosition (mCursorPosition, options.displacement);
-
-  // compute drop list width
-  auto maxWidth = 0.f;
-  for (const auto& text : list) {
-    maxWidth = std::max (maxWidth, textSize (text).x);
-  }
-  const auto itemWidth = 2.f*mPadding.x + maxWidth;
-  const auto itemSize = sf::Vector2f (itemWidth, textHeight ());
-
-  // compute each drop list item
-  auto counter = 0u;
-  auto selectedName = std::string ("");
-  if (selected < list.size ()) {
-    selectedName = list [selected];
-  }
-  for (const auto& itemName : list) {
-    // get item status and update selected value
-    const auto itemPos = initialPos + sf::Vector2f (0.f, counter*itemSize.y);
-    if (dropListItem (selectedName, itemName, itemPos, itemSize)) {
-      selected = counter;
-    }
-    counter++;
-  }
-
-  // update cursor position
-  counter += phantomElements;
-  updateSpacing (sf::Vector2f (itemSize.x, counter * itemSize.y));
-}
-
 /////////////////////////////////////////////////
 std::string Gui::comboBox (
   const std::vector <std::string>& list,
