@@ -11,7 +11,7 @@ bool Gui::button (
 {
   // Initialize widget name and position
   const auto name = initializeActivable ("Button");
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // draw button state and update cursorPosition
   const auto box = sf::FloatRect (position, size);
@@ -36,7 +36,7 @@ void Gui::slider (
 {
   // initialize widget if and position
   const auto name = initializeActivable ("Slider");
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // get status of the widget
   auto dimVector = sf::Vector2f (1, 1);
@@ -104,7 +104,7 @@ void Gui::inputNumber (
 {
   // Initialize widget name and position
   const auto name = initializeActivable ("InputNumber");
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // compute text box dimension
   auto width = textSize (label + "10000").x;

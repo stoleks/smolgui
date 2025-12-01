@@ -157,23 +157,10 @@ void Gui::addLastVerticalSpacing (const float amount)
 /////////////////////////////////////////////////
 void Gui::sameLine ()
 {
-  mResetCount++;
-  if (mResetCount - mPreviousResetCount == 1) {
-    mResetCursorPosition = mCursorPosition;
-    addLastVerticalSpacing (-1.f);
+  if (mSameLinePosition.empty ()) {
+    mSameLinePosition.push (mCursorPosition);
+    mCursorPosition = mResetCursorPosition;
   }
-  addLastHorizontalSpacing ();
-}
-
-/////////////////////////////////////////////////
-void Gui::sameColumn ()
-{
-  mResetCount++;
-  if (mResetCount - mPreviousResetCount == 1) {
-    mResetCursorPosition = mCursorPosition;
-    addLastHorizontalSpacing (-1.f);
-  }
-  addLastVerticalSpacing ();
 }
 
 /////////////////////////////////////////////////
@@ -287,9 +274,6 @@ void Gui::endFrame (const float tooltipDelay)
     mGuiState.comboBoxFocus = NullItemID;
   }
 
-  // reset same line counter
-  mResetCount = 0u;
-  mPreviousResetCount = 0u;
   // reset widget count and scroll data
   mCounters.reset ();
   mChecker.reset ();
@@ -440,8 +424,6 @@ bool Gui::beginWindow (
   // if window is closed skip everything
   if (settings.closed) return false;
 
-  mResetCount = 0;
-  mPreviousResetCount = 0;
   mChecker.begin (GroupType::Window);
   const auto name = initializeActivable ("Window");
 
@@ -572,8 +554,6 @@ void Gui::beginPanel (
   const Constraints& constraints,
   const WidgetOptions& options)
 {
-  mResetCount = 0;
-  mPreviousResetCount = 0;
   mChecker.begin (GroupType::Panel);
   const auto name = initializeActivable ("Panel");
 
@@ -809,7 +789,7 @@ void Gui::separation (const float thick)
       size.y = thickness;
     }
   }
-  const auto position = computeRelativePosition (mCursorPosition, {});
+  const auto position = computeRelativePosition ();
   const auto box = sf::FloatRect (position, size);
 
   // render line
@@ -829,7 +809,7 @@ bool Gui::textButton (
   const WidgetOptions& options)
 {
   // compute text position and construct a button adapted to the text
-  const auto position = computeRelativePosition (mCursorPosition + 1.5f*mPadding, options.displacement);
+  const auto position = computeRelativePosition (options.displacement) + 1.5f*mPadding;
   const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
   const auto clicked = button <Widget::TextButton> (size, options);
@@ -846,7 +826,7 @@ bool Gui::iconButton (
 {
   // button part
   const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
   const auto clicked = button <Widget::IconButton> (size, options);
 
   // draw an icon over it
@@ -862,7 +842,7 @@ bool Gui::iconTextButton (
   const WidgetOptions& options)
 {
   // draw an icon with a button
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
   const auto clicked = iconButton (iconName, options);
 
   // add a shifted text besides it
@@ -878,7 +858,7 @@ void Gui::icon (
   const WidgetOptions& options)
 {
   // compute icon position
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // draw icon and handle icon hovering and tooltip
   const auto box = sf::FloatRect (position, size);
@@ -901,7 +881,7 @@ bool Gui::checkBox (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("CheckBox");
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // get status of the widget,
   const auto size = textHeight () * sf::Vector2f (2.f, 1.f);
@@ -942,7 +922,7 @@ void Gui::text (
   const WidgetOptions& options)
 {
   // compute text position
-  auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  auto position = computeRelativePosition (options.displacement);
   
   // center text vertically if asked
   const auto parent = getParentGroup ();
@@ -1001,7 +981,7 @@ void Gui::inputText (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("InputText");
-  const auto basePosition = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto basePosition = computeRelativePosition (options.displacement);
 
   // draw description before the box
   auto descriptionSize = sf::Vector2f ();
@@ -1080,7 +1060,7 @@ void Gui::inputKey (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("InputKey");
-  auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  auto position = computeRelativePosition (options.displacement);
 
   // draw description before the box
   auto descrWidth = 0.f;
@@ -1130,7 +1110,7 @@ void Gui::progressBar (
 {
   // initialize widget name and position
   const auto name = initializeActivable ("ProgressBar");
-  const auto position = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto position = computeRelativePosition (options.displacement);
 
   // draw progress bar and its filling
   const auto box = sf::FloatRect (position, size);
@@ -1298,13 +1278,13 @@ std::string Gui::comboBox (
   const auto comboBoxId = mCounters.comboBox;
   mCounters.comboBox++;
   const auto name = initializeActivable ("ComboBox");
-  const auto initialPos = computeRelativePosition (mCursorPosition, options.displacement);
+  const auto initialPos = computeRelativePosition (options.displacement);
   if (!mComboBoxActiveItem.has (comboBoxId)) {
     mComboBoxActiveItem.emplace (comboBoxId, 0u);
   }
 
   // compute combo box width
-  auto maxWidth = 0.f;
+  auto maxWidth = 6.f*textHeight ();
   for (const auto& text : list) {
     maxWidth = std::max (maxWidth, textSize (text).x);
   }
@@ -1906,22 +1886,30 @@ void Gui::updateSpacing (const sf::Vector2f& size)
   const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
   mLastSpacing = size + padding;
   
-  // if difference > 0, a sameLine was just called and we need to go back to the line.
-  mResetDifference = mResetCount - mPreviousResetCount;
-  const auto isSameLineCalled = mResetDifference > 0;
   // if group is horizontal, add spacing along x, except if same line was called.
   if (!mGroups.empty () && getParentGroup ().horizontal) {
-    if (!isSameLineCalled) {
+    mResetCursorPosition = mCursorPosition + sf::Vector2f (0.f, size.y + mPadding.y);
+    if (mSameLinePosition.empty ()) {
       mCursorPosition.x += mLastSpacing.x;
       updateScrolling ({mLastSpacing.x, 0.f});
+    } else {
+      const auto currentX = mCursorPosition.x + mLastSpacing.x;
+      mCursorPosition = mSameLinePosition.top ();
+      mCursorPosition.x = std::max (currentX, mCursorPosition.x);
+      mSameLinePosition.pop ();
     }
-    return;
-  }
- 
   // if group is vertical, add spacing along y, except if same line was called
-  if (!isSameLineCalled) {
-    mCursorPosition.y += mLastSpacing.y;
-    updateScrolling ({0.f, mLastSpacing.y});
+  } else {
+    mResetCursorPosition = mCursorPosition + sf::Vector2f (size.x + mPadding.x, 0.f);
+    if (mSameLinePosition.empty ()) {
+      mCursorPosition.y += mLastSpacing.y;
+      updateScrolling ({0.f, mLastSpacing.y});
+    } else {
+      const auto currentY = mCursorPosition.y + mLastSpacing.y;
+      mCursorPosition = mSameLinePosition.top ();
+      mCursorPosition.y = std::max (currentY, mCursorPosition.y);
+      mSameLinePosition.pop ();
+    }
   }
 }
 
@@ -1962,23 +1950,8 @@ Impl::GroupData Gui::getParentGroup ()
 }
 
 /////////////////////////////////////////////////
-sf::Vector2f Gui::computeRelativePosition (
-  const sf::Vector2f& initialPosition,
-  const sf::Vector2f& displacement)
+sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement)
 {
-  // manage same line call, if mResetDifference == difference, we are at the end of
-  // a sameLine chain call, and we need to go back to the stored reset position.
-  const auto difference = mResetCount - mPreviousResetCount;
-  const auto sameLineWasCalled = mResetDifference == difference && difference > 0;
-  if (sameLineWasCalled) {
-    mResetDifference = difference;
-    mPreviousResetCount = mResetCount;
-    // we need to add the missing space due to sameLine call
-    const auto spacing = mResetCursorPosition - mCursorPosition + 2.f*mPadding;
-    updateScrolling (spacing);
-    mCursorPosition = mResetCursorPosition;
-  }
-
   // If there is no active group, displacement = position
   const auto isNotNull = displacement.length () > 0.01f;
   if (mGroups.empty () && isNotNull) {
@@ -1991,18 +1964,8 @@ sf::Vector2f Gui::computeRelativePosition (
     return parent.position + displacement;
   }
 
-  // If we are at the end of a sameLine call, add last spacing
-  if (sameLineWasCalled) {
-    if (!mGroups.empty () && getParentGroup ().horizontal) {
-      mCursorPosition.x += 2.f*mPadding.x;
-      return initialPosition + sf::Vector2f (2.f*mPadding.x, 0.f);
-    }
-    mCursorPosition.y += 2.f*mPadding.y;
-    return initialPosition + sf::Vector2f (0.f, 2.f*mPadding.y);
-  }
-
-  // If there are no displacement, return initial position
-  return initialPosition;
+  // If there are no displacement, return initial position (that
+  return mCursorPosition;
 }
 
 } // namespace sgui

@@ -139,13 +139,9 @@ public:
    */
   sf::Vector2f cursorPosition () const;
   /**
-   * @brief go back to previous line, next to the last widget (vertical panel)
+   * @brief go back to previous line/column, next to the last widget
    */
   void sameLine ();
-  /**
-   * @brief go back to previous column, beneath the last widget (horizontal panel)
-   */
-  void sameColumn ();
   /**
    * @brief to know if some part of the gui are active or hovered. It must be 
    *   called before endFrame.
@@ -523,9 +519,7 @@ private:
   // to compute widget name 
   std::string initializeActivable (const std::string& key);
   // to compute position relative to the cursor/group
-  sf::Vector2f computeRelativePosition (
-         const sf::Vector2f& initialPosition,
-         const sf::Vector2f& displacement);
+  sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling (const sf::Vector2f& spacing);
@@ -547,11 +541,9 @@ private:
   float mTipDisappearClock = 100.f;
   // Scroll intensity
   float mPixelsPerScroll = 20.f;
-  // counters to keep track of same line
+  // data to keep track of same line call
   sf::Vector2f mResetCursorPosition = {};
-  int32_t mResetCount = 0;
-  int32_t mResetDifference = 0;
-  int32_t mPreviousResetCount = 0;
+  std::stack <sf::Vector2f> mSameLinePosition;
   // counters to keep track of gui objects
   Impl::Counters mCounters = {};
   Impl::GroupChecker mChecker = {};

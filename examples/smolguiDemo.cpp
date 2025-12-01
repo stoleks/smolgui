@@ -120,7 +120,6 @@ int main()
       }
       gui.sameLine ();
       gui.text ("Open or close the general demo window");
-      gui.separation ();
       // Display a function
       const auto phaseMax = 10.f;
       const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
@@ -164,7 +163,6 @@ int main()
         mainPanel.title = texts.get ("mainWindow");
         closablePanel.title = texts.get ("closableWindow");
       }
-      gui.separation ();
 
       gui.text ("Select font size");
       auto& fonts = style.fontSize;
@@ -179,10 +177,8 @@ int main()
       gui.sameLine ();
       gui.text ("Decrease normal font size");
       gui.inputColor (style.fontColor, {"Font color: "});
-      gui.separation ();
       gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
       gui.inputText (oneLine, {}, {texts.get ("oneLine")});
-      gui.separation ();
       gui.inputNumber (inputValue, {"Input number with text!"});
       gui.inputText (oneLine2, {}, {texts.get ("oneLine")});
       gui.inputVector2 (vector, {"Input vector2: "});
