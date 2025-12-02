@@ -4,7 +4,6 @@ Things to do
 Bugs
 -----
 
-- [ ] Fix incorrect text clipping when panel are scrolled
 - [ ] Fix incorrect render of plot axis
 
 Improvements

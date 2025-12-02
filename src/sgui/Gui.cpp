@@ -1630,11 +1630,11 @@ sf::FloatRect Gui::handleParentClipBox (const sf::FloatRect& box)
     std::min (bottomRight.y, parentBottomRight.y)
   );
   // clamp position
-  clipBox.size = newBottomRight - box.position;
   clipBox.position = sf::Vector2f (
     std::max (box.position.x, parent.position.x),
     std::max (box.position.y, parent.position.y)
   );
+  clipBox.size = newBottomRight - clipBox.position;
   return clipBox;
 }
 
