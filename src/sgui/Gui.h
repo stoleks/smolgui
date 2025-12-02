@@ -29,7 +29,7 @@ public:
   /**
    * @brief initialize Gui.
    */
-  Gui () = default;
+  Gui ();
 
   ///////////////////////////////////////////////
   /**
@@ -38,10 +38,6 @@ public:
   void setResources (
          sf::Font& font,
          sf::Texture& widgetTexture);
-  /**
-   * @brief if you want to use icons from fontawesome
-   */
-  void setFontawesome (sf::Font& fontawesome);
   /**
    * @brief this must be called once before the event loop to set texture atlas
    */
@@ -561,7 +557,7 @@ private:
   // render for gui, plot and primitive shape
   Style mStyle;
   sf::Font* mFont;
-  sf::Font* mFontawesome = nullptr;
+  sf::Font mFontawesome;
   Plotter mPlotter;
   GuiRender mRender;
   PrimitiveShapeRender mColorRender;
@@ -571,7 +567,6 @@ private:
   // gui internal data
   std::stack <sf::Vector2f> mAnchors;
   std::stack <uint32_t> mMenuClippingLayer;
-  std::stack <float> mAnchorsScroll;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <uint32_t> mComboBoxActiveItem;

@@ -18,18 +18,17 @@ namespace sgui
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
+Gui::Gui () 
+  : mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
+{}
+
+/////////////////////////////////////////////////
 void Gui::setResources (
   sf::Font& font,
   sf::Texture& widgetTexture)
 {
   mFont = &font; 
   mRender.setResources (widgetTexture);
-}
-
-/////////////////////////////////////////////////
-void Gui::setFontawesome (sf::Font& fontawesome)
-{
-  mFontawesome = &fontawesome;
 }
 
 /////////////////////////////////////////////////
@@ -168,18 +167,6 @@ void Gui::setAnchor ()
 {
   // store cursor position
   mAnchors.push (mCursorPosition);
-
-  /*
-  // store current scroll size
-  if (!mGroups.empty ()) {
-    const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerData.has (groupId)) {
-      const auto& scrollData = mGroupsScrollerData.get (groupId);
-      const auto size = scrollData.currentSize ();
-      mAnchorsScroll.push (size);
-    }
-  }
-  */
 }
 
 /////////////////////////////////////////////////
@@ -194,18 +181,6 @@ void Gui::backToAnchor ()
   // get back to anchored position
   mCursorPosition = mAnchors.top ();
   mAnchors.pop ();
-
-  /*
-  // get back to previous scroll size
-  if (!mGroups.empty ()) {
-    const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerData.has (groupId)) {
-      auto& scrollData = mGroupsScrollerData.get (groupId);
-      scrollData.setScrollSize (mAnchorsScroll.top ());
-      mAnchorsScroll.pop ();
-    }
-  }
-  */
 }
 
 /////////////////////////////////////////////////
@@ -288,7 +263,6 @@ void Gui::endFrame (const float tooltipDelay)
     spdlog::error ("A setAnchor was called whithout its backToAnchor counterpart !");
     while (!mAnchors.empty ()) mAnchors.pop ();
   }
-  while (!mAnchorsScroll.empty ()) mAnchorsScroll.pop ();
   while (!mMenuClippingLayer.empty ()) mMenuClippingLayer.pop ();
 
   // reset inputs
@@ -424,7 +398,6 @@ bool Gui::beginWindow (
 {
   // if window is closed skip everything
   if (settings.closed) return false;
-
   mChecker.begin (GroupType::Window);
   const auto name = initializeActivable ("Window");
 
@@ -476,7 +449,7 @@ bool Gui::beginWindow (
     }
     mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
   }
-  
+
   // we need to check if window has a menu to compute correct position
   if (settings.hasMenu) {
     mCursorPosition += sf::Vector2f (0.f, textHeight ());
@@ -611,7 +584,6 @@ void Gui::endPanel ()
 }
 
 
-
 /**
  * ----------------------------------------------
  * Menu related widget
@@ -646,6 +618,7 @@ void Gui::beginMenu ()
   thisMenu.clippingLayer = mMenuClippingLayer.top ();
   mMenuClippingLayer.pop ();
   mRender.moveToClippingLayer (thisMenu.clippingLayer);
+
   // get menu bar status, draws it and go back to the previous clipping layer
   const auto box = sf::FloatRect (menuPos, menuSize);
   mRender.draw <Widget::MenuBox> (box);
@@ -907,7 +880,6 @@ bool Gui::checkBox (
   }
   // update cursor position
   updateSpacing ({size.x + textWidth, size.y});
-
   return checked;
 }
 
@@ -1032,13 +1004,14 @@ void Gui::inputText (
   }
   // draw text box
   mRender.draw <Widget::TextBox> (box, {state});
-  
+
   // clip text outside of the box
   const auto clipBox = handleParentClipBox (box);
   beginGroup (options.horizontal, boxPosition, boxSize); 
   auto& textPanel = mGroups.top ();
   auto& groupLayer = textPanel.clippingLayer;
   groupLayer = mRender.setCurrentClippingLayer (clipBox);
+
   // draw formatted text and scroll through it if necessary
   const auto formatted = formatText (text, boxSize);
   mCursorPosition = boxPosition;
@@ -1049,7 +1022,7 @@ void Gui::inputText (
   endGroup  ();
   removeClipping ();
 
-  // update cursor position and remove clipping
+  // update cursor position
   mCursorPosition = basePosition;
   updateSpacing (mPadding + sf::Vector2f { boxSize.x + descriptionSize.x, boxSize.y });
 }
@@ -1363,24 +1336,6 @@ bool Gui::dropListItem (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-bool Gui::isPanelScrollable (const Impl::GroupData& panel)
-{
-  // panel is scrollable if it possess a scroller
-  if (mGroupsScrollerData.has (panel.groupId)) {
-    auto& scrollData = mGroupsScrollerData.get (panel.groupId);
-    // and if its scroller size is greater than its size
-    if (panel.horizontal) {
-      return scrollData.size ().x > panel.size.x;
-    }
-    return scrollData.size ().y > panel.size.y;
-  }
-
-  // if panel does not possess a scroller, add one
-  mGroupsScrollerData.emplace (panel.groupId);
-  return false;
-}
-
-/////////////////////////////////////////////////
 void Gui::scrollThroughPanel (
   Impl::GroupData& panel,
   const sf::FloatRect& panelBox,
@@ -1404,7 +1359,23 @@ void Gui::scrollThroughPanel (
       panel.size.x -= textHeight ();
     }
   }
-  panel.innerPosition = mCursorPosition;
+}
+
+/////////////////////////////////////////////////
+bool Gui::isPanelScrollable (const Impl::GroupData& panel)
+{
+  // panel is scrollable if it possess a scroller
+  if (mGroupsScrollerData.has (panel.groupId)) {
+    auto& scrollData = mGroupsScrollerData.get (panel.groupId);
+    // and if its scroller size is greater than its size
+    if (panel.horizontal) {
+      return scrollData.size ().x > panel.size.x;
+    }
+    return scrollData.size ().y > panel.size.y;
+  }
+  // if panel does not possess a scroller, add one
+  mGroupsScrollerData.emplace (panel.groupId);
+  return false;
 }
 
 /////////////////////////////////////////////////
@@ -1635,7 +1606,7 @@ sf::Vector2f Gui::computePosition (
   // else return constrained position
   return pos + parentShift;
 }
-  
+
 /////////////////////////////////////////////////
 sf::FloatRect Gui::handleParentClipBox (const sf::FloatRect& box)
 {
@@ -1795,26 +1766,24 @@ void Gui::handleTextDrawing (
 {
   const auto fontSize = getFontSize (type);
 
-  // if fontawesome is set, searches fontawesome unicode in the string (delimited by "_" pair)
-  if (mFontawesome) {
-    const auto firstMarkerPos = text.find ("|");
-    if (firstMarkerPos != std::string::npos) {
-      const auto secondMarkerPos = text.find ("|", firstMarkerPos + 1);
-      if (secondMarkerPos != std::string::npos) {
-        auto firstPart = std::string ("");
-        if (firstMarkerPos > 0) {
-          firstPart = text.substr (0, firstMarkerPos - 1);
-        }
-        // draw text without icon
-        const auto textWithoutIcon = firstPart + "    " + text.substr (secondMarkerPos + 1);
-        mRender.drawText (sgui::round (position), textWithoutIcon, mStyle.fontColor, *mFont, fontSize);
-        // draw fontawesome icon at the right place
-        const auto firstPartSize = textSize (firstPart, type);
-        const auto iconPos = position + sf::Vector2f (firstPartSize.x + mPadding.x, 0.f);
-        const auto fontawesomeIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
-        mRender.drawText (sgui::round (iconPos), fontawesomeIcon, mStyle.fontColor, *mFontawesome, fontSize);
-        return;
+  // searches fontawesome unicode in the string, delimited by "|" pair
+  const auto firstMarkerPos = text.find ("|");
+  if (firstMarkerPos != std::string::npos) {
+    const auto secondMarkerPos = text.find ("|", firstMarkerPos + 1);
+    if (secondMarkerPos != std::string::npos) {
+      auto firstPart = std::string ("");
+      if (firstMarkerPos > 0) {
+        firstPart = text.substr (0, firstMarkerPos - 1);
       }
+      // draw text without icon
+      const auto textWithoutIcon = firstPart + "    " + text.substr (secondMarkerPos + 1);
+      mRender.drawText (sgui::round (position), textWithoutIcon, mStyle.fontColor, *mFont, fontSize);
+      // draw fontawesome icon at the right place
+      const auto firstPartSize = textSize (firstPart, type);
+      const auto iconPos = position + sf::Vector2f (firstPartSize.x + mPadding.x, 0.f);
+      const auto fontawesomeIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
+      mRender.drawText (sgui::round (iconPos), fontawesomeIcon, mStyle.fontColor, mFontawesome, fontSize);
+      return;
     }
   }
 

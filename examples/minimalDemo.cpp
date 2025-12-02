@@ -7,7 +7,6 @@ int main()
   auto style = sgui::Style ();
   style.fontColor = sf::Color::White;
   auto font = sf::Font (ContentsDir"/Luciole-Regular.ttf");
-  auto faweFont = sf::Font (ContentsDir"/fa-7-free-Solid-900.otf");
   auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
   auto texture = sf::Texture (ContentsDir"/widgets.png");
   // Window initialization
@@ -16,7 +15,6 @@ int main()
   // Gui initialization
   auto gui = sgui::Gui ();
   gui.setResources (font, texture);
-  gui.setFontawesome (faweFont);
   gui.setTextureAtlas (atlas);
   gui.setStyle (style);
   gui.setView (window);

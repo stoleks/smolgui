@@ -22,7 +22,6 @@ struct GroupData
   sf::Vector2f lastItemPosition = {};
   sf::Vector2f menuBarPosition = {};
   sf::Vector2f menuBarSize = {};
-  sf::Vector2f innerPosition = {};
   sf::Vector2f position = {};
   sf::Vector2f size = {};
 };
