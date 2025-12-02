@@ -124,7 +124,7 @@ void Gui::addSpacing (const sf::Vector2f& amount)
 {
   const auto spacing = textHeight () * amount;
   mCursorPosition += spacing;
-  updateScrolling (spacing);
+  updateScrolling ();
 }
 
 /////////////////////////////////////////////////
@@ -143,7 +143,7 @@ void Gui::addLastHorizontalSpacing (const float amount)
 {
   const auto spacing = amount * sf::Vector2f (mLastSpacing.x, 0.f);
   mCursorPosition += spacing;
-  updateScrolling (spacing);
+  updateScrolling ();
 }
 
 /////////////////////////////////////////////////
@@ -151,7 +151,7 @@ void Gui::addLastVerticalSpacing (const float amount)
 {
   const auto spacing = amount * sf::Vector2f (0.f, mLastSpacing.y);
   mCursorPosition += spacing;
-  updateScrolling (spacing);
+  updateScrolling ();
 }
 
 /////////////////////////////////////////////////
@@ -169,15 +169,17 @@ void Gui::setAnchor ()
   // store cursor position
   mAnchors.push (mCursorPosition);
 
+  /*
   // store current scroll size
   if (!mGroups.empty ()) {
     const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerInformation.has (groupId)) {
-      const auto& scrollData = mGroupsScrollerInformation.get (groupId);
+    if (mGroupsScrollerData.has (groupId)) {
+      const auto& scrollData = mGroupsScrollerData.get (groupId);
       const auto size = scrollData.currentSize ();
       mAnchorsScroll.push (size);
     }
   }
+  */
 }
 
 /////////////////////////////////////////////////
@@ -193,15 +195,17 @@ void Gui::backToAnchor ()
   mCursorPosition = mAnchors.top ();
   mAnchors.pop ();
 
+  /*
   // get back to previous scroll size
   if (!mGroups.empty ()) {
     const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerInformation.has (groupId)) {
-      auto& scrollData = mGroupsScrollerInformation.get (groupId);
+    if (mGroupsScrollerData.has (groupId)) {
+      auto& scrollData = mGroupsScrollerData.get (groupId);
       scrollData.setScrollSize (mAnchorsScroll.top ());
       mAnchorsScroll.pop ();
     }
   }
+  */
 }
 
 /////////////////////////////////////////////////
@@ -277,9 +281,6 @@ void Gui::endFrame (const float tooltipDelay)
   // reset widget count and scroll data
   mCounters.reset ();
   mChecker.reset ();
-  for (auto& scrollData : mGroupsScrollerInformation) {
-    scrollData.newCycle ();
-  }
 
   // manage all ill-closed group and anchors
   while (!mGroups.empty ()) mGroups.pop ();
@@ -536,7 +537,7 @@ void Gui::endWindow ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
-    updateScrolling (2.f * textSize ("B"));
+    updateScrolling ();
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -597,7 +598,7 @@ void Gui::endPanel ()
   if (!mGroups.empty ()) {
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
-    updateScrolling (2.f * textSize ("B"));
+    updateScrolling ();
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -1365,17 +1366,17 @@ bool Gui::dropListItem (
 bool Gui::isPanelScrollable (const Impl::GroupData& panel)
 {
   // panel is scrollable if it possess a scroller
-  if (mGroupsScrollerInformation.has (panel.groupId)) {
-    auto& scrollData = mGroupsScrollerInformation.get (panel.groupId);
+  if (mGroupsScrollerData.has (panel.groupId)) {
+    auto& scrollData = mGroupsScrollerData.get (panel.groupId);
     // and if its scroller size is greater than its size
     if (panel.horizontal) {
-      return scrollData.size () > panel.size.x;
+      return scrollData.size ().x > panel.size.x;
     }
-    return scrollData.size () > panel.size.y;
+    return scrollData.size ().y > panel.size.y;
   }
 
-  // if panel does not posses a scroller add one
-  mGroupsScrollerInformation.emplace (panel.groupId, panel.horizontal);
+  // if panel does not possess a scroller, add one
+  mGroupsScrollerData.emplace (panel.groupId);
   return false;
 }
 
@@ -1388,12 +1389,12 @@ void Gui::scrollThroughPanel (
 {
   if (isPanelScrollable (panel)) {
     // scroll through panel
-    if (mGroupsScrollerInformation.has (panel.groupId)) {
-      auto& scrollData = mGroupsScrollerInformation.get (panel.groupId);
-      auto percent = scrollData.percent ();
+    if (mGroupsScrollerData.has (panel.groupId)) {
+      auto& scrollData = mGroupsScrollerData.get (panel.groupId);
+      scrollData.update (panelBox);
       const auto size = scrollData.size ();
-      const auto amount = scroller (percent, panelBox, panelState, size, horizontal);
-      scrollData.scroll (percent);
+      const auto amount = scroller (scrollData.percent, panelBox, size,panelState, horizontal);
+      scrollData.percent = sgui::clamp (0.f, 1.f, scrollData.percent);
       mCursorPosition -= amount;
     }
     // reduce group size to account for scroller
@@ -1410,8 +1411,8 @@ void Gui::scrollThroughPanel (
 sf::Vector2f Gui::scroller (
   float& percent,
   const sf::FloatRect& panelBox,
+  const sf::Vector2f& scrollSize,
   const ItemState panelState,
-  const float scrollSize,
   const bool horizontal)
 {
   const auto name = initializeActivable ("Scroller");
@@ -1419,17 +1420,17 @@ sf::Vector2f Gui::scroller (
   // compute scroller position (right or bottom) and size
   auto pos = sf::Vector2f ();
   auto size = panelBox.size;
-  auto extraSize = scrollSize + (2.f * mPadding.y);
+  auto extraSize = 2.f * mPadding.y;
   if (horizontal) {
     pos = sf::Vector2f (panelBox.position.x, panelBox.position.y + panelBox.size.y);
     pos.y -= textHeight ();
     size.y = textHeight ();
-    extraSize -= size.x;
+    extraSize = extraSize + scrollSize.x - size.x;
   } else {
     pos = sf::Vector2f (panelBox.position.x + panelBox.size.x, panelBox.position.y);
     pos.x -= textHeight ();
     size.x = textHeight ();
-    extraSize -= size.y;
+    extraSize = extraSize + scrollSize.y - size.y;
   }
 
   // get scroller status, we always steal active state over the previous widget
@@ -1890,38 +1891,42 @@ void Gui::updateSpacing (const sf::Vector2f& size)
   if (!mGroups.empty () && getParentGroup ().horizontal) {
     mResetCursorPosition = mCursorPosition + sf::Vector2f (0.f, size.y + mPadding.y);
     if (mSameLinePosition.empty ()) {
-      mCursorPosition.x += mLastSpacing.x;
-      updateScrolling ({mLastSpacing.x, 0.f});
+      mCursorPosition += mLastSpacing;
+      updateScrolling ();
+      mCursorPosition.y -= mLastSpacing.y;
     } else {
       const auto currentX = mCursorPosition.x + mLastSpacing.x;
       mCursorPosition = mSameLinePosition.top ();
       mCursorPosition.x = std::max (currentX, mCursorPosition.x);
       mSameLinePosition.pop ();
+      updateScrolling ();
     }
   // if group is vertical, add spacing along y, except if same line was called
   } else {
     mResetCursorPosition = mCursorPosition + sf::Vector2f (size.x + mPadding.x, 0.f);
     if (mSameLinePosition.empty ()) {
-      mCursorPosition.y += mLastSpacing.y;
-      updateScrolling ({0.f, mLastSpacing.y});
+      mCursorPosition += mLastSpacing;
+      updateScrolling ();
+      mCursorPosition.x -= mLastSpacing.x;
     } else {
       const auto currentY = mCursorPosition.y + mLastSpacing.y;
       mCursorPosition = mSameLinePosition.top ();
       mCursorPosition.y = std::max (currentY, mCursorPosition.y);
       mSameLinePosition.pop ();
+      updateScrolling ();
     }
   }
 }
 
 /////////////////////////////////////////////////
-void Gui::updateScrolling (const sf::Vector2f& spacing)
+void Gui::updateScrolling ()
 {
   // update current group scrolling size
   if (!mGroups.empty ()) {
     const auto groupId = mGroups.top ().groupId;
-    if (mGroupsScrollerInformation.has (groupId)) {
-      auto& scrollData = mGroupsScrollerInformation.get (groupId);
-      scrollData.computeScrollSize (spacing);
+    if (mGroupsScrollerData.has (groupId)) {
+      auto& scrollData = mGroupsScrollerData.get (groupId);
+      scrollData.computeScrollSize (mCursorPosition);
     }
   }
 }

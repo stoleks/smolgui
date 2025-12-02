@@ -1,5 +1,7 @@
 #include "ScrollerInformation.h"
 
+#include "spdlog/spdlog.h"
+
 #include "sgui/Core/Interpolation.h"
 
 namespace sgui
@@ -7,55 +9,22 @@ namespace sgui
 namespace Impl
 {
 /////////////////////////////////////////////////
-ScrollerInformation::ScrollerInformation (const bool horizontal)
-  : mHorizontal (horizontal)
-{}
-
-/////////////////////////////////////////////////
-void ScrollerInformation::newCycle ()
+void ScrollerInformation::update (const sf::FloatRect& groupBox)
 {
-  mScrollSize = mTempSize;
-  mTempSize = 0.f;
+  mGroupBox = groupBox;
 }
 
 /////////////////////////////////////////////////
-void ScrollerInformation::setScrollSize (const float size)
+void ScrollerInformation::computeScrollSize (const sf::Vector2f& cursorPos)
 {
-  mTempSize = size;
+  mMaxCursorPosition.x = std::max (mMaxCursorPosition.x, cursorPos.x);
+  mMaxCursorPosition.y = std::max (mMaxCursorPosition.y, cursorPos.y);
 }
 
 /////////////////////////////////////////////////
-void ScrollerInformation::computeScrollSize (const sf::Vector2f& spacing)
+sf::Vector2f ScrollerInformation::size () const
 {
-  if (mHorizontal) {
-    mTempSize += spacing.x;
-  } else {
-    mTempSize += spacing.y;
-  }
-}
-
-/////////////////////////////////////////////////
-void ScrollerInformation::scroll (const float amount)
-{
-  mScrollPercent = sgui::clamp (0.f, 1.f, amount);
-}
-
-/////////////////////////////////////////////////
-float ScrollerInformation::currentSize () const
-{
-  return mTempSize;
-}
-
-/////////////////////////////////////////////////
-float ScrollerInformation::size () const
-{
-  return mScrollSize;
-}
-
-/////////////////////////////////////////////////
-float ScrollerInformation::percent () const
-{
-  return mScrollPercent;
+  return mMaxCursorPosition - mGroupBox.position;
 }
 
 } // namespace Impl

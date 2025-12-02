@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 namespace sgui
 {
@@ -13,43 +13,27 @@ class ScrollerInformation
 {
 public:
   /**
-   * @brief construct a scrollbar along x or y axis
+   * @brief set group box 
    */
-  ScrollerInformation (const bool horizontal);
-  /**
-   * @brief start a new computation cycle of the scroll size, should be called every
-   *   beginFrame in the gui
-   */
-  void newCycle ();
-  /**
-   * @brief scroll over the group by a given amount, it will be clamped to [0, 1]
-   */
-  void scroll (const float amount);
-  /**
-   * @brief set scrollbar size
-   */
-  void setScrollSize (const float size);
+  void update (const sf::FloatRect& groupBox);
   /**
    * @brief compute scrollbar size according to the group internal size
    */
-  void computeScrollSize (const sf::Vector2f& spacing);
+  void computeScrollSize (const sf::Vector2f& cursorPosition);
   /**
    * @brief get scrollbar size of the group
    */
-  float size () const;
+  sf::Vector2f size () const;
+public:
   /**
-   * @brief get percent of scroller in the scrollbar
+   * @brief store current percent of scroll bar
    */
-  float percent () const;
-  /**
-   * @brief get current temporary scrollbar size
-   */
-  float currentSize () const;
+  float percent = 0.f;
 private:
-  bool mHorizontal;
+  sf::FloatRect mGroupBox;
+  sf::Vector2f mMaxCursorPosition = {};
   float mTempSize = 0.f;
   float mScrollSize = 0.f;
-  float mScrollPercent = 0.f;
 };
 
 } // namespace Impl

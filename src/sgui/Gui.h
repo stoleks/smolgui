@@ -449,8 +449,8 @@ private:
   sf::Vector2f scroller (
          float& scrollPercent,
          const sf::FloatRect& panelBox,
+         const sf::Vector2f& scrollSize,
          const ItemState panelState,
-         const float scrollSize,
          const bool horizontal);
   // to handle scroll bar in a slider
   float sliderBar (
@@ -522,7 +522,7 @@ private:
   sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
   // to compute widget spacing
   void updateSpacing (const sf::Vector2f& size);
-  void updateScrolling (const sf::Vector2f& spacing);
+  void updateScrolling ();
   Impl::GroupData getParentGroup ();
   // to process sfml events and store it in the internal state
   void handleMouseInputs (
@@ -576,7 +576,7 @@ private:
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <uint32_t> mComboBoxActiveItem;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
-  ObjectPool <Impl::ScrollerInformation> mGroupsScrollerInformation;
+  ObjectPool <Impl::ScrollerInformation> mGroupsScrollerData;
 };
 
 } // namespace sgui
