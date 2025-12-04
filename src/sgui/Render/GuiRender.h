@@ -66,7 +66,7 @@ public:
   /**
    * @brief Update view on which the gui is drawn
    */
-  void updateView (sf::View newView);
+  void updateView (const sf::View& newView);
   /**
    * @brief Set current clipping layer used to render UI. Every call will create a
    * new layer with its own independent meshes and return its id.

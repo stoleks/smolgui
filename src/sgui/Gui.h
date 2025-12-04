@@ -29,17 +29,26 @@ public:
   /**
    * @brief load fontawesome and initialize window size.
    */
-  Gui (const sf::RenderWindow& window);
+  Gui ();
+  /**
+   * @brief initialize window size and all required resources
+   *   this need to be called once before beginFrame/endFrame
+   */
+  void initialize (
+         sf::Font& font,
+         sf::Texture& widgetTexture,
+         const TextureAtlas& widgetAtlas,
+         const sf::RenderWindow& window);
 
   ///////////////////////////////////////////////
   /**
-   * @brief this must be called once before the event loop to set resources
+   * @brief set resources
    */
   void setResources (
          sf::Font& font,
          sf::Texture& widgetTexture);
   /**
-   * @brief this must be called once before the event loop to set texture atlas
+   * @brief set texture atlas
    */
   void setTextureAtlas (const TextureAtlas& widgetAtlas);
   /**
@@ -61,7 +70,7 @@ public:
   /**
    * @brief to set gui view
    */
-  void setView (sf::RenderTarget& target);
+  void setView (const sf::View& view);
   /**
    * @brief this function must be called at the start of every loop.
    */

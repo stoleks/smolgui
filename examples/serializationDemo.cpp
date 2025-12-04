@@ -10,8 +10,6 @@ int main()
   /**
    * Resources loading
    */
-  auto style = sgui::Style ();
-  style.fontColor = sf::Color::White;
   // fonts
   auto fonts = sgui::FontHolder ();
   fonts.load ("normal", ContentsDir"/Luciole-Regular.ttf");
@@ -37,11 +35,8 @@ int main()
   /**
    * Gui initialization
    */
-  auto gui = sgui::Gui (window);
-  gui.setResources (fonts.get ("normal"), texture);
-  gui.setTextureAtlas (atlas);
-  gui.setStyle (style);
-  gui.setView (window);
+  auto gui = sgui::Gui ();
+  gui.initialize (fonts.get ("normal"), texture, atlas, window);
 
   /**
    * check that texture size is valid
@@ -68,6 +63,7 @@ int main()
   /**
    * Main App loop
    */
+  auto style = sgui::Style ();
   auto timer = sf::Clock ();
   auto t = sf::Clock ();
   auto timeSinceLastUpdate = sf::Time::Zero;

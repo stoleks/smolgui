@@ -69,7 +69,7 @@ sf::Vector2f GuiRender::textSize (
 /////////////////////////////////////////////////
 // Clipping
 /////////////////////////////////////////////////
-void GuiRender::updateView (sf::View newView)
+void GuiRender::updateView (const sf::View& newView)
 {
   mBaseView = newView;
 }

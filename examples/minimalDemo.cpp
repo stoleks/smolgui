@@ -4,8 +4,6 @@
 int main()
 {
   // Resources loading
-  auto style = sgui::Style ();
-  style.fontColor = sf::Color::White;
   auto font = sf::Font (ContentsDir"/Luciole-Regular.ttf");
   auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
   auto texture = sf::Texture (ContentsDir"/widgets.png");
@@ -13,16 +11,14 @@ int main()
   auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
   window.setFramerateLimit (60);
   // Gui initialization
-  auto gui = sgui::Gui (window);
-  gui.setResources (font, texture);
-  gui.setTextureAtlas (atlas);
-  gui.setStyle (style);
-  gui.setView (window);
+  auto gui = sgui::Gui ();
+  gui.initialize (font, texture, atlas, window);
   // Window settings and main loop
   auto mainPanel = sgui::Panel ({ 0.f, 0.f}, { 1.f, 1.f });
   mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);
   auto timer = sf::Clock ();
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
+  auto style = sgui::Style ();
   while (window.isOpen ())
   {
     // Inputs

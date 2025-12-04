@@ -18,10 +18,23 @@ namespace sgui
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-Gui::Gui (const sf::RenderWindow& window)
-  : mWindowSize (sf::Vector2f (window.getSize ())),
-  mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
+Gui::Gui ()
+  : mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
 {}
+
+/////////////////////////////////////////////////
+void Gui::initialize (
+  sf::Font& font,
+  sf::Texture& textures,
+  const TextureAtlas& atlas,
+  const sf::RenderWindow& window)
+{
+  mWindowSize = sf::Vector2f (window.getSize ());
+  setResources (font, textures);
+  setTextureAtlas (atlas);
+  setStyle (Style ());
+  setView (window.getDefaultView ());
+}
 
 /////////////////////////////////////////////////
 void Gui::setResources (
@@ -77,10 +90,10 @@ const Style& Gui::style () const
 }
 
 /////////////////////////////////////////////////
-void Gui::setView (sf::RenderTarget& target)
+void Gui::setView (const sf::View& view)
 {
   // set view to standard gui view
-  mRender.updateView (target.getDefaultView ());
+  mRender.updateView (view);
 }
 
 
