@@ -47,7 +47,7 @@ int main()
   /**
    * Gui initialization
    */
-  auto gui = sgui::Gui ();
+  auto gui = sgui::Gui (window);
   gui.setResources (fonts.get ("normal"), texture);
   gui.setTextureAtlas (atlas);
   gui.setSounds (sounds);
@@ -81,6 +81,7 @@ int main()
   /**
    * Main App loop
    */
+  auto tongue = std::string ("");
   auto timer = sf::Clock ();
   auto t = sf::Clock ();
   auto timeSinceLastUpdate = sf::Time::Zero;
@@ -146,18 +147,18 @@ int main()
     }
     // second window
     if (gui.beginWindow (mainPanel)) {
-      auto getText = false;
+      auto currentTongue = std::string ("");
       gui.beginMenu ();
       if (gui.menuItem ("Switch to french")) {
-        texts.setTongue ("french");
-        getText = true;
+        currentTongue = "french";
       }
       if (gui.menuItem ("Switch to english")) {
-        texts.setTongue ("english");
-        getText = true;
+        currentTongue = "english";
       }
       gui.endMenu ();
-      if (getText) {
+      if (currentTongue != tongue) {
+        tongue = currentTongue;
+        texts.setTongue (tongue);
         multiLine = texts.get ("textMultiLine");
         oneLine = texts.get ("textOneLine");
         mainPanel.title = texts.get ("mainWindow");

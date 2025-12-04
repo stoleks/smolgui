@@ -37,7 +37,7 @@ int main()
   /**
    * Gui initialization
    */
-  auto gui = sgui::Gui ();
+  auto gui = sgui::Gui (window);
   gui.setResources (fonts.get ("normal"), texture);
   gui.setTextureAtlas (atlas);
   gui.setStyle (style);

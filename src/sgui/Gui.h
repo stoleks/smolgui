@@ -27,9 +27,9 @@ class Gui : public sf::Drawable, public sf::Transformable
 {
 public:
   /**
-   * @brief initialize Gui.
+   * @brief load fontawesome and initialize window size.
    */
-  Gui ();
+  Gui (const sf::RenderWindow& window);
 
   ///////////////////////////////////////////////
   /**
@@ -437,7 +437,7 @@ private:
   void handlePlotBound ();
   // for scrollable panel or window
   bool isPanelScrollable (const Impl::GroupData& panel);
-  void scrollThroughPanel (
+  bool scrollThroughPanel (
          Impl::GroupData& panel,
          const sf::FloatRect& panelBox,
          const ItemState panelState,
@@ -570,6 +570,7 @@ private:
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <uint32_t> mComboBoxActiveItem;
+  ObjectPool <Panel, std::string> mInputTextPanels;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
   ObjectPool <Impl::ScrollerInformation> mGroupsScrollerData;
 };

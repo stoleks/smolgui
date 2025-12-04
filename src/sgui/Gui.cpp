@@ -18,8 +18,9 @@ namespace sgui
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-Gui::Gui () 
-  : mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
+Gui::Gui (const sf::RenderWindow& window)
+  : mWindowSize (sf::Vector2f (window.getSize ())),
+  mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
 {}
 
 /////////////////////////////////////////////////
@@ -484,7 +485,7 @@ bool Gui::beginWindow (
   mCursorPosition.y += 1.5f * mPadding.y;
 
   // scroll through window if requested
-  scrollThroughPanel (thisWindow, windowBox, windowStatus, options.horizontal);
+  settings.isScrolled = scrollThroughPanel (thisWindow, windowBox, windowStatus, options.horizontal);
   return true;
 }
 
@@ -555,7 +556,7 @@ void Gui::beginPanel (
 
   // scroll through panel if requested
   if (settings.scrollable) {
-    scrollThroughPanel (panel, panelBox, state, options.horizontal);
+    settings.isScrolled = scrollThroughPanel (panel, panelBox, state, options.horizontal);
   }
 }
 
@@ -965,66 +966,68 @@ void Gui::inputText (
     boxPosition.x += descriptionSize.x + mPadding.x;
   }
 
-  // format text to fit in the parent box or the requested box
-  auto boxSize = textOptions.boxSize;
-  const auto boxLength = boxSize.length ();
-  const auto textWidth = textSize (text).x;
+  // set-up a panel for the text
+  if (!mInputTextPanels.has (name)) {
+    mInputTextPanels.emplace (name);
+    auto& textPanel = mInputTextPanels.get (name);
+    textPanel.size = textOptions.boxSize;
+  }
+
+  // formats the text to fit in the parent box or in the requested box
+  auto& textPanel = mInputTextPanels.get (name);
+  const auto inputTextSize = textSize (text);
   if (!mGroups.empty ()) {
-    auto width = mGroups.top ().size.x - 2.f*mPadding.x - descriptionSize.x;
-    if (width < 0.f) {
+    const auto parentWidth = mGroups.top ().size.x - 3.f*mPadding.x;
+    auto width = parentWidth - descriptionSize.x;
+    // if description takes 90% of parent width, go to line and take full line
+    if (width < 0.1f * parentWidth) {
       boxPosition.y += descriptionSize.y;
       width += descriptionSize.x;
     }
-    if (boxLength < 0.01f) {
-      boxSize = sf::Vector2f (width, textHeight ());
-    } else {
-      boxSize.x = std::min (boxSize.x, width - 2.f*mPadding.x);
-    }
-  } else if (boxLength < 0.01f) {
+    textPanel.size.x = width;
+    const auto height = std::max (textPanel.size.y, inputTextSize.y + 2.f*mPadding.y);
+    textPanel.size.y = std::max (height, textHeight () + 2.f*mPadding.y);
+  // if we are not in a group, use a default minimum size
+  } else if (textPanel.size.length () < 0.01f) {
     const auto width = textSize ("sample text length").x;
-    boxSize = sf::Vector2f (width, textHeight ());
-    boxSize.x = std::max (boxSize.x, textWidth + 2.5f*mPadding.x);
+    textPanel.size.x = std::max (width, inputTextSize.x + 2.f*mPadding.x);
+    textPanel.size.y = textHeight () + 2.f*mPadding.y;
   }
 
   // get status of the widget
-  const auto box = sf::FloatRect (boxPosition, boxSize);
-  auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  const auto box = sf::FloatRect (boxPosition, textPanel.size);
+  itemStatus (box, name, mInputState.mouseLeftDown);
   // take keyboard focus if clicked
   if (mGuiState.activeItem == name) {
     mGuiState.keyboardFocus = name;
   }
-  // if this widget has keyboard focus
+
+  // if this widget has keyboard focus, handles it
   const auto focused = mGuiState.keyboardFocus == name;
   if (focused) {
-    state = ItemState::Active;
     if (mInputState.keyIsPressed) {
-      const auto isTooLarge = (boxLength < 0.01f) && (textWidth >= 0.94f*boxSize.x);
+      const auto isTooLarge = inputTextSize.x >= 0.94f*textPanel.size.x;
       handleKeyInput (text, isTooLarge);
     }
   }
-  // draw text box
-  mRender.draw <Widget::TextBox> (box, {state});
 
-  // clip text outside of the box
-  const auto clipBox = handleParentClipBox (box);
-  beginGroup (options.horizontal, boxPosition, boxSize); 
-  auto& textPanel = mGroups.top ();
-  auto& groupLayer = textPanel.clippingLayer;
-  groupLayer = mRender.setCurrentClippingLayer (clipBox);
-
-  // draw formatted text and scroll through it if necessary
-  const auto formatted = formatText (text, boxSize);
-  mCursorPosition = boxPosition;
-  scrollThroughPanel (textPanel, box, state, options.horizontal);
-  const auto textPosition = mCursorPosition + sf::Vector2f (mPadding.x, 1.5f*mPadding.y);
-  handleTextDrawing (textPosition, formatted);
-  updateSpacing (textSize (formatted));
-  endGroup  ();
-  removeClipping ();
+  // open a panel and draw the text in it, we need to take care of size normalization
+  auto finalOptions = textOptions;
+  finalOptions.boxSize = textPanel.size;
+  textPanel.size = textPanel.size.componentWiseDiv (activePanelSize ());
+  mCursorPosition = box.position;
+  beginPanel (textPanel);
+  // remove scroller size if needed
+  if (textPanel.isScrolled) {
+    finalOptions.boxSize.x -= textHeight ();
+  }
+  Gui::text (text, finalOptions);
+  endPanel ();
+  textPanel.size = textPanel.size.componentWiseMul (activePanelSize ());
 
   // update cursor position
   mCursorPosition = basePosition;
-  updateSpacing (mPadding + sf::Vector2f { boxSize.x + descriptionSize.x, boxSize.y });
+  updateSpacing (mPadding + sf::Vector2f { box.size.x + descriptionSize.x, box.size.y });
 }
 
 /////////////////////////////////////////////////
@@ -1336,7 +1339,7 @@ bool Gui::dropListItem (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-void Gui::scrollThroughPanel (
+bool Gui::scrollThroughPanel (
   Impl::GroupData& panel,
   const sf::FloatRect& panelBox,
   const ItemState panelState,
@@ -1346,7 +1349,7 @@ void Gui::scrollThroughPanel (
     // scroll through panel
     if (mGroupsScrollerData.has (panel.groupId)) {
       auto& scrollData = mGroupsScrollerData.get (panel.groupId);
-      scrollData.update (panelBox);
+      scrollData.update (panelBox.position);
       const auto size = scrollData.size ();
       const auto amount = scroller (scrollData.percent, panelBox, size,panelState, horizontal);
       scrollData.percent = sgui::clamp (0.f, 1.f, scrollData.percent);
@@ -1358,7 +1361,9 @@ void Gui::scrollThroughPanel (
     } else {
       panel.size.x -= textHeight ();
     }
+    return true;
   }
+  return false;
 }
 
 /////////////////////////////////////////////////

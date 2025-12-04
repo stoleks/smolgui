@@ -13,7 +13,7 @@ int main()
   auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
   window.setFramerateLimit (60);
   // Gui initialization
-  auto gui = sgui::Gui ();
+  auto gui = sgui::Gui (window);
   gui.setResources (font, texture);
   gui.setTextureAtlas (atlas);
   gui.setStyle (style);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace sgui
 {
@@ -15,7 +15,7 @@ public:
   /**
    * @brief set group box 
    */
-  void update (const sf::FloatRect& groupBox);
+  void update (const sf::Vector2f& groupPosition);
   /**
    * @brief compute scrollbar size according to the group internal size
    */
@@ -29,11 +29,8 @@ public:
    * @brief store current percent of scroll bar
    */
   float percent = 0.f;
-private:
-  sf::FloatRect mGroupBox;
-  sf::Vector2f mMaxCursorPosition = {};
-  float mTempSize = 0.f;
-  float mScrollSize = 0.f;
+  sf::Vector2f mPositionMax = {};
+  sf::Vector2f mGroupPosition = {};
 };
 
 } // namespace Impl

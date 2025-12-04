@@ -37,6 +37,7 @@ struct Panel
   bool reduced    = false;
   bool visible    = true;
   bool scrollable = true;
+  bool isScrolled = false;
   sf::Vector2f size = {};
   sf::Vector2f position = {};
   std::string title = "";

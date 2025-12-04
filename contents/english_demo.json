@@ -1,7 +1,7 @@
 {
   "mainWindow":     "Main window of demo",
   "closableWindow": "Closable window",
-  "textMultiLine":  "You can edit this text on multiples lines !",
+  "textMultiLine":  "You can edit this text on multiples lines ! Long text will be formatted and you can scroll through it. Even for very long text.",
   "multiLine":      "Editable on multiple lines : ",
   "textOneLine":    "You can edit this text !",
   "oneLine":        "Editable on one line",
