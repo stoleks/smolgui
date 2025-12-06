@@ -234,6 +234,13 @@ public:
    */
   void separation (const float thickness = 0.75f);
   /**
+   * @brief draw an image
+   */
+  void image (
+         const std::string& textureId,
+         const sf::Vector2f& size = {},
+         const WidgetOptions& options = {});
+  /**
    * @brief display a button that return true if pressed
    */
   template <Widget ButtonType = Widget::Button>
@@ -247,30 +254,16 @@ public:
          const std::string& text,
          const WidgetOptions& options = {});
   /**
-   * @brief button with an icon drawn over it
+   * @brief clickable icon that work like a button
    */
-  bool iconButton (
-         const IconID& iconName,
+  bool icon (
+         const std::string& iconName,
          const WidgetOptions& options = {});
   /**
-   * @brief button with an icon followed by text
-   */
-  bool iconTextButton (
-         const IconID& iconName,
-         const std::string& text,
-         const WidgetOptions& options = {});
-  /**
-   * @brief display square box that can be checked
+   * @brief display textured box that can be checked
    */
   bool checkBox (
          bool& checked,
-         const WidgetOptions& options = {});
-  /**
-   * @brief display a purely decorative icon
-   */
-  void icon (
-         const IconID& name,
-         const sf::Vector2f& size,
          const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
@@ -520,12 +513,21 @@ private:
   void handleTextDrawing (
          const sf::Vector2f& position,
          const std::string& text,
-         const TextType fontSize = TextType::Normal);
+        const TextType fontSize = TextType::Normal);
+  // draw a fontawesome icon
+  void fontawesomeIcon (
+        const sf::Vector2f& position,
+        const std::string& icon,
+         const uint32_t fontSize);
   // to compute widget name 
   std::string initializeActivable (const std::string& key);
   // to compute position relative to the cursor/group
   sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
-  // to compute widget spacing
+  // to draw text description of widgets
+  sf::Vector2f widgetDescription (
+         const sf::Vector2f& position,
+         const std::string& description);
+  // to compute widget spacing and scrolling
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling ();
   Impl::GroupData getParentGroup ();

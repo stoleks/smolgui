@@ -58,14 +58,10 @@ void Gui::slider (
   }
 
   // draw text next to the slider
-  auto textWidth = 0.f;
-  if (options.description != "") {
-    const auto descrPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
-    handleTextDrawing (descrPos, options.description);
-    textWidth = textSize (options.description).x;
-  }
+  const auto descrPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
+  const auto descrSize = widgetDescription (descrPos, options.description);
   // update cursor position
-  updateSpacing ({size.x + textWidth, size.y});
+  updateSpacing ({size.x + descrSize.x, size.y});
 
   // compute scrollBar relative position
   const auto percent = sgui::remap (min, max, 0.05f, 0.95f, value);
@@ -141,14 +137,10 @@ void Gui::inputNumber (
   handleTextDrawing (position + shiftToCenter, numStr);
 
   // draw description
-  auto textWidth = 0.f;
-  if (options.description != "") {
-    const auto descrPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
-    handleTextDrawing (descrPos, options.description);
-    textWidth = textSize (options.description).x;
-  }
+  const auto descrPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
+  const auto descrSize = widgetDescription (descrPos, options.description);
   // update cursor position
-  updateSpacing ({boxSize.x + textWidth, boxSize.y});
+  updateSpacing ({boxSize.x + descrSize.x, boxSize.y});
 }
 
 /////////////////////////////////////////////////

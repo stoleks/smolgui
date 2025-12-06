@@ -2,8 +2,8 @@
 #include <chrono>
 #include <thread>
 
-#include "sgui/sgui.h"
-#include "sgui/Parser/Formula.h"
+#include <sgui/sgui.h>
+#include <sgui/Parser/Formula.h>
 
 int main()
 {
@@ -165,14 +165,6 @@ int main()
       auto& fonts = style.fontSize;
       gui.slider (fonts.title, 12u, 26u, {"Title font size"});
       gui.slider (fonts.subtitle, 10u, 22u, {"Subtitle font size"});
-      if (gui.iconTextButton ("plus", "Increase normal font size")) {
-        fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
-      }
-      if (gui.iconButton ("minus")) {
-        fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
-      }
-      gui.sameLine ();
-      gui.text ("Decrease normal font size");
       gui.inputColor (style.fontColor, {"Font color: "});
       gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
       gui.inputText (oneLine, {}, {texts.get ("oneLine")});

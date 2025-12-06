@@ -9,6 +9,7 @@
 #include "sgui/Resources/Layout.h"
 #include "sgui/Resources/SoundPlayer.h"
 #include "sgui/Resources/TextContainer.h"
+#include "sgui/Resources/IconsFontawesome7.h"
 
 namespace sgui 
 {
@@ -443,23 +444,26 @@ bool Gui::beginWindow (
     // reduce or close window
     if (settings.closable) {
       // reduce
+      const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
       const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
-      mCursorPosition = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
+      const auto reducePos = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
+      mCursorPosition = reducePos;
       if (button <Widget::TitleButton> (buttonSize)) {
         settings.reduced = !(settings.reduced);
       }
-      addLastVerticalSpacing (-1.f);
-      icon ("reduce", buttonSize);
+      auto iconDown = ICON_FA_CIRCLE_CHEVRON_DOWN;
+      if (settings.reduced) {
+        iconDown = ICON_FA_CIRCLE_CHEVRON_UP;
+      }
+      fontawesomeIcon (reducePos + shift, iconDown, getFontSize (TextType::Title));
 
       // close
-      addLastVerticalSpacing (-1.f);
-      addLastHorizontalSpacing ();
-      addSpacing ({-1.f, 0.f});
+      const auto closePos = reducePos + sf::Vector2f (buttonSize.x, 0.f);
+      mCursorPosition = closePos;
       if (button <Widget::TitleButton> (buttonSize)) {
         settings.closed = true;
       }
-      addLastVerticalSpacing (-1.f);
-      icon ("close", buttonSize);
+      fontawesomeIcon (closePos + shift, ICON_FA_CIRCLE_XMARK, getFontSize (TextType::Title));
     }
     mCursorPosition = position + sf::Vector2f (0.f, titleBoxSize.y);
   }
@@ -758,7 +762,7 @@ bool Gui::tooltipNeedReset ()
 
 /**
  * ----------------------------------------------
- * Logical agencement
+ * Decoration
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
@@ -779,10 +783,27 @@ void Gui::separation (const float thick)
   }
   const auto position = computeRelativePosition ();
   const auto box = sf::FloatRect (position, size);
-
   // render line
   mRender.draw <Widget::Separation> (box);
   updateSpacing (size);
+}
+
+/////////////////////////////////////////////////
+void Gui::image (
+  const std::string& textureId,
+  const sf::Vector2f& size,
+  const WidgetOptions& options)
+{
+  // if size is not specified, we take the texture size by default
+  const auto position = computeRelativePosition (options.displacement);
+  auto textureSize = size;
+  if (textureSize.lengthSquared () < 0.01f) {
+    textureSize = mRender.textureSize (textureId);
+  }
+  // draw texture
+  const auto box = sf::FloatRect (position, textureSize);
+  mRender.draw <Widget::Icon> (box, {textureId});
+  updateSpacing (textureSize);
 }
 
 
@@ -801,60 +822,27 @@ bool Gui::textButton (
   const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
   const auto clicked = button <Widget::TextButton> (size, options);
-
   // draw a text over it
   handleTextDrawing (position, text);
   return clicked;
 }
 
 /////////////////////////////////////////////////
-bool Gui::iconButton (
-  const IconID& iconName,
+bool Gui::icon (
+  const std::string& iconName,
   const WidgetOptions& options)
 {
   // button part
   const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
   const auto position = computeRelativePosition (options.displacement);
   const auto clicked = button <Widget::IconButton> (size, options);
-
-  // draw an icon over it
-  const auto box = sf::FloatRect (position, size);
-  mRender.draw <Widget::Icon> (box, {iconName});
+  // draw an icon with fontawesome over it and description next to it
+  const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
+  fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);
+  const auto descrPos = position + sf::Vector2f (size.x, 0.f);
+  const auto descrSize = widgetDescription (descrPos, options.description);
+  updateSpacing ({descrSize.x, 0.f});
   return clicked;
-}
-
-/////////////////////////////////////////////////
-bool Gui::iconTextButton (
-  const IconID& iconName,
-  const std::string& text,
-  const WidgetOptions& options)
-{
-  // draw an icon with a button
-  const auto position = computeRelativePosition (options.displacement);
-  const auto clicked = iconButton (iconName, options);
-
-  // add a shifted text besides it
-  const auto shift = sf::Vector2f (textHeight (), 0);
-  handleTextDrawing (position + shift + mPadding, text);
-  return clicked;
-}
-
-/////////////////////////////////////////////////
-void Gui::icon (
-  const IconID& name,
-  const sf::Vector2f& size,
-  const WidgetOptions& options)
-{
-  // compute icon position
-  const auto position = computeRelativePosition (options.displacement);
-
-  // draw icon and handle icon hovering and tooltip
-  const auto box = sf::FloatRect (position, size);
-  mRender.draw <Widget::Icon> (box, {name});
-  itemStatus (box, name, false, options.info);
-
-  // update cursor position
-  updateSpacing (size);
 }
 
 /**
@@ -886,14 +874,10 @@ bool Gui::checkBox (
   mRender.draw <Widget::CheckBox> (box, {state});
 
   // draw text next to the checkbox
-  auto textWidth = 0.f;
-  if (options.description != "") {
-    const auto descriptionPos = position + sf::Vector2f (size.x + mPadding.x, 0.f);
-    handleTextDrawing (descriptionPos, options.description);
-    textWidth = textSize (options.description).x;
-  }
+  const auto descrPos = position + sf::Vector2f (size.x, 0.f);
+  const auto descrSize = widgetDescription (descrPos, options.description);
   // update cursor position
-  updateSpacing ({size.x + textWidth, size.y});
+  updateSpacing ({size.x + descrSize.x, size.y});
   return checked;
 }
 
@@ -971,13 +955,8 @@ void Gui::inputText (
   const auto basePosition = computeRelativePosition (options.displacement);
 
   // draw description before the box
-  auto descriptionSize = sf::Vector2f ();
-  auto boxPosition = basePosition;
-  if (options.description != "") {
-    handleTextDrawing (basePosition, options.description);
-    descriptionSize = textSize (options.description);
-    boxPosition.x += descriptionSize.x + mPadding.x;
-  }
+  const auto descriptionSize = widgetDescription (basePosition, options.description);
+  auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x + mPadding.x, 0.f);
 
   // set-up a panel for the text
   if (!mInputTextPanels.has (name)) {
@@ -1001,7 +980,7 @@ void Gui::inputText (
     const auto height = std::max (textPanel.size.y, inputTextSize.y + 2.f*mPadding.y);
     textPanel.size.y = std::max (height, textHeight () + 2.f*mPadding.y);
   // if we are not in a group, use a default minimum size
-  } else if (textPanel.size.length () < 0.01f) {
+  } else if (textPanel.size.lengthSquared () < 0.01f) {
     const auto width = textSize ("sample text length").x;
     textPanel.size.x = std::max (width, inputTextSize.x + 2.f*mPadding.x);
     textPanel.size.y = textHeight () + 2.f*mPadding.y;
@@ -1053,12 +1032,8 @@ void Gui::inputKey (
   auto position = computeRelativePosition (options.displacement);
 
   // draw description before the box
-  auto descrWidth = 0.f;
-  if (options.description != "") {
-    handleTextDrawing (position, options.description);
-    const auto descrWidth = textSize (options.description).x;
-    position.x += descrWidth;
-  }
+  const auto descrSize = widgetDescription (position, options.description);
+  position.x += descrSize.x;
 
   // get widget status
   const auto boxSize = textHeight () * sf::Vector2f (1.f, 1.f);
@@ -1083,7 +1058,7 @@ void Gui::inputKey (
   handleTextDrawing (position + mPadding, text);
 
   // update cursor position
-  updateSpacing ({ boxSize.x + descrWidth, boxSize.y });
+  updateSpacing ({ boxSize.x + descrSize.x, boxSize.y });
 }
 
 
@@ -1274,12 +1249,13 @@ std::string Gui::comboBox (
   }
 
   // compute combo box width
-  auto maxWidth = 6.f*textHeight ();
+  const auto defaultSize = textHeight ();
+  auto maxWidth = 5.f*defaultSize;
   for (const auto& text : list) {
     maxWidth = std::max (maxWidth, textSize (text).x);
   }
-  const auto itemWidth = maxWidth + 2.f*mPadding.x;
-  const auto itemSize = sf::Vector2f (itemWidth, textHeight ());
+  const auto itemWidth = maxWidth + defaultSize + 2.f*mPadding.x;
+  const auto itemSize = sf::Vector2f (itemWidth, defaultSize);
   
   // compute if combo box is open
   const auto box = sf::FloatRect (initialPos, itemSize);
@@ -1297,6 +1273,7 @@ std::string Gui::comboBox (
   }
   // compute each drop list item if combo box is active
   auto counter = 0u;
+  auto icon = ICON_FA_SQUARE_CARET_DOWN;
   if (isOpen) {
     for (const auto& itemName : list) {
       // get item status and update selected value
@@ -1307,11 +1284,14 @@ std::string Gui::comboBox (
       }
       counter++;
     }
+    icon = ICON_FA_SQUARE_CARET_UP;
   }
 
   // draw combo box selected text
   mRender.draw <Widget::ItemBox> (box, {state});
   handleTextDrawing (box.position + mPadding, text);
+  const auto iconPos = box.position + sf::Vector2f (5.f*defaultSize + 2.f*mPadding.x, 0.5f*mPadding.y);
+  fontawesomeIcon (iconPos, icon, getFontSize (TextType::Normal) + 2u); 
   // update cursor position
   updateSpacing (sf::Vector2f (itemSize.x, (counter + 1) * itemSize.y));
 
@@ -1410,15 +1390,14 @@ sf::Vector2f Gui::scroller (
   auto pos = sf::Vector2f ();
   auto size = panelBox.size;
   auto extraSize = 2.f * mPadding.y;
+  const auto defaultSize = textHeight ();
   if (horizontal) {
-    pos = sf::Vector2f (panelBox.position.x, panelBox.position.y + panelBox.size.y);
-    pos.y -= textHeight ();
-    size.y = textHeight ();
+    pos = sf::Vector2f (panelBox.position.x - defaultSize, panelBox.position.y + panelBox.size.y);
+    size.y = defaultSize;
     extraSize = extraSize + scrollSize.x - size.x;
   } else {
-    pos = sf::Vector2f (panelBox.position.x + panelBox.size.x, panelBox.position.y);
-    pos.x -= textHeight ();
-    size.x = textHeight ();
+    pos = sf::Vector2f (panelBox.position.x + panelBox.size.x - defaultSize, panelBox.position.y);
+    size.x = defaultSize;
     extraSize = extraSize + scrollSize.y - size.y;
   }
 
@@ -1617,7 +1596,7 @@ sf::Vector2f Gui::computePosition (
   }
 
   // if there are no constraints or position set, return cursor position
-  if (pos.length () < 0.01f && !isAlignedVertically && !isAlignedLaterally) {
+  if (pos.lengthSquared () < 0.01f && !isAlignedVertically && !isAlignedLaterally) {
     return mCursorPosition;
   }
 
@@ -1799,14 +1778,23 @@ void Gui::handleTextDrawing (
       // draw fontawesome icon at the right place
       const auto firstPartSize = textSize (firstPart, type);
       const auto iconPos = position + sf::Vector2f (firstPartSize.x + mPadding.x, 0.f);
-      const auto fontawesomeIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
-      mRender.drawText (sgui::round (iconPos), fontawesomeIcon, mStyle.fontColor, mFontawesome, fontSize);
+      const auto faIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
+      fontawesomeIcon (iconPos, faIcon, fontSize);
       return;
     }
   }
 
   // render plain text if fontawesome is not set or no icons are found
   mRender.drawText (sgui::round (position), text, mStyle.fontColor, *mFont, fontSize);
+}
+
+/////////////////////////////////////////////////
+void Gui::fontawesomeIcon (
+  const sf::Vector2f& position,
+  const std::string& icon,
+  const uint32_t fontSize)
+{
+  mRender.drawText (sgui::round (position), icon, mStyle.fontColor, mFontawesome, fontSize);
 }
 
 /////////////////////////////////////////////////
@@ -1831,7 +1819,7 @@ std::string Gui::formatText (
   const TextType type)
 {
   // if input is contrained by a box
-  if (boxSize.length () > 0.01f) {
+  if (boxSize.lengthSquared () > 0.01f) {
     auto formattedText = std::string ("");
     // read the string word by word
     auto in = std::istringstream (input);
@@ -1945,7 +1933,7 @@ Impl::GroupData Gui::getParentGroup ()
 sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement)
 {
   // If there is no active group, displacement = position
-  const auto isNotNull = displacement.length () > 0.01f;
+  const auto isNotNull = displacement.lengthSquared () > 0.01f;
   if (mGroups.empty () && isNotNull) {
     return displacement;
   }
@@ -1958,6 +1946,18 @@ sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement)
 
   // If there are no displacement, return initial position (that
   return mCursorPosition;
+}
+
+/////////////////////////////////////////////////
+sf::Vector2f Gui::widgetDescription (
+  const sf::Vector2f& position,
+  const std::string& description)
+{
+  if (description != "") {
+    handleTextDrawing (position + 1.5f*mPadding, description);
+    return textSize (description);
+  }
+  return {};
 }
 
 } // namespace sgui

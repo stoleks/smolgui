@@ -2,8 +2,9 @@
 #include <chrono>
 #include <thread>
 
-#include "sgui/Gui.h"
-#include "sgui/Resources/Layout.h"
+#include <sgui/Gui.h>
+#include <sgui/Resources/Layout.h>
+#include <sgui/Resources/IconsFontawesome7.h>
 
 int main()
 {
@@ -92,6 +93,7 @@ int main()
     /**
      * Gui
      */
+    auto constraint = layout.get <sgui::Constraints> ("alignment");
     gui.beginFrame ();
     {
       if (gui.beginWindow (closablePanel)) {
@@ -160,14 +162,12 @@ int main()
         auto& fonts = style.fontSize;
         gui.slider (fonts.title, 12u, 26u, {"Title font size"});
         gui.slider (fonts.subtitle, 10u, 22u, {"Subtitle font size"});
-        if (gui.iconTextButton ("plus", "Increase normal font size")) {
+        if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
         }
-        if (gui.iconButton ("minus")) {
+        if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
         }
-        gui.sameLine ();
-        gui.text ("Decrease normal font size");
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.separation ();
         const auto list = std::vector <std::string> {"One", "Two", "Three"};
@@ -177,15 +177,14 @@ int main()
           layout.saveInFile (compactLayout);
         }
         // top panel
-        auto constraint = layout.get <sgui::Constraints> ("alignment");
         constraint.vertical = sgui::VerticalAlignment::Top;
+        constraint.horizontal = sgui::HorizontalAlignment::None;
         gui.beginPanel (constrainedPanel, constraint);
-        gui.text ("Top in win");
+        gui.text ("Top in group");
         gui.endPanel ();
         gui.endWindow ();
       }
       // scrollabel centered panel
-      auto constraint = layout.get <sgui::Constraints> ("alignment");
       constraint.vertical = sgui::VerticalAlignment::Center;
       gui.beginPanel (constrainedPanel, constraint);
       gui.text ("Scrollable panel,");

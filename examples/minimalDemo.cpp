@@ -1,5 +1,4 @@
-#include "sgui/sgui.h"
-#include "sgui/Resources/IconsFontAwesome7.h"
+#include <sgui/sgui.h>
 
 int main()
 {
@@ -41,10 +40,10 @@ int main()
       gui.text ("Select font size");
       const auto descr = fmt::format ("Title font |{}| size is {}", ICON_FA_FONT, style.fontSize.title);
       gui.slider (style.fontSize.title, 12u, 26u, {descr});
-      if (gui.iconTextButton ("plus", "Increase normal font size")) {
+      if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal + 1);
       }
-      if (gui.iconTextButton ("minus", "Decrease normal font size")) {
+      if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
       gui.text (fmt::format ("|{}| Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
