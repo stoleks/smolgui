@@ -241,16 +241,16 @@ public:
          const sf::Vector2f& size = {},
          const WidgetOptions& options = {});
   /**
-   * @brief display a button that return true if pressed
+   * @brief display a clickable button that return true if pressed
    */
   template <Widget ButtonType = Widget::Button>
-  bool button (
+  bool clickable (
          const sf::Vector2f& size,
          const WidgetOptions& options = {});
   /**
    * @brief button with a text displayed over it
    */
-  bool textButton (
+  bool button (
          const std::string& text,
          const WidgetOptions& options = {});
   /**

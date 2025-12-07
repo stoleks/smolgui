@@ -1,19 +1,19 @@
 namespace sgui {
 
 /**
- *  base button
+ *  base for clickable widgets
  */
 /////////////////////////////////////////////////
 template <Widget ButtonType>
-bool Gui::button (
+bool Gui::clickable (
   const sf::Vector2f& size,
   const WidgetOptions& options)
 {
   // Initialize widget name and position
-  const auto name = initializeActivable ("Button");
+  const auto name = initializeActivable ("Clickable");
   const auto position = computeRelativePosition (options.displacement);
 
-  // draw button state and update cursorPosition
+  // draw widget in its state and update cursor position
   const auto box = sf::FloatRect (position, size);
   const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
   mRender.draw <ButtonType> (box, {state});

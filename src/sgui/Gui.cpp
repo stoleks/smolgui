@@ -447,7 +447,7 @@ bool Gui::beginWindow (
       const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
       const auto reducePos = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
       mCursorPosition = reducePos;
-      if (button <Widget::TitleButton> (buttonSize)) {
+      if (clickable <Widget::TitleButton> (buttonSize)) {
         settings.reduced = !(settings.reduced);
       }
       auto iconDown = ICON_FA_CIRCLE_CHEVRON_DOWN;
@@ -459,7 +459,7 @@ bool Gui::beginWindow (
       // close
       const auto closePos = reducePos + sf::Vector2f (buttonSize.x, 0.f);
       mCursorPosition = closePos;
-      if (button <Widget::TitleButton> (buttonSize)) {
+      if (clickable <Widget::TitleButton> (buttonSize)) {
         settings.closed = true;
       }
       fontawesomeIcon (closePos + shift, ICON_FA_CIRCLE_XMARK, getFontSize (TextType::Title));
@@ -813,7 +813,7 @@ void Gui::image (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-bool Gui::textButton (
+bool Gui::button (
   const std::string& text,
   const WidgetOptions& options)
 {
@@ -821,7 +821,7 @@ bool Gui::textButton (
   const auto position = computeRelativePosition (options.displacement) + 1.5f*mPadding;
   const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
-  const auto clicked = button <Widget::TextButton> (size, options);
+  const auto clicked = clickable <Widget::TextButton> (size, options);
   // draw a text over it
   handleTextDrawing (position, text);
   return clicked;
@@ -835,7 +835,7 @@ bool Gui::icon (
   // button part
   const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
   const auto position = computeRelativePosition (options.displacement);
-  const auto clicked = button <Widget::IconButton> (size, options);
+  const auto clicked = clickable <Widget::IconButton> (size, options);
   // draw an icon with fontawesome over it and description next to it
   const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
   fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);

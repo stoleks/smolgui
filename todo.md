@@ -4,12 +4,13 @@ Things to do
 Bugs
 -----
 
+- [ ] There is still an edge case for scrolling when window size increase and we are at the bottom of the scroll bar...
 - [ ] Fix incorrect render of plot axis
+- [ ] Fix incorrect cropping of functions 
 
 Improvements
 -----
 
-- [ ] Add a "clickable" function that takes a box and handle all clickable aspect of gui
 - [ ] Add bidirectionnal automatic scrolling
 - [ ] Use stretch enum to clarify which widgets are drawn with 1 / 3 / 9 parts
 - [ ] Add a generic "image" function to draw an image with stretchable options
