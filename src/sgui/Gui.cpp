@@ -955,7 +955,7 @@ void Gui::inputText (
   const auto basePosition = computeRelativePosition (options.displacement);
 
   // draw description before the box
-  const auto descriptionSize = widgetDescription (basePosition, options.description);
+  const auto descriptionSize = widgetDescription (basePosition - 1.5f*mPadding, options.description);
   auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x + mPadding.x, 0.f);
 
   // set-up a panel for the text

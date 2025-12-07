@@ -518,7 +518,7 @@ private:
   void fontawesomeIcon (
         const sf::Vector2f& position,
         const std::string& icon,
-         const uint32_t fontSize);
+        const uint32_t fontSize);
   // to compute widget name 
   std::string initializeActivable (const std::string& key);
   // to compute position relative to the cursor/group
