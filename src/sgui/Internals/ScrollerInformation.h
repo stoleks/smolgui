@@ -24,11 +24,18 @@ public:
    * @brief get scrollbar size of the group
    */
   sf::Vector2f size () const;
+  /**
+   * @brief end of group loop
+   */
+  void endLoop ();
 public:
   /**
    * @brief store current percent of scroll bar
    */
   float percent = 0.f;
+  bool isScrolled = false;
+private:
+  sf::Vector2f mCurrentPositionMax = {};
   sf::Vector2f mPositionMax = {};
   sf::Vector2f mGroupPosition = {};
 };

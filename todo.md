@@ -4,8 +4,6 @@ Things to do
 Bugs
 -----
 
-- [ ] Fix bugs linked to groupId being non-unique
-- [ ] Fix "memory" of scroller ? Right now, scroller will keep in memory the largest size in the history of a group, not the largest of the current group
 - [ ] Fix incorrect render of plot axis
 
 Improvements

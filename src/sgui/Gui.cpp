@@ -265,7 +265,6 @@ void Gui::endFrame (const float tooltipDelay)
   if (mInputState.mouseRightReleased) {
     mGuiState.activeItem = NullItemID;
     mGuiState.keyboardFocus = NullItemID;
-    mGuiState.comboBoxFocus = NullItemID;
   }
 
   // reset widget count and scroll data
@@ -529,6 +528,9 @@ void Gui::endWindow ()
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     updateScrolling ();
+    if (mGroupsScrollerData.has (active.groupId)) {
+      mGroupsScrollerData.get (active.groupId).endLoop ();
+    }
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -590,6 +592,9 @@ void Gui::endPanel ()
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     updateScrolling ();
+    if (mGroupsScrollerData.has (active.groupId)) {
+      mGroupsScrollerData.get (active.groupId).endLoop ();
+    }
     endGroup ();
     mCursorPosition = active.position;
     updateSpacing (active.size);
@@ -641,11 +646,6 @@ void Gui::beginMenu ()
   const auto box = sf::FloatRect (menuPos, menuSize);
   mRender.draw <Widget::MenuBox> (box);
   mRender.moveToClippingLayer (layerId);
-
-  // scroll through panel if requested
-  auto& panel = mGroups.top ();
-  const auto panelState = itemStatus (box, name);
-  scrollThroughPanel (panel, box, panelState, true);
 }
 
 /////////////////////////////////////////////////
@@ -1263,7 +1263,13 @@ std::string Gui::comboBox (
   if (state == ItemState::Active) {
     mGuiState.comboBoxFocus = name;
   }
-  const auto isOpen = (state == ItemState::Active) || (mGuiState.activeItem == name) || (mGuiState.comboBoxFocus == name);
+  if (mInputState.mouseRightDown) {
+    mGuiState.comboBoxFocus = NullItemID;
+  }
+  const auto isOpen = (state == ItemState::Active)
+    || (state == ItemState::Hovered)
+    || (mGuiState.activeItem == name)
+    || (mGuiState.comboBoxFocus == name);
 
   // get selected text of the combo box
   auto& selected = mComboBoxActiveItem.get (comboBoxId);
@@ -1342,13 +1348,12 @@ bool Gui::scrollThroughPanel (
     // scroll through panel
     if (mGroupsScrollerData.has (panel.groupId)) {
       auto& scrollData = mGroupsScrollerData.get (panel.groupId);
-      scrollData.update (panelBox.position);
       const auto size = scrollData.size ();
       const auto amount = scroller (scrollData.percent, panelBox, size,panelState, horizontal);
-      scrollData.percent = sgui::clamp (0.f, 1.f, scrollData.percent);
+      scrollData.update (panelBox.position - amount);
       mCursorPosition -= amount;
     }
-    // reduce group size to account for scroller
+    // reduce group size to account for scroller bar
     if (horizontal) {
       panel.size.y -= textHeight ();
     } else {
@@ -1365,14 +1370,17 @@ bool Gui::isPanelScrollable (const Impl::GroupData& panel)
   // panel is scrollable if it possess a scroller
   if (mGroupsScrollerData.has (panel.groupId)) {
     auto& scrollData = mGroupsScrollerData.get (panel.groupId);
-    // and if its scroller size is greater than its size
-    if (panel.horizontal) {
-      return scrollData.size ().x > panel.size.x;
+    // and if its scroller size is greater than the group size
+    scrollData.isScrolled = (panel.horizontal && scrollData.size ().x > panel.size.x)
+      || scrollData.size ().y > panel.size.y;
+    if (!scrollData.isScrolled) {
+      scrollData.percent = 0.f;
     }
-    return scrollData.size ().y > panel.size.y;
+    return scrollData.isScrolled;
   }
   // if panel does not possess a scroller, add one
   mGroupsScrollerData.emplace (panel.groupId);
+  mGroupsScrollerData.get (panel.groupId).update (panel.position);
   return false;
 }
 
@@ -1429,6 +1437,7 @@ sf::Vector2f Gui::scroller (
   }
 
   // compute scrollbar extra shift
+  percent = sgui::clamp (0.f, 1.f, percent);
   const auto shift = scrollerBar (box, state, percent, extraSize, horizontal);
   if (horizontal) {
     return sf::Vector2f (-shift, 0.f);
@@ -1469,7 +1478,11 @@ float Gui::scrollerBar (
   const float extraSize,
   const bool horizontal)
 {
+  // quit if extra size is marginal
   auto shift = 0.f;
+  if (std::abs (extraSize) < 1.f) {
+    return shift;
+  }
 
   // scrollbar is a square box so width = height = smallest side
   auto barBox = parentBox;
@@ -1900,8 +1913,7 @@ void Gui::updateScrolling ()
   if (!mGroups.empty ()) {
     const auto groupId = mGroups.top ().groupId;
     if (mGroupsScrollerData.has (groupId)) {
-      auto& scrollData = mGroupsScrollerData.get (groupId);
-      scrollData.computeScrollSize (mCursorPosition);
+      mGroupsScrollerData.get (groupId).computeScrollSize (mCursorPosition);
     }
   }
 }

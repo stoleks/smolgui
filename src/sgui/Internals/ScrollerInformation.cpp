@@ -1,27 +1,37 @@
 #include "ScrollerInformation.h"
 #include <algorithm>
 
+#include <spdlog/spdlog.h>
+
 namespace sgui
 {
 namespace Impl
 {
+
 /////////////////////////////////////////////////
 void ScrollerInformation::update (const sf::Vector2f& groupPosition)
 {
   mGroupPosition = groupPosition;
+  mCurrentPositionMax = mGroupPosition;
 }
 
 /////////////////////////////////////////////////
 void ScrollerInformation::computeScrollSize (const sf::Vector2f& cursorPos)
 {
-  mPositionMax.x = std::max (mPositionMax.x, cursorPos.x);
-  mPositionMax.y = std::max (mPositionMax.y, cursorPos.y);
+  mCurrentPositionMax.x = std::max (mCurrentPositionMax.x, cursorPos.x);
+  mCurrentPositionMax.y = std::max (mCurrentPositionMax.y, cursorPos.y);
 }
 
 /////////////////////////////////////////////////
 sf::Vector2f ScrollerInformation::size () const
 {
   return mPositionMax - mGroupPosition;
+}
+
+/////////////////////////////////////////////////
+void ScrollerInformation::endLoop ()
+{
+  mPositionMax = mCurrentPositionMax;
 }
 
 } // namespace Impl
