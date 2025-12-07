@@ -16,6 +16,8 @@ set (SRC
 source_group ("" FILES ${SRC})
 
 set (HELPER_SRC
+  ${SRCROOT}/ClippingLayers.cpp
+  ${INCROOT}/ClippingLayers.h
   ${SRCROOT}/MeshFunctions.cpp
   ${INCROOT}/MeshFunctions.h
   ${SRCROOT}/TextureMeshes.cpp

@@ -10,6 +10,7 @@
 
 #include "TextureMeshes.h"
 #include "MeshFunctions.h"
+#include "ClippingLayers.h"
 #include "sgui/Core/Shapes.h"
 #include "sgui/Widgets/Widgets.h"
 #include "sgui/Resources/TextureAtlas.h"
@@ -45,6 +46,16 @@ public:
    */
   void setResources (sf::Texture& sprite);
   /**
+   * @brief Update view on which the gui is drawn
+   */
+  void updateView (const sf::View& newView);
+  /**
+   * @brief Set current clipping layer used to render UI. Every call will create a
+   * new layer with its own independent meshes and return its id.
+   * @return Index of the current clipping layer
+   */
+  uint32_t setCurrentClippingLayer (const sf::FloatRect& mask);
+  /**
    * @brief Set texture atlas used in render. It should be called before any `draw` call
    * @param atlas Texture atlas used
    */
@@ -63,34 +74,6 @@ public:
          const std::string& text,
          const sf::Font& font,
          const uint32_t fontSize) const;
-  /**
-   * @brief Update view on which the gui is drawn
-   */
-  void updateView (const sf::View& newView);
-  /**
-   * @brief Set current clipping layer used to render UI. Every call will create a
-   * new layer with its own independent meshes and return its id.
-   * @return Index of the current clipping layer
-   */
-  uint32_t setCurrentClippingLayer (const sf::FloatRect& mask);
-  /**
-   * @brief Get current active clipping layer index
-   * @return Index of the active clipping layer
-   */
-  uint32_t currentClippingLayer () const;
-  /**
-   * @brief To reuse a previously set clipping layer
-   */
-  void moveToClippingLayer (const uint32_t layerId);
-  /**
-   * @brief Go back to base layer with no clipping
-   */
-  void noClipping ();
-  /**
-   * @brief To tell if a position is visible or not (clipped)
-   * @return `true` if position is not visible, `false` if it is visible
-   */
-  bool isClipped (const sf::Vector2f& position) const;
   /**
    * @brief interface to draw Gui standard element
    * @param Type Widget type to draw, as defined in `Widget`
@@ -112,10 +95,6 @@ public:
          const sf::Font& font,
          const uint32_t fontSize);
   /**
-   * @brief get draw calls count
-   */
-  uint32_t drawCalls () const;
-  /**
    * @brief set specific render for tooltip
    */
   void setTooltipMode ();
@@ -127,6 +106,11 @@ public:
    * @brief allow access to a texture size, as stored in the atlas
    */
   sf::Vector2f textureSize (const std::string& texture) const;
+public:
+  /**
+   * @brief to handle clipping layers
+   */
+  ClippingLayers clipping;
 private:
   /**
    * to initialize clipping layers and their mesh
@@ -184,14 +168,10 @@ private:
   constexpr std::string toString () const;
   std::string toString (const ItemState state) const;
 private:
-  // define on which render to work
+  // define on which render we work
   bool mTooltipMode;
-  // clipping layer
-  uint32_t mActiveLayer = 0;
   std::vector <uint32_t> mWidgetLayers;
   std::vector <uint32_t> mTooltipLayers;
-  sf::View mBaseView;
-  std::vector <sf::View> mClippingLayers;
   // font and texture
   sf::Texture* mGuiTexture;
   // widget mesh

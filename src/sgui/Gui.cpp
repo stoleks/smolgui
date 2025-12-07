@@ -637,15 +637,15 @@ void Gui::beginMenu ()
   }
 
   // ensure that we are on the right clipping layer
-  const auto layerId = mRender.currentClippingLayer ();
+  const auto layerId = mRender.clipping.activeLayer ();
   thisMenu.clippingLayer = mMenuClippingLayer.top ();
   mMenuClippingLayer.pop ();
-  mRender.moveToClippingLayer (thisMenu.clippingLayer);
+  mRender.clipping.moveToLayer (thisMenu.clippingLayer);
 
   // get menu bar status, draws it and go back to the previous clipping layer
   const auto box = sf::FloatRect (menuPos, menuSize);
   mRender.draw <Widget::MenuBox> (box);
-  mRender.moveToClippingLayer (layerId);
+  mRender.clipping.moveToLayer (layerId);
 }
 
 /////////////////////////////////////////////////
@@ -688,8 +688,8 @@ bool Gui::menuItem (
   parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
 
   // ensure that we are on the right clipping layer
-  const auto layerId = mRender.currentClippingLayer ();
-  mRender.moveToClippingLayer (parentMenu.clippingLayer);
+  const auto layerId = mRender.clipping.activeLayer ();
+  mRender.clipping.moveToLayer (parentMenu.clippingLayer);
 
   // compute item status
   auto state = itemStatus (box, name, mInputState.mouseLeftReleased || mInputState.mouseLeftDown);
@@ -710,7 +710,7 @@ bool Gui::menuItem (
 
   // draw a description over it and go back to previous clipping layer
   handleTextDrawing (itemPos + 1.5f*mPadding, text);
-  mRender.moveToClippingLayer (layerId);
+  mRender.clipping.moveToLayer (layerId);
 
   // update cursor position and return item status
   return state == ItemState::Active && !clicked;
@@ -1654,9 +1654,9 @@ void Gui::removeClipping ()
   // go back to no clipping or to previous clipping
   if (!mGroups.empty ()) {
     const auto id = mGroups.top ().clippingLayer;
-    mRender.moveToClippingLayer (id);
+    mRender.clipping.moveToLayer (id);
   } else {
-    mRender.noClipping ();
+    mRender.clipping.disable ();
   }
 }
 
@@ -1696,7 +1696,7 @@ ItemState Gui::itemStatus (
 
   // if mouse collide with the boundingBox
   if (boundingBox.contains (mInputState.mousePosition)
-  && !mRender.isClipped (mInputState.mousePosition)) {
+  && !mRender.clipping.isClipped (mInputState.mousePosition)) {
     // enter hovered state
     state = ItemState::Hovered;
     mGuiState.hoveredItem = item;

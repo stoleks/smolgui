@@ -1,6 +1,5 @@
 #include "GuiRender.h"
 
-#include <spdlog/spdlog.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "sgui/Serialization/LoadTextureAtlas.h"
@@ -11,12 +10,32 @@ namespace sgui
 /////////////////////////////////////////////////
 void GuiRender::setResources (sf::Texture& texture)
 {
-  // get texture
+  // get texture and initialize clipping layer
   mGuiTexture = &texture;
-
-  // initialize clipping layer
-  mBaseView = sf::View ();
   initializeClippingLayers ();
+}
+
+/////////////////////////////////////////////////
+void GuiRender::updateView (const sf::View& newView)
+{
+  clipping.baseView = newView;
+}
+
+/////////////////////////////////////////////////
+uint32_t GuiRender::setCurrentClippingLayer (const sf::FloatRect& mask)
+{
+  // reserve memory for meshes and layer
+  initializeMeshArray ();
+  mTexts.emplace_back (std::vector <sf::Text> ());
+  // store active layer id for tooltip/widgets
+  const auto activeLayer = clipping.setCurrentLayer (mask);
+  if (mTooltipMode) {
+    mTooltipLayers.emplace_back (activeLayer);
+  } else {
+    mWidgetLayers.emplace_back (activeLayer);
+  }
+  // return active layer id
+  return activeLayer;
 }
 
 /////////////////////////////////////////////////
@@ -34,7 +53,6 @@ void GuiRender::clear ()
   mWidgets.clear ();
   mWidgetLayers.clear ();
   mTooltipLayers.clear ();
-  mClippingLayers.clear ();
   initializeClippingLayers ();
 }
 
@@ -42,7 +60,7 @@ void GuiRender::clear ()
 void GuiRender::initializeClippingLayers ()
 {
   initializeMeshArray ();
-  mClippingLayers.push_back (mBaseView);
+  clipping.initialize ();
   mTexts.emplace_back (std::vector <sf::Text> ());
 }
 
@@ -67,90 +85,6 @@ sf::Vector2f GuiRender::textSize (
 
 
 /////////////////////////////////////////////////
-// Clipping
-/////////////////////////////////////////////////
-void GuiRender::updateView (const sf::View& newView)
-{
-  mBaseView = newView;
-}
-
-/////////////////////////////////////////////////
-uint32_t GuiRender::setCurrentClippingLayer (const sf::FloatRect& mask)
-{
-  // get current view property
-  const auto& viewSize = sf::Vector2f (mBaseView.getSize ());
-  const auto& viewCenter = sf::Vector2f (mBaseView.getCenter ());
-  const auto viewTopLeft = viewCenter - (viewSize / 2.f);
-
-  // build clipping viewport
-  const auto& viewport = mBaseView.getViewport ();
-  const auto viewportRatioX = viewport.size.x / viewSize.x;
-  const auto viewportRatioY = viewport.size.y / viewSize.y;
-  const auto portSize = sf::Vector2f (mask.size.x * viewportRatioX, mask.size.y * viewportRatioY);
-  auto portTopLeft = (mask.position - viewTopLeft);
-  portTopLeft.x = (portTopLeft.x * viewportRatioX) + viewport.position.x;
-  portTopLeft.y = (portTopLeft.y * viewportRatioY) + viewport.position.y;
-
-  // reserve memory for mesh and layer
-  mActiveLayer = mClippingLayers.size ();
-  if (mTooltipMode) {
-    mTooltipLayers.emplace_back (mActiveLayer);
-  } else {
-    mWidgetLayers.emplace_back (mActiveLayer);
-  }
-  initializeMeshArray ();
-  mTexts.emplace_back (std::vector <sf::Text> ());
-
-  // add new clipping layer
-  if ((portSize.x >= 0) && (portSize.y >= 0)) {
-    auto clippingView = sf::View (sf::FloatRect (
-      { std::round (mask.position.x), std::round (mask.position.y) },
-      { std::round (mask.size.x), std::round (mask.size.y) }
-    ));
-    clippingView.setViewport (sf::FloatRect (portTopLeft, portSize));
-    mClippingLayers.push_back (clippingView);
-  }
-
-  // return the active layer id
-  return mActiveLayer;
-}
-
-/////////////////////////////////////////////////
-uint32_t GuiRender::currentClippingLayer () const
-{
-  return mActiveLayer;
-}
-
-/////////////////////////////////////////////////
-void GuiRender::moveToClippingLayer (const uint32_t layerId)
-{
-  if (layerId < mClippingLayers.size ()) {
-    mActiveLayer = layerId;
-  } else {
-    spdlog::error ("GuiRender::moveToClippingLayer: the layer's id is incorrect, clipping layer will not be moved");
-  }
-}
-
-/////////////////////////////////////////////////
-void GuiRender::noClipping ()
-{
-  mActiveLayer = 0;
-}
-
-/////////////////////////////////////////////////
-bool GuiRender::isClipped (const sf::Vector2f& position) const
-{
-  const auto view = mClippingLayers [mActiveLayer];
-  const auto viewBox = sf::FloatRect (
-    view.getCenter () - view.getSize () / 2.f,
-    view.getSize ()
-  );
-  return !viewBox.contains (position);
-}
-
-
-
-/////////////////////////////////////////////////
 // draw
 /////////////////////////////////////////////////
 void GuiRender::drawText (
@@ -168,18 +102,7 @@ void GuiRender::drawText (
   // we use explicit utf8 encoding to handle special character like 'é'
   content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
   // draw text
-  mTexts [mActiveLayer].emplace_back (std::move (content));
-}
-
-/////////////////////////////////////////////////
-uint32_t GuiRender::drawCalls () const
-{
-  auto drawCalls = 0u;
-  for (const auto& textLayer : mTexts) {
-    drawCalls += textLayer.size ();
-  }
-  drawCalls += mClippingLayers.size ();
-  return drawCalls;
+  mTexts.at (clipping.activeLayer ()).emplace_back (std::move (content));
 }
 
 /////////////////////////////////////////////////
@@ -336,7 +259,7 @@ void GuiRender::appendMesh (
   }
 
   // append it to active meshes
-  auto& activeMesh = mWidgets [mActiveLayer];
+  auto& activeMesh = mWidgets.at (clipping.activeLayer ());
   for (uint32_t i = 0; i < mesh.size (); i++) {
     activeMesh.append (std::move (mesh [i]));
   }
@@ -401,7 +324,7 @@ void GuiRender::draw (
   }
 
   // go back to standard view
-  target.setView (mBaseView);
+  target.setView (clipping.baseView);
 }
 
 /////////////////////////////////////////////////
@@ -410,9 +333,9 @@ void GuiRender::drawLayer (
   sf::RenderStates states,
   uint32_t layer) const
 {
-  target.setView (mClippingLayers [layer]);
-  target.draw (mWidgets [layer], states);
-  for (auto text : mTexts [layer]) {
+  target.setView (clipping.at (layer));
+  target.draw (mWidgets.at (layer), states);
+  for (auto text : mTexts.at (layer)) {
     target.draw (text, states);
   }
 }
