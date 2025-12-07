@@ -10,15 +10,7 @@ target_compile_features (${MIN_APP} PRIVATE cxx_std_17)
 target_compile_definitions (${MIN_APP} PRIVATE ContentsDir="${CONTENTS}")
 set_target_properties (${MIN_APP} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUTS}")
 
-# Build small demo
-set (DEMO_APP smolguiDemo)
-add_executable (${DEMO_APP} smolguiDemo.cpp)
-target_link_libraries (${DEMO_APP} PRIVATE SmolGui SFML::Audio)
-target_compile_features (${DEMO_APP} PRIVATE cxx_std_17)
-target_compile_definitions (${DEMO_APP} PRIVATE ContentsDir="${CONTENTS}")
-set_target_properties (${DEMO_APP} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUTS}")
-
-# Build small serialization demo
+# Build small demo with serialization
 set (SERIAL_APP serializationDemo)
 add_executable (${SERIAL_APP} serializationDemo.cpp)
 target_link_libraries (${SERIAL_APP} PRIVATE SmolGui)

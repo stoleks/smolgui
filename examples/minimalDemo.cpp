@@ -34,7 +34,7 @@ int main()
     auto cursorPos = sf::Vector2f ();
     gui.beginFrame ();
     if (gui.beginWindow (mainPanel)) {
-      if (gui.textButton ("Close window")) {
+      if (gui.button ("Close window")) {
         window.close ();
       }
       gui.text ("Select font size");

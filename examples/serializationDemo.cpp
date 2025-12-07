@@ -57,9 +57,14 @@ int main()
   auto closablePanel = layout.get <sgui::Panel> ("closablePanel");
   auto constrainedPanel = layout.get <sgui::Panel> ("constrainedPanels");
   // data
-  auto sliderValue = 0.1f;
   bool displayFunction = false;
   bool compactLayout = false;
+  auto sliderValue = 0.1f;
+  auto inputValue = 0.f;
+  auto multiLine = texts.get ("textMultiLine");
+  auto oneLine = texts.get ("textOneLine");
+  auto vector = sf::Vector2f ();
+  auto vector3 = sf::Vector3f ();
 
   /**
    * Main App loop
@@ -99,16 +104,16 @@ int main()
       if (gui.beginWindow (closablePanel)) {
         // Open or close
         gui.text ("A window");
-        if (gui.textButton ("Open/Close")) {
+        if (gui.button ("Open/Close")) {
           mainPanel.closed = !mainPanel.closed;
         }
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
         gui.separation ();
-        if (gui.textButton ("Add/remove header")) {
+        if (gui.button ("Add/remove header")) {
           mainPanel.hasHeader = !mainPanel.hasHeader;
         }
-        if (gui.textButton ("Add/remove closable options")) {
+        if (gui.button ("Add/remove closable options")) {
           closablePanel.closable = !closablePanel.closable;
         }
         gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
@@ -155,9 +160,11 @@ int main()
         if (getText) {
           mainPanel.title = texts.get ("mainWindow");
           closablePanel.title = texts.get ("closableWindow");
+          multiLine = texts.get ("textMultiLine");
+          oneLine = texts.get ("textOneLine");
         }
         gui.separation ();
-
+        // text and text edit
         gui.text ("Select font size");
         auto& fonts = style.fontSize;
         gui.slider (fonts.title, 12u, 26u, {"Title font size"});
@@ -168,12 +175,18 @@ int main()
         if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
         }
-        gui.inputColor (style.fontColor, {"Font color: "});
+        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
+        gui.inputText (oneLine, {}, {texts.get ("oneLine")});
+        // input number and color 
         gui.separation ();
+        gui.inputColor (style.fontColor, {"Font color: "});
+        gui.inputNumber (inputValue, {"Input number with text!"});
+        gui.inputVector2 (vector, {"Input vector2: "});
+        gui.inputVector3 (vector3, {"Input vector3: "});
         const auto list = std::vector <std::string> {"One", "Two", "Three"};
         gui.comboBox (list);
         gui.checkBox (compactLayout, {"Compact layout"});
-        if (gui.textButton ("Save layout")) {
+        if (gui.button ("Save layout")) {
           layout.saveInFile (compactLayout);
         }
         // top panel
