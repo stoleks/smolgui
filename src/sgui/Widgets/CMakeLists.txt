@@ -8,6 +8,7 @@ set (SRC
   ${SRCROOT}/Panel.cpp
   ${INCROOT}/Panel.h
   ${INCROOT}/Options.h
+  ${INCROOT}/Constraints.h
   ${INCROOT}/Style.h
   ${INCROOT}/Widgets.h
 )

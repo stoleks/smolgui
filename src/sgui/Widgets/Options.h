@@ -1,33 +1,32 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
+#include "Constraints.h"
 
 namespace sgui
 {
 
 /////////////////////////////////////////////////
 /**
- * @brief List all possible vertical alignment
+ * @brief Defines number of slices for stretchable widgets
  */
-enum class VerticalAlignment
-{
-  Top,
-  Center,
-  Bottom,
-  None
+enum class Slices {
+  One,
+  Three,
+  Nine
 };
 
 /**
- * @brief List all possible horizontal alignment
+ * @brief Defines type of tiling for center part of widgets
  */
-enum class HorizontalAlignment
-{
-  Left,
-  Center,
-  Right,
-  None
+enum class TileMode {
+  Stretch, // extend central part
+  Hide,    // don't draw central part
+  Repeat,  // repeat central part
+  Rotate   // repeat and rotate central part
 };
 
+/////////////////////////////////////////////////
 /**
  * @brief Text type
  */
@@ -36,19 +35,6 @@ enum class TextType {
   Subtitle,
   Normal,
   Title
-};
-
-
-/////////////////////////////////////////////////
-/**
- * @brief Store constraints on position for gui panel. Alignment always precede relative position.
- */
-struct Constraints
-{
-  // data, zero means no constraints for position
-  VerticalAlignment vertical = VerticalAlignment::None;
-  HorizontalAlignment horizontal = HorizontalAlignment::None;
-  sf::Vector2f relativePosition = {};
 };
 
 /////////////////////////////////////////////////
