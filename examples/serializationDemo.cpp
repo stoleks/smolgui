@@ -4,7 +4,7 @@
 
 #include <sgui/Gui.h>
 #include <sgui/Resources/Layout.h>
-#include <sgui/Resources/IconsFontawesome7.h>
+#include <sgui/Resources/IconsFontAwesome7.h>
 
 int main()
 {
@@ -192,9 +192,12 @@ int main()
         // top panel
         constraint.vertical = sgui::VerticalAlignment::Top;
         constraint.horizontal = sgui::HorizontalAlignment::None;
+	const auto outSize = constrainedPanel.size;
+	constrainedPanel.size *= 3.f;
         gui.beginPanel (constrainedPanel, constraint);
         gui.text ("Top in group");
         gui.endPanel ();
+	constrainedPanel.size = outSize;
         gui.endWindow ();
       }
       // scrollabel centered panel

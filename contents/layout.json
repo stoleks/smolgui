@@ -12,11 +12,11 @@
     "hasHeader": true,
     "movable": true,
     "position": {
-      "x": 820.0,
-      "y": 256.0
+      "x": 720.0,
+      "y": 50.0
     },
     "size": {
-      "x": 0.315,
+      "x": 0.5,
       "y": 0.5
     },
     "title": "Closable panel",
@@ -24,14 +24,15 @@
   },
   "Panel::constrainedPanels": {
     "closable": false,
+    "hasHeader": true,
     "movable": true,
     "position": {
-      "x": 1440.0,
-      "y": 256.0
+      "x": 600.0,
+      "y": 400.0
     },
     "size": {
       "x": 0.1,
-      "y": 0.040
+      "y": 0.04
     },
     "title": "",
     "visible": true
@@ -41,11 +42,11 @@
     "hasHeader": true,
     "movable": true,
     "position": {
-      "x": 200.0,
-      "y": 256.0
+      "x": 60.0,
+      "y": 50.0
     },
     "size": {
-      "x": 0.315,
+      "x": 0.45,
       "y": 0.64
     },
     "title": "mainWindow",
