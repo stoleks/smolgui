@@ -5,19 +5,37 @@
 namespace sgui
 {
 /////////////////////////////////////////////////
-// PrimitiveShapeRender impl
-/////////////////////////////////////////////////
-PrimitiveShapeRender::PrimitiveShapeRender ()
-  : mPosition (0.f, 0.f)
+void PrimitiveShapeRender::updateView (const sf::View& newView)
 {
-  mShapes.setPrimitiveType (sf::PrimitiveType::Triangles);
+  clipping.baseView = newView;
 }
 
 /////////////////////////////////////////////////
-void PrimitiveShapeRender::setPosition (
-  const sf::Vector2f& position)
+void PrimitiveShapeRender::initializeClippingLayers ()
 {
-  mPosition = sf::Vector2f (position.x, position.y);
+  mShapes.emplace_back (sf::VertexArray ());
+  mShapes.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
+  clipping.initialize ();
+}
+
+/////////////////////////////////////////////////
+uint32_t PrimitiveShapeRender::setCurrentClippingLayer (const sf::FloatRect& mask)
+{
+  // reserve memory for meshes and layers
+  mShapes.emplace_back (sf::VertexArray ());
+  mShapes.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
+  // store active layer id and return it
+  const auto activeLayer = clipping.setCurrentLayer (mask);
+  mLayers.emplace_back (activeLayer);
+  return activeLayer;
+}
+
+/////////////////////////////////////////////////
+void PrimitiveShapeRender::clear ()
+{
+  mShapes.clear ();
+  mLayers.clear ();
+  initializeClippingLayers ();
 }
 
 /////////////////////////////////////////////////
@@ -132,8 +150,8 @@ void PrimitiveShapeRender::load (
   // get box corner and load them in render
   const auto c1 = box.position;
   const auto c2 = box.position + sf::Vector2f { box.size.x, 0 };
-  const auto c3 = box.position + sf::Vector2f { 0, box.size.y };
-  const auto c4 = box.position + box.size;
+  const auto c3 = box.position + box.size;
+  const auto c4 = box.position + sf::Vector2f { 0, box.size.y };
   computeConnectedLineMesh (c1, c2, c4, c3, thickness, color);
   computeConnectedLineMesh (c2, c3, c1, c4, thickness, color);
   computeConnectedLineMesh (c3, c4, c2, c1, thickness, color);
@@ -153,26 +171,6 @@ void PrimitiveShapeRender::loadFilled (
   computeTriangleVertices (c1, c2, c4, color);
   // upper half triangle
   computeTriangleVertices (c4, c3, c1, color);
-}
-
-/////////////////////////////////////////////////
-void PrimitiveShapeRender::clear ()
-{
-  mShapes.clear ();
-}
-
-/////////////////////////////////////////////////
-void PrimitiveShapeRender::copy (
-  PrimitiveShapeRender&& shapes)
-{
-  mShapes = std::move (shapes.mShapes);
-}
-
-/////////////////////////////////////////////////
-void PrimitiveShapeRender::copy (
-  const PrimitiveShapeRender& shapes)
-{
-  mShapes = shapes.mShapes;
 }
 
 /////////////////////////////////////////////////
@@ -257,9 +255,10 @@ void PrimitiveShapeRender::computeTriangleVertices (
   e3.color = color;
 
   // add them to the render pipeline
-  mShapes.append (e1);
-  mShapes.append (e2);
-  mShapes.append (e3);
+  auto& activeMesh = mShapes.at (clipping.activeLayer ());
+  activeMesh.append (e1);
+  activeMesh.append (e2);
+  activeMesh.append (e3);
 }
 
 /////////////////////////////////////////////////
@@ -268,7 +267,11 @@ void PrimitiveShapeRender::draw (
   sf::RenderStates states) const
 {
   states.transform *= getTransform ();
-  target.draw (mShapes, states);
+  // draw each layer
+  for (const auto layer : mLayers) {
+    target.setView (clipping.at (layer));
+    target.draw (mShapes.at (layer), states);
+  }
 }
 
 } // namespace sgui

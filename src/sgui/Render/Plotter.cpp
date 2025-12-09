@@ -5,30 +5,6 @@
 namespace sgui
 {
 /////////////////////////////////////////////////
-void Plotter::setRangeX (const PlotRange xRange)
-{
-  mX = xRange;
-}
-
-/////////////////////////////////////////////////
-void Plotter::setRangeY (const PlotRange yRange)
-{
-  mY = yRange;
-}
-
-/////////////////////////////////////////////////
-PlotRange Plotter::rangeX () const
-{
-  return mX;
-}
-
-/////////////////////////////////////////////////
-PlotRange Plotter::rangeY () const
-{
-  return mY;
-}
-
-/////////////////////////////////////////////////
 void Plotter::setSample (const uint32_t sample)
 {
   mSample = sample;
@@ -68,7 +44,7 @@ void Plotter::setBorderColor (const sf::Color& color)
 /////////////////////////////////////////////////
 void Plotter::clear ()
 {
-  mRender.clear ();
+  render.clear ();
 }
 
 /////////////////////////////////////////////////
@@ -83,13 +59,13 @@ void Plotter::plot (
 
   // we use int to avoid dubious bug with i-1
   for (int i = 0; i < static_cast<int>(mSample); i++) {
-    const auto xA = lerp (mX.min, mX.max, i / max);
-    const auto xB = lerp (mX.min, mX.max, (i + 1) / max);
-    const auto xPrev = lerp (mX.min, mX.max, (i - 1) / max);
-    const auto xNext = lerp (mX.min, mX.max, (i + 2) / max);
+    const auto xA = lerp (xRange.min, xRange.max, i / max);
+    const auto xB = lerp (xRange.min, xRange.max, (i + 1) / max);
+    const auto xPrev = lerp (xRange.min, xRange.max, (i - 1) / max);
+    const auto xNext = lerp (xRange.min, xRange.max, (i + 2) / max);
     const auto a = position + toPlot (xA, slope (xA));
     const auto b = position + toPlot (xB, slope (xB));
-    mRender.loadConnected (
+    render.loadConnected (
       LineFloat (a, b),
       position + toPlot (xPrev, slope (xPrev)),
       position + toPlot (xNext, slope (xNext)),
@@ -116,11 +92,11 @@ void Plotter::plot (
 
   // we use int to avoid dubious bug with i-1
   for (int i = 0; i < static_cast<int>(mSample); i++) {
-    const auto a = slope (lerp (mX.min, mX.max, i / max));
-    const auto b = slope (lerp (mX.min, mX.max, (i + 1) / max));
-    const auto prev = slope (lerp (mX.min, mX.max, (i - 1) / max));
-    const auto next = slope (lerp (mX.min, mX.max, (i + 2) / max));
-    mRender.loadConnected (
+    const auto a = slope (lerp (xRange.min, xRange.max, i / max));
+    const auto b = slope (lerp (xRange.min, xRange.max, (i + 1) / max));
+    const auto prev = slope (lerp (xRange.min, xRange.max, (i - 1) / max));
+    const auto next = slope (lerp (xRange.min, xRange.max, (i + 2) / max));
+    render.loadConnected (
       LineFloat (position + toPlot (a), position + toPlot (b)),
       position + toPlot (prev),
       position + toPlot (next),
@@ -148,7 +124,7 @@ void Plotter::plot (
     const auto b = points[i + 1];
     const auto prev = points[i - 1];
     const auto next = points[i + 2];
-    mRender.loadConnected (
+    render.loadConnected (
       LineFloat (position + toPlot (a), position + toPlot (b)),
       position + toPlot (prev),
       position + toPlot (next),
@@ -169,8 +145,8 @@ sf::Vector2f Plotter::toPlot (
   const float pointY) const
 {
   if (mBounded) {
-    const auto x = remap (mX.min, mX.max, 0.f, mBound.x, pointX);
-    const auto y = remap (-mY.max, -mY.min, 0.f, mBound.y, -pointY);
+    const auto x = remap (xRange.min, xRange.max, 0.f, mBound.x, pointX);
+    const auto y = remap (-yRange.max, -yRange.min, 0.f, mBound.y, -pointY);
     return sf::Vector2f (x, y);
   }
   return sf::Vector2f (pointX, pointY);
@@ -197,13 +173,13 @@ void Plotter::drawBorderAndAxes (
     const auto xTick2 = bottom + sf::Vector2f (i * dx, -length);
     const auto yTick1 = pos + sf::Vector2f (0.f, i * dy);
     const auto yTick2 = pos + sf::Vector2f (length, i * dy);
-    mRender.load (LineFloat (xTick1, xTick2), mBorderWidth, mBorderColor);
-    mRender.load (LineFloat (yTick1, yTick2), mBorderWidth, mBorderColor);
+    render.load (LineFloat (xTick1, xTick2), mBorderWidth, mBorderColor);
+    render.load (LineFloat (yTick1, yTick2), mBorderWidth, mBorderColor);
   }
 
   // draw border
   const auto border = sf::FloatRect (pos, mBound);
-  mRender.load (border, mBorderWidth, mBorderColor);
+  render.load (border, mBorderWidth, mBorderColor);
 }
 
 /////////////////////////////////////////////////
@@ -212,7 +188,7 @@ void Plotter::draw (
   sf::RenderStates states) const
 {
   states.transform *= getTransform ();
-  target.draw (mRender, states);
+  target.draw (render, states);
 }
 
 } // namespace sgui

@@ -18,6 +18,7 @@ struct GroupData
   bool hasMenuBar = false;
   uint32_t groupId = 0u;
   uint32_t clippingLayer = 0u;
+  uint32_t plotterLayer = 0u;
   uint32_t menuItemCount = 0u;
   sf::Vector2f lastItemPosition = {};
   sf::Vector2f menuBarPosition = {};

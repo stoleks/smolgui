@@ -17,8 +17,8 @@ struct PlotRange {
     : min (mi), max (ma)
   {}
   // data
-  float min;
-  float max;
+  float min = 0.f;
+  float max = 1.f;
 };
 
 
@@ -28,23 +28,6 @@ struct PlotRange {
 class Plotter : public sf::Drawable, public sf::Transformable
 {
 public:
-  Plotter () = default;
-  /**
-   * @brief set abscissa range
-   */
-  void setRangeX (const PlotRange xRange);
-  /**
-   * @brief set ordinate range
-   */
-  void setRangeY (const PlotRange yRange);
-  /**
-   * @brief get abscissa range
-   */
-  PlotRange rangeX () const;
-  /**
-   * @brief get ordinate range
-   */
-  PlotRange rangeY () const;
   /**
    * @brief set points to sample function, default is 50 points.
    * @param sample is the number of points used to sample curve.
@@ -113,6 +96,10 @@ public:
          const sf::Vector2f& position,
          const sf::Color& lineColor,
          const float thickness);
+public:
+  PlotRange xRange = {};
+  PlotRange yRange = {};
+  PrimitiveShapeRender render;
 private:
   /**
    * to remap value in the draw area
@@ -135,12 +122,9 @@ private:
   bool mBounded = false;
   uint32_t mSample = 50;
   uint32_t mBorderTick = 5;
-  float mBorderWidth = 2.f;
-  PlotRange mX;
-  PlotRange mY;
-  sf::Vector2f mBound;
-  sf::Color mBorderColor = sf::Color::Black;
-  PrimitiveShapeRender mRender;
+  float mBorderWidth = 4.f;
+  sf::Vector2f mBound = {};
+  sf::Color mBorderColor = sf::Color::White;
 };
 
 } // namespace sgui

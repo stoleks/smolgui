@@ -25,7 +25,8 @@ void GuiRender::updateView (const sf::View& newView)
 uint32_t GuiRender::setCurrentClippingLayer (const sf::FloatRect& mask)
 {
   // reserve memory for meshes and layer
-  initializeMeshArray ();
+  mWidgets.emplace_back (sf::VertexArray ());
+  mWidgets.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
   mTexts.emplace_back (std::vector <sf::Text> ());
   // store active layer id for tooltip/widgets
   const auto activeLayer = clipping.setCurrentLayer (mask);
@@ -59,16 +60,10 @@ void GuiRender::clear ()
 /////////////////////////////////////////////////
 void GuiRender::initializeClippingLayers ()
 {
-  initializeMeshArray ();
-  clipping.initialize ();
-  mTexts.emplace_back (std::vector <sf::Text> ());
-}
-
-/////////////////////////////////////////////////
-void GuiRender::initializeMeshArray ()
-{
   mWidgets.emplace_back (sf::VertexArray ());
   mWidgets.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
+  clipping.initialize ();
+  mTexts.emplace_back (std::vector <sf::Text> ());
 }
 
 /////////////////////////////////////////////////

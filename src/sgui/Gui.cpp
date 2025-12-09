@@ -95,6 +95,7 @@ void Gui::setView (const sf::View& view)
 {
   // set view to standard gui view
   mRender.updateView (view);
+  mPlotter.render.updateView (view);
 }
 
 
@@ -126,7 +127,7 @@ sf::Vector2f Gui::activePanelSize () const
   }
   return mWindowSize;
 }
-  
+
 /////////////////////////////////////////////////
 sf::Vector2f Gui::normalizeSize (const sf::Vector2f& panelSize) const
 {
@@ -505,6 +506,7 @@ bool Gui::beginWindow (
   // set clipping layer
   const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
   thisWindow.clippingLayer = mRender.setCurrentClippingLayer (windowBox);
+  thisWindow.plotterLayer = mPlotter.render.setCurrentClippingLayer (windowBox);
 
   // draw window box and handle hovering of the window
   const auto windowStatus = itemStatus (windowBox, name);
@@ -573,6 +575,7 @@ void Gui::beginPanel (
   auto& panel = mGroups.top ();
   if (settings.clipped) {
     panel.clippingLayer = mRender.setCurrentClippingLayer (clipBox);
+    panel.plotterLayer = mPlotter.render.setCurrentClippingLayer (clipBox);
   }
 
   // draw panel box if requested
@@ -1111,8 +1114,8 @@ void Gui::setPlotRange (
   const PlotRange xRange,
   const PlotRange yRange)
 {
-  mPlotter.setRangeX (xRange);
-  mPlotter.setRangeY (yRange);
+  mPlotter.xRange = xRange;
+  mPlotter.yRange = yRange;
 }
 
 /////////////////////////////////////////////////
@@ -1187,7 +1190,7 @@ void Gui::cachePlotData (const std::function<float (float)>& slope)
   auto slopeData = std::vector <sf::Vector2f> ();
   const auto max = static_cast<float> (mPlotSample);
   for (int i = 0; i < static_cast<int> (mPlotSample); i++) {
-    const auto range = mPlotter.rangeX ();
+    const auto& range = mPlotter.xRange;
     const auto x = sgui::lerp (range.min, range.max, i / max);
     slopeData.emplace_back (x, slope (x));
   }
@@ -1200,7 +1203,7 @@ void Gui::cachePlotData (const std::function<sf::Vector2f (float)>& slope)
   auto slopeData = std::vector <sf::Vector2f> ();
   const auto max = static_cast<float> (mPlotSample);
   for (int i = 0; i < static_cast<int> (mPlotSample); i++) {
-    const auto range = mPlotter.rangeX ();
+    const auto& range = mPlotter.yRange;
     const auto x = sgui::lerp (range.min, range.max, i / max);
     slopeData.emplace_back (slope (x));
   }
@@ -1546,6 +1549,7 @@ void Gui::beginGroup (
   newGroup.lastItemPosition = position + 1.5f*mPadding;
   newGroup.menuItemCount = 0u;
   newGroup.clippingLayer = 0u;
+  newGroup.plotterLayer = 0u;
   newGroup.menuBarSize = sf::Vector2f (0, 0);
   newGroup.groupId = mCounters.group;
   mCounters.group++;
@@ -1671,10 +1675,12 @@ void Gui::removeClipping ()
 {
   // go back to no clipping or to previous clipping
   if (!mGroups.empty ()) {
-    const auto id = mGroups.top ().clippingLayer;
-    mRender.clipping.moveToLayer (id);
+    const auto& group = mGroups.top ();
+    mRender.clipping.moveToLayer (group.clippingLayer);
+    mPlotter.render.clipping.moveToLayer (group.plotterLayer);
   } else {
     mRender.clipping.disable ();
+    mPlotter.render.clipping.disable ();
   }
 }
 

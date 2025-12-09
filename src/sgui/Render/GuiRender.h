@@ -116,7 +116,6 @@ private:
    * to initialize clipping layers and their mesh
    */
   void initializeClippingLayers ();
-  void initializeMeshArray ();
   /**
    * to draw slider, title box, etc. i.e. widget that posses
    * 2 corner with fixed size and a stretched center patch

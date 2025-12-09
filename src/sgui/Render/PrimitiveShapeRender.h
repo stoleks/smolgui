@@ -4,6 +4,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
+#include "ClippingLayers.h"
 #include "sgui/Core/Polygon.h"
 
 namespace sgui
@@ -14,21 +15,31 @@ namespace sgui
 class PrimitiveShapeRender : public sf::Drawable, public sf::Transformable
 {
 public:
-  PrimitiveShapeRender ();
-  ~PrimitiveShapeRender () override = default;
   /**
-   * set position of the whole shape
+   * @brief update view in which shapes are rendered
    */
-  void setPosition (const sf::Vector2f& position);
+  void updateView (const sf::View& newView);
   /**
-   * load thick line
+   * @brief initialize clipping layers, must be called once
+   */
+  void initializeClippingLayers ();
+  /**
+   * @brief change of clipping layer
+   */
+  uint32_t setCurrentClippingLayer (const sf::FloatRect& mask);
+  /**
+   * @brief clear all shapes
+   */
+  void clear ();
+  /**
+   * @brief load thick line
    */
   void load (
          const LineFloat& line,
          const float thickness,
          const sf::Color& color = sf::Color::White);
   /**
-   * load thick line connected to another
+   * @brief load thick line connected to another
    */
   void loadConnected (
          const LineFloat& line,
@@ -37,7 +48,7 @@ public:
          const float thickness,
          const sf::Color& color = sf::Color::White);
   /**
-   * load arrow shape
+   * @brief load arrow shape
    */
   void loadArrow (
          const LineFloat& arrow,
@@ -75,15 +86,8 @@ public:
   void loadFilled (
          const sf::FloatRect& box,
          const sf::Color& color = sf::Color::White);
-  /**
-   * clear all shapes
-   */
-  void clear ();
-  /**
-   * copy vertex array of another render
-   */
-  void copy (PrimitiveShapeRender&& scene);
-  void copy (const PrimitiveShapeRender& scene);
+public:
+  ClippingLayers clipping;
 private:
   /**
    * compute a thick line mesh
@@ -118,8 +122,9 @@ private:
          sf::RenderTarget& target,
          sf::RenderStates states) const override;
 private:
-  sf::Vector2f mPosition;
-  sf::VertexArray mShapes;
+  sf::Vector2f mPosition = {};
+  std::vector <uint32_t> mLayers;
+  std::vector <sf::VertexArray> mShapes;
 };
 
 } // namespace sgui
