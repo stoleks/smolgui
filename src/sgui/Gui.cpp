@@ -112,6 +112,12 @@ sf::Vector2f Gui::textSize (
 }
 
 /////////////////////////////////////////////////
+float Gui::textHeight (const TextType type) const
+{
+  return getFontSize (type) + 6.f*mPadding.y;
+}
+
+/////////////////////////////////////////////////
 sf::Vector2f Gui::activePanelSize () const
 {
   if (!mGroups.empty ()) {
@@ -120,11 +126,17 @@ sf::Vector2f Gui::activePanelSize () const
   }
   return mWindowSize;
 }
-
+  
 /////////////////////////////////////////////////
-float Gui::textHeight (const TextType type) const
+sf::Vector2f Gui::normalizeSize (const sf::Vector2f& panelSize) const
 {
-  return getFontSize (type) + 6.f*mPadding.y;
+  return panelSize.componentWiseDiv (activePanelSize ());
+}
+  
+/////////////////////////////////////////////////
+sf::Vector2f Gui::denormalizeSize (const sf::Vector2f& panelSize) const
+{
+  return panelSize.componentWiseMul (activePanelSize ());
 }
 
 
@@ -533,7 +545,6 @@ void Gui::endWindow ()
     }
     endGroup ();
     mCursorPosition = active.position;
-    updateSpacing (active.size);
     // remove clipping and track window not closed
     removeClipping ();
     mChecker.end (GroupType::Window);
@@ -1006,7 +1017,7 @@ void Gui::inputText (
   // open a panel and draw the text in it, we need to take care of size normalization
   auto finalOptions = textOptions;
   finalOptions.boxSize = textPanel.size;
-  textPanel.size = textPanel.size.componentWiseDiv (activePanelSize ());
+  textPanel.size = normalizeSize (textPanel.size);
   mCursorPosition = box.position;
   beginPanel (textPanel);
   // remove scroller size if needed
@@ -1015,7 +1026,7 @@ void Gui::inputText (
   }
   Gui::text (text, finalOptions);
   endPanel ();
-  textPanel.size = textPanel.size.componentWiseMul (activePanelSize ());
+  textPanel.size = denormalizeSize (textPanel.size);
 
   // update cursor position
   mCursorPosition = basePosition;
@@ -1260,16 +1271,13 @@ std::string Gui::comboBox (
   // compute if combo box is open
   const auto box = sf::FloatRect (initialPos, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-  if (state == ItemState::Active) {
+  if (state == ItemState::Active || state == ItemState::Hovered) {
     mGuiState.comboBoxFocus = name;
   }
   if (mInputState.mouseRightDown) {
     mGuiState.comboBoxFocus = NullItemID;
   }
-  const auto isOpen = (state == ItemState::Active)
-    || (state == ItemState::Hovered)
-    || (mGuiState.activeItem == name)
-    || (mGuiState.comboBoxFocus == name);
+  const auto isOpen = mGuiState.activeItem == name || mGuiState.comboBoxFocus == name;
 
   // get selected text of the combo box
   auto& selected = mComboBoxActiveItem.get (comboBoxId);
@@ -1277,19 +1285,30 @@ std::string Gui::comboBox (
   if (selected < list.size ()) {
     text = list.at (selected);
   }
-  // compute each drop list item if combo box is active
-  auto counter = 0u;
+
+  // compute each drop list item if combo box is active and not clipped
   auto icon = ICON_FA_SQUARE_CARET_DOWN;
-  if (isOpen) {
+  const auto initialPosition = mCursorPosition + sf::Vector2f (0.f, itemSize.y);
+  if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
+    const auto itemCount = std::min (6.f, static_cast <float> (list.size ()));
+    const auto panelSize = normalizeSize ({itemSize.x, itemCount*itemSize.y});
+    auto panel = Panel ({}, panelSize);
+    panel.hasHeader = false;
+    // open the window that will contains the combo box item
+    mCursorPosition = initialPosition;
+    beginWindow (panel);
+    auto counter = 0u;
     for (const auto& itemName : list) {
       // get item status and update selected value
-      const auto itemPos = initialPos + sf::Vector2f (0.f, (counter + 1u)*itemSize.y);
+      const auto itemPos = initialPosition + sf::Vector2f (0.f, counter*itemSize.y);
       if (dropListItem (text, itemName, itemPos, itemSize)) {
         mGuiState.comboBoxFocus = NullItemID;
         selected = counter;
       }
       counter++;
     }
+    endWindow ();
+    mCursorPosition = initialPosition - sf::Vector2f (0.f, itemSize.y);
     icon = ICON_FA_SQUARE_CARET_UP;
   }
 
@@ -1298,10 +1317,9 @@ std::string Gui::comboBox (
   handleTextDrawing (box.position + mPadding, text);
   const auto iconPos = box.position + sf::Vector2f (5.f*defaultSize + 2.f*mPadding.x, 0.5f*mPadding.y);
   fontawesomeIcon (iconPos, icon, getFontSize (TextType::Normal) + 2u); 
-  // update cursor position
-  updateSpacing (sf::Vector2f (itemSize.x, (counter + 1) * itemSize.y));
 
-  // return selected item
+  // return selected item and update cursor position
+  updateSpacing (itemSize);
   return text;
 }
 
@@ -1526,8 +1544,8 @@ void Gui::beginGroup (
   newGroup.position = position;
   newGroup.size = size;
   newGroup.lastItemPosition = position + 1.5f*mPadding;
-  newGroup.menuItemCount = 0;
-  newGroup.clippingLayer = 0;
+  newGroup.menuItemCount = 0u;
+  newGroup.clippingLayer = 0u;
   newGroup.menuBarSize = sf::Vector2f (0, 0);
   newGroup.groupId = mCounters.group;
   mCounters.group++;

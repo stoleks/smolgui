@@ -123,6 +123,16 @@ public:
    */
   sf::Vector2f activePanelSize () const;
   /**
+   * @brief normalize size of a panel
+   * Return panel size in fraction
+   */
+  sf::Vector2f normalizeSize (const sf::Vector2f& panelSize) const;
+  /**
+   * @brief denormalize size of a panel
+   * Return panel size in pixels
+   */
+  sf::Vector2f denormalizeSize (const sf::Vector2f& panelSize) const;
+  /**
    * @brief add spacing
    * @param amount multiply this vector by the normal font size and add it to (x, y)
    */
