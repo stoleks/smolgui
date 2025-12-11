@@ -18,7 +18,7 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (FontSize, normal, title, subtit
 /**
  * Style
  */
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Style, fontSize, fontColor, itemSpacing, itemInnerSpacing);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Style, fontSize, fontColor, itemSpacing);
 /**
  * Panel
  */

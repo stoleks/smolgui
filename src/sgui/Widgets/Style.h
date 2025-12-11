@@ -31,7 +31,6 @@ struct Style
   sf::Color fontColor = sf::Color::White;
   // widget related
   float itemSpacing = 5.f;
-  float itemInnerSpacing = 4.f;
 };
 
 /////////////////////////////////////////////////

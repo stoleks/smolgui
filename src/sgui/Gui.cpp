@@ -511,8 +511,7 @@ bool Gui::beginWindow (
   // draw window box and handle hovering of the window
   const auto windowStatus = itemStatus (windowBox, name);
   mRender.draw <Widget::Box> (windowBox);
-  mCursorPosition += mPadding;
-  mCursorPosition.y += 1.5f * mPadding.y;
+  mCursorPosition += sf::Vector2f (mPadding.x, 2.5f*mPadding.y);
 
   // scroll through window if requested
   settings.isScrolled = scrollThroughPanel (thisWindow, windowBox, windowStatus, options.horizontal);
@@ -1896,8 +1895,7 @@ std::string Gui::initializeActivable (const std::string& key)
 void Gui::updateSpacing (const sf::Vector2f& size)
 {
   // compute spacing added
-  const auto padding = mStyle.itemInnerSpacing * sf::Vector2f (1.f, 1.f) + 2.f*mPadding;
-  mLastSpacing = size + padding;
+  mLastSpacing = size + 2.f*mPadding;
   
   // if group is horizontal, add spacing along x, except if same line was called.
   if (!mGroups.empty () && getParentGroup ().horizontal) {
