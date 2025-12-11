@@ -179,11 +179,13 @@ int main()
         gui.inputText (oneLine, {}, {texts.get ("oneLine")});
         // input number and color 
         gui.separation ();
+        const auto shorterList = std::vector <std::string> {"One", "Two", "Three"};
+        gui.comboBox (shorterList);
         gui.inputColor (style.fontColor, {"Font color: "});
         gui.inputNumber (inputValue, {"Input number with text!"});
         gui.inputVector2 (vector, {"Input vector2: "});
         gui.inputVector3 (vector3, {"Input vector3: "});
-        const auto list = std::vector <std::string> {"One", "Two", "Three"};
+        const auto list = std::vector <std::string> {"1", "2", "3", "4", "5", "6", "7", "8"};
         gui.comboBox (list);
         gui.checkBox (compactLayout, {"Compact layout"});
         if (gui.button ("Save layout")) {
@@ -195,18 +197,11 @@ int main()
 	const auto outSize = constrainedPanel.size;
 	constrainedPanel.size *= 3.f;
         gui.beginPanel (constrainedPanel, constraint);
-        gui.text ("Top in group");
+        gui.text ("Top panel in group");
         gui.endPanel ();
 	constrainedPanel.size = outSize;
         gui.endWindow ();
       }
-      // scrollabel centered panel
-      constraint.vertical = sgui::VerticalAlignment::Center;
-      gui.beginPanel (constrainedPanel, constraint);
-      gui.text ("Scrollable panel,");
-      gui.addSpacing ({0.f, 12.f});
-      gui.text ("with text.");
-      gui.endPanel ();
       // bottom panel
       constraint.vertical = sgui::VerticalAlignment::Bottom;
       gui.beginPanel (constrainedPanel, constraint);

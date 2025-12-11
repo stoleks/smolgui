@@ -487,7 +487,6 @@ private:
   bool dropListItem (
          const std::string& selectedName,
          const std::string& itemName,
-         const sf::Vector2f& initialPos,
          const sf::Vector2f& itemSize);
   // Utility function that return status of widget, it is not clickable by default
   ItemState itemStatus (
@@ -590,9 +589,10 @@ private:
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
-  ObjectPool <uint32_t> mComboBoxActiveItem;
+  ObjectPool <std::string> mComboBoxActiveItem;
   ObjectPool <Panel, std::string> mInputTextPanels;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
+  ObjectPool <std::vector <std::string>> mComboBoxChildren;
   ObjectPool <Impl::ScrollerInformation> mGroupsScrollerData;
 };
 
