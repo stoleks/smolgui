@@ -554,7 +554,6 @@ private:
   bool mPlotIsBounded = false;
   uint32_t mPlotSample = 50u;
   // Tooltip clock
-  float mComboBoxClock = 0.f;
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   // Scroll intensity
@@ -593,6 +592,7 @@ private:
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <ItemState> mComboBoxChildrenState;
   ObjectPool <std::string> mComboBoxActiveItem;
+  ObjectPool <float> mComboBoxClocks;
   ObjectPool <Panel, std::string> mInputTextPanels;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
   ObjectPool <Impl::ScrollerInformation> mGroupsScrollerData;

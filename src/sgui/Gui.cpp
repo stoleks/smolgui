@@ -391,7 +391,9 @@ void Gui::setScreenSize (const sf::Vector2f& size)
 void Gui::updateTimer (const sf::Time& deltaT)
 {
   const auto dt = deltaT.asSeconds ();
-  mComboBoxClock += dt;
+  for (auto& clock : mComboBoxClocks) {
+    clock += dt;
+  }
   mTipAppearClock += dt;
   mTipDisappearClock += dt;
 }
@@ -1260,6 +1262,7 @@ std::string Gui::comboBox (
   const auto initialPos = computeRelativePosition (options.displacement);
   mComboBoxActiveItem.emplace (comboBoxId, list.front ());
   mComboBoxChildrenState.emplace (comboBoxId, ItemState::Neutral);
+  mComboBoxClocks.emplace (comboBoxId, 0.f);
 
   // compute combo box width
   const auto defaultSize = textHeight ();
@@ -1275,8 +1278,9 @@ std::string Gui::comboBox (
   const auto box = sf::FloatRect (initialPos, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   // we need this to reset combo box if no item was hovered in previous loop
+  auto& clock = mComboBoxClocks.get (comboBoxId);
   if (state == ItemState::Active || state == ItemState::Hovered) {
-    mComboBoxClock = std::min (mComboBoxClock, 0.f); // click is stronger than hovering
+    clock = std::min (clock, 0.f); // click is stronger than hovering
     childrenState = ItemState::Hovered;
     mGuiState.comboBoxFocus = name;
   }
@@ -1286,9 +1290,9 @@ std::string Gui::comboBox (
   const auto isOpen = mGuiState.comboBoxFocus == name || (mGuiState.activeItem == name || childrenState == ItemState::Hovered);
 
   // if we click, we want that comboBox stay open
-  if (state == ItemState::Active) mComboBoxClock = -1000.f;
+  if (state == ItemState::Active) clock = -1000.f;
   // close combo box after 500 milliseconds if it is not hovered
-  if (mComboBoxClock > 0.5f) {
+  if (clock > 0.5f) {
     childrenState = ItemState::Neutral;
   }
 
@@ -1311,7 +1315,7 @@ std::string Gui::comboBox (
       // get item status and update selected value
       if (dropListItem (childrenState, text, itemName, {itemWidth - scrollerWidth, itemSize.y})) {
         mGuiState.comboBoxFocus = NullItemID;
-        mComboBoxClock = 1.f;
+        clock = 1.f;
         text = itemName;
       }
     }
