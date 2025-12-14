@@ -391,6 +391,7 @@ void Gui::setScreenSize (const sf::Vector2f& size)
 void Gui::updateTimer (const sf::Time& deltaT)
 {
   const auto dt = deltaT.asSeconds ();
+  mComboBoxClock += dt;
   mTipAppearClock += dt;
   mTipDisappearClock += dt;
 }
@@ -969,7 +970,7 @@ void Gui::inputText (
 
   // draw description before the box
   const auto descriptionSize = widgetDescription (basePosition - 1.5f*mPadding, options.description);
-  auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x + mPadding.x, 0.f);
+  auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x + mPadding.x, -2.f*mPadding.y);
 
   // set-up a panel for the text
   if (!mInputTextPanels.has (name)) {
@@ -1257,12 +1258,8 @@ std::string Gui::comboBox (
   mCounters.comboBox++;
   const auto name = initializeActivable ("ComboBox");
   const auto initialPos = computeRelativePosition (options.displacement);
-  if (!mComboBoxActiveItem.has (comboBoxId)) {
-    mComboBoxActiveItem.emplace (comboBoxId, list.front ());
-  }
-  if (!mComboBoxChildren.has (comboBoxId)) {
-    mComboBoxChildren.emplace (comboBoxId);
-  }
+  mComboBoxActiveItem.emplace (comboBoxId, list.front ());
+  mComboBoxChildrenState.emplace (comboBoxId, ItemState::Neutral);
 
   // compute combo box width
   const auto defaultSize = textHeight ();
@@ -1274,15 +1271,26 @@ std::string Gui::comboBox (
   const auto itemSize = sf::Vector2f (itemWidth, defaultSize);
   
   // compute if combo box is open
+  auto& childrenState = mComboBoxChildrenState.get (comboBoxId);
   const auto box = sf::FloatRect (initialPos, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  // we need this to reset combo box if no item was hovered in previous loop
   if (state == ItemState::Active || state == ItemState::Hovered) {
+    mComboBoxClock = std::min (mComboBoxClock, 0.f); // click is stronger than hovering
+    childrenState = ItemState::Hovered;
     mGuiState.comboBoxFocus = name;
   }
-  if (mInputState.mouseRightDown) {
+  if (mInputState.mouseRightDown || childrenState != ItemState::Hovered) {
     mGuiState.comboBoxFocus = NullItemID;
   }
-  const auto isOpen = mGuiState.activeItem == name || mGuiState.comboBoxFocus == name;
+  const auto isOpen = mGuiState.comboBoxFocus == name || (mGuiState.activeItem == name || childrenState == ItemState::Hovered);
+
+  // if we click, we want that comboBox stay open
+  if (state == ItemState::Active) mComboBoxClock = -1000.f;
+  // close combo box after 500 milliseconds if it is not hovered
+  if (mComboBoxClock > 0.5f) {
+    childrenState = ItemState::Neutral;
+  }
 
   // get selected text of the combo box
   auto& text = mComboBoxActiveItem.get (comboBoxId);
@@ -1301,8 +1309,9 @@ std::string Gui::comboBox (
     const auto scrollerWidth = (list.size () > 6) ? defaultSize : 0.f;
     for (const auto& itemName : list) {
       // get item status and update selected value
-      if (dropListItem (text, itemName, {itemWidth - scrollerWidth, itemSize.y})) {
+      if (dropListItem (childrenState, text, itemName, {itemWidth - scrollerWidth, itemSize.y})) {
         mGuiState.comboBoxFocus = NullItemID;
+        mComboBoxClock = 1.f;
         text = itemName;
       }
     }
@@ -1324,6 +1333,7 @@ std::string Gui::comboBox (
 
 /////////////////////////////////////////////////
 bool Gui::dropListItem (
+  ItemState& childrenState,
   const std::string& selectedName,
   const std::string& itemName,
   const sf::Vector2f& itemSize)
@@ -1334,6 +1344,9 @@ bool Gui::dropListItem (
   const auto box = sf::FloatRect (mCursorPosition, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   const auto status = (state == ItemState::Active) || (mGuiState.activeItem == name);
+  if (childrenState == ItemState::Hovered || state == ItemState::Hovered) {
+    childrenState = ItemState::Hovered;
+  }
 
   // draw item
   if (selectedName == itemName) {

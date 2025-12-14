@@ -485,6 +485,7 @@ private:
   bool tooltipNeedReset ();
   // to manage each item in a dropList
   bool dropListItem (
+         ItemState& isHovered,
          const std::string& selectedName,
          const std::string& itemName,
          const sf::Vector2f& itemSize);
@@ -553,6 +554,7 @@ private:
   bool mPlotIsBounded = false;
   uint32_t mPlotSample = 50u;
   // Tooltip clock
+  float mComboBoxClock = 0.f;
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   // Scroll intensity
@@ -589,10 +591,10 @@ private:
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
+  ObjectPool <ItemState> mComboBoxChildrenState;
   ObjectPool <std::string> mComboBoxActiveItem;
   ObjectPool <Panel, std::string> mInputTextPanels;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;
-  ObjectPool <std::vector <std::string>> mComboBoxChildren;
   ObjectPool <Impl::ScrollerInformation> mGroupsScrollerData;
 };
 
