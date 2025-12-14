@@ -185,6 +185,7 @@ int main()
         gui.inputNumber (inputValue, {"Input number with text!"});
         gui.inputVector2 (vector, {"Input vector2: "});
         gui.inputVector3 (vector3, {"Input vector3: "});
+        gui.sameLine ();
         const auto list = std::vector <std::string> {"1", "2", "3", "4", "5", "6", "7", "8"};
         gui.comboBox (list);
         gui.checkBox (compactLayout, {"Compact layout"});

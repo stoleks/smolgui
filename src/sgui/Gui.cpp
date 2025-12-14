@@ -1259,7 +1259,7 @@ std::string Gui::comboBox (
   const auto comboBoxId = mCounters.comboBox;
   mCounters.comboBox++;
   const auto name = initializeActivable ("ComboBox");
-  const auto initialPos = computeRelativePosition (options.displacement);
+  const auto mainBoxPosition = computeRelativePosition (options.displacement);
   mComboBoxActiveItem.emplace (comboBoxId, list.front ());
   mComboBoxClocks.emplace (comboBoxId, 0.f);
 
@@ -1273,7 +1273,7 @@ std::string Gui::comboBox (
   const auto itemSize = sf::Vector2f (itemWidth, defaultSize);
   
   // compute if combo box is open
-  const auto box = sf::FloatRect (initialPos, itemSize);
+  const auto box = sf::FloatRect (mainBoxPosition, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   // we need this to reset combo box if no item was hovered in previous loop
   auto& clock = mComboBoxClocks.get (comboBoxId);
@@ -1297,7 +1297,7 @@ std::string Gui::comboBox (
 
   // compute each drop list item if combo box is active and not clipped
   auto icon = ICON_FA_SQUARE_CARET_DOWN;
-  const auto initialPosition = mCursorPosition + sf::Vector2f (0.f, itemSize.y);
+  const auto initialPosition = mainBoxPosition + sf::Vector2f (0.f, itemSize.y);
   if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
     const auto itemCount = std::min (std::size_t (6), list.size ());
     auto panel = Panel ({}, normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y}));
@@ -1315,7 +1315,7 @@ std::string Gui::comboBox (
       }
     }
     endWindow ();
-    mCursorPosition = initialPosition - sf::Vector2f (0.f, itemSize.y);
+    mCursorPosition = mainBoxPosition;
     icon = ICON_FA_SQUARE_CARET_UP;
   }
 
@@ -1354,8 +1354,8 @@ bool Gui::dropListItem (
     mRender.draw <Widget::ItemBox> (box, {state});
   }
   handleTextDrawing (box.position + mPadding, itemName);
-  mCursorPosition.y -= 2.f*mPadding.y;
-  updateSpacing (itemSize);
+  mCursorPosition.y += itemSize.y;
+  updateScrolling ();
 
   // return selection status
   return status;
