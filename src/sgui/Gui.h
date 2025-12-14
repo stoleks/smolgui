@@ -485,7 +485,7 @@ private:
   bool tooltipNeedReset ();
   // to manage each item in a dropList
   bool dropListItem (
-         ItemState& isHovered,
+         float& clock,
          const std::string& selectedName,
          const std::string& itemName,
          const sf::Vector2f& itemSize);
@@ -590,7 +590,6 @@ private:
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
-  ObjectPool <ItemState> mComboBoxChildrenState;
   ObjectPool <std::string> mComboBoxActiveItem;
   ObjectPool <float> mComboBoxClocks;
   ObjectPool <Panel, std::string> mInputTextPanels;
