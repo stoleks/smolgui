@@ -14,6 +14,8 @@ set (SRC
   ${INCROOT}/TextContainer.h
   ${SRCROOT}/TextureAtlas.cpp
   ${INCROOT}/TextureAtlas.h
+  ${SRCROOT}/TextureCollage.cpp
+  ${INCROOT}/TextureCollage.h
 )
 source_group ("" FILES ${SRC})
 
