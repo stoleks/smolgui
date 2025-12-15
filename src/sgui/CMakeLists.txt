@@ -23,6 +23,7 @@ source_group ("" FILES ${SRC})
 
 set (UI_SRC
   ${INCROOT}/sgui.h
+  ${INCROOT}/DefaultFiles.h
 )
 source_group ("user interface" FILES ${UI_SRC})
 

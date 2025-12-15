@@ -1,11 +1,13 @@
-#include <sgui/sgui.h>
+#include <sgui/Gui.h>
+#include <sgui/DefaultFiles.h>
+#include <sgui/Resources/IconsFontAwesome7.h>
 
 int main()
 {
   // Resources loading
-  auto font = sf::Font (ContentsDir"/Luciole-Regular.ttf");
-  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
-  auto texture = sf::Texture (ContentsDir"/widgets.png");
+  auto font = sf::Font (sgui::DefaultFont);
+  auto atlas = sgui::TextureAtlas (sgui::DefaultAtlas);
+  auto texture = sf::Texture (sgui::DefaultTexture);
   // Window initialization
   auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
   window.setFramerateLimit (60);

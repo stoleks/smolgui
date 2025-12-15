@@ -70,7 +70,7 @@ constexpr std::string GuiRender::toString () const
   } else if constexpr (Type == Widget::CheckBox) {
     return "CheckBox";
   } else if constexpr (Type == Widget::Icon) {
-    return "Icon";
+    return "";
   } else if constexpr (Type == Widget::SliderBar) {
     return "SliderBar";
   } else if constexpr (Type == Widget::ScrollerBar) {

@@ -3,6 +3,7 @@
 #include <thread>
 
 #include <sgui/Gui.h>
+#include <sgui/DefaultFiles.h>
 #include <sgui/Resources/Layout.h>
 #include <sgui/Resources/IconsFontAwesome7.h>
 
@@ -13,24 +14,24 @@ int main()
    */
   // fonts
   auto fonts = sgui::FontHolder ();
-  fonts.load ("normal", ContentsDir"/Luciole-Regular.ttf");
-  fonts.load ("bold",   ContentsDir"/Luciole-Bold.ttf");
+  fonts.load ("normal", sgui::DefaultFont);
+  fonts.load ("bold",   sgui::DefaultBoldFont);
   // texture and atlas
-  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
-  auto texture = sf::Texture (ContentsDir"/widgets.png");
+  auto atlas = sgui::TextureAtlas (sgui::DefaultAtlas);
+  auto texture = sf::Texture (sgui::DefaultTexture);
   // texts
   auto texts = sgui::TextContainer ();
-  texts.loadFromFile (ContentsDir"/english_demo.json", "english");
-  texts.loadFromFile (ContentsDir"/french_demo.json", "french");
+  texts.loadFromFile (ExamplesDir"/english_demo.json", "english");
+  texts.loadFromFile (ExamplesDir"/french_demo.json", "french");
   texts.setTongue ("english");
   // layout
   auto layout = sgui::Layout ();
-  layout.loadFromFile (ContentsDir"/layout.json");
+  layout.loadFromFile (ExamplesDir"/layout.json");
   
   /**
    * Window initialization
    */
-  auto window = sf::RenderWindow (sf::VideoMode ({1900u, 1000u}), "Serialization Demo");
+  auto window = sf::RenderWindow (sf::VideoMode ({1900u, 1000u}), "Smolgui Demo");
   window.setFramerateLimit (60);
 
   /**
@@ -38,16 +39,6 @@ int main()
    */
   auto gui = sgui::Gui ();
   gui.initialize (fonts.get ("normal"), texture, atlas, window);
-
-  /**
-   * check that texture size is valid
-   */
-  const auto tex = std::string ("Icon::reduce");
-  const auto texSize = gui.textureSize (tex);
-  spdlog::info ("Size of {} is ({}, {}), it should be (128, 128)", tex, texSize.x, texSize.y);
-  const auto tex2 = std::string ("Separation::Act::Cent");
-  const auto texSize2 = gui.textureSize (tex2);
-  spdlog::info ("Size of {} is ({}, {}), it should be (64, 128)", tex2, texSize2.x, texSize2.y);
 
   /**
    * Load gui layout and set data
