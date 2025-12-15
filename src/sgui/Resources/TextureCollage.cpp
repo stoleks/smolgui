@@ -71,7 +71,7 @@ TextureCollage::TextureCollage (
   for (const auto& info : imagesData) {
     const auto size = sf::Vector2i (info.image.getSize ());
     // go to next line if needed
-    if (position.x + size.x >= width) {
+    if (position.x + size.x > width) {
       // add smaller box next to the last one if it fit
       position.x = 0;
       position.y += rowHeight;

@@ -1,12 +1,22 @@
 #include <iostream>
 
 #include <sgui/sgui.h>
+#include <sgui/Serialization/LoadJson.h>
+#include <sgui/Serialization/LoadTextureAtlas.h>
+#include <sgui/Resources/TextureCollage.h>
 
 int main ()
 {
+  // build collage of all widgets
+  auto collage = sgui::TextureCollage (ContentsDir"/widgets/");
+  if (!collage.image ().saveToFile (ContentsDir"/widgets_collage.png")) {
+    spdlog::warn ("Unable to save {}", ContentsDir"/widgets_collage.png");
+  }
+  sgui::saveInFile (collage.atlas (), ContentsDir"/atlas_collage.json");
+
   // load texture atlas and texture
-  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
-  auto texture = sf::Texture (ContentsDir"/widgets.png");
+  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas_collage.json");
+  auto texture = sf::Texture (ContentsDir"/widgets_collage.png");
   
   // build a vertex array that display all textures
   sf::VertexArray sprites;
