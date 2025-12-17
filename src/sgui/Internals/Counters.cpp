@@ -1,9 +1,7 @@
-#include "Counters.h"
+#include "sgui/Internals/Counters.h"
 #include <spdlog/spdlog.h>
 
-namespace sgui
-{
-namespace Impl
+namespace sgui::Impl
 {
 
 /////////////////////////////////////////////////
@@ -57,5 +55,4 @@ void GroupChecker::end (const GroupType group)
   }
 }
 
-} // namespace Impl
-} // namespace sgui
+} // namespace sgui::Impl

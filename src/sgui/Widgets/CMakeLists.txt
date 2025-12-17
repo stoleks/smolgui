@@ -5,7 +5,6 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Widgets)
 
 # all source files
 set (SRC
-  ${SRCROOT}/Panel.cpp
   ${INCROOT}/Panel.h
   ${INCROOT}/Options.h
   ${INCROOT}/Constraints.h

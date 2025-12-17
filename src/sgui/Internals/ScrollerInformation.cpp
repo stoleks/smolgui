@@ -1,11 +1,7 @@
-#include "ScrollerInformation.h"
+#include "sgui/Internals/ScrollerInformation.h"
 #include <algorithm>
 
-#include <spdlog/spdlog.h>
-
-namespace sgui
-{
-namespace Impl
+namespace sgui::Impl
 {
 
 /////////////////////////////////////////////////
@@ -34,5 +30,4 @@ void ScrollerInformation::endLoop ()
   mPositionMax = mCurrentPositionMax;
 }
 
-} // namespace Impl
-} // namespace sgui
+} // namespace sgui::Impl

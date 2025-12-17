@@ -4,7 +4,7 @@
 #include <functional>
 #include <SFML/System/Vector2.hpp>
 
-#include "Options.h"
+#include "sgui/Widgets/Options.h"
 
 namespace sgui
 {
@@ -17,29 +17,24 @@ struct Panel
 {
   Panel () = default;
   Panel (
-         const sf::Vector2f& position,
-         const sf::Vector2f& size,
-         const bool movable = true,
-         const bool visible = true,
-         const bool closable = false,
-         const bool hasHeader = true,
-         const bool hasMenu = false,
-         const bool clipped = true,
-         const bool closed = false,
-         const bool reduced = false);
+         const sf::Vector2f& s,
+         const sf::Vector2f& pos = {},
+         const bool vis = true,
+         const bool header = true)
+    : visible (vis), hasHeader (header), position (pos), size (s) {}
   // data
   bool clipped    = true;
   bool closable   = false;
   bool closed     = false;
+  bool visible    = true;
   bool hasHeader  = true;
   bool hasMenu    = false;
   bool movable    = true;
   bool reduced    = false;
-  bool visible    = true;
   bool scrollable = true;
   bool isScrolled = false;
-  sf::Vector2f size = {};
   sf::Vector2f position = {};
+  sf::Vector2f size = {};
   std::string title = "";
 };
 

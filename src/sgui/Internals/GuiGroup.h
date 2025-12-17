@@ -3,9 +3,7 @@
 #include <cstdint>
 #include <SFML/System/Vector2.hpp>
 
-namespace sgui 
-{
-namespace Impl
+namespace sgui::Impl
 {
 
 /**
@@ -27,5 +25,4 @@ struct GroupData
   sf::Vector2f size = {};
 };
 
-} // namespace sgui
-} // namespace Impl
+} // namespace sgui::Impl

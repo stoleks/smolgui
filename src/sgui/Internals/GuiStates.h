@@ -6,21 +6,21 @@
 namespace sgui 
 {
 
-// forward declarations
-using ItemID = std::string;
 struct Tooltip;
+const auto NullID = std::string ("Null");
 
 namespace Impl
 {
+
 /**
  * @brief store ID of active/hovered item, hovered item box and tooltip
  */
 struct InternalItemState
 {
-  ItemID activeItem = NullItemID;
-  ItemID hoveredItem = NullItemID;
-  ItemID keyboardFocus = NullItemID;
-  ItemID comboBoxFocus = NullItemID;
+  std::string activeItem = NullID;
+  std::string hoveredItem = NullID;
+  std::string keyboardFocus = NullID;
+  std::string comboBoxFocus = NullID;
   sf::FloatRect hoveredItemBox;
   Tooltip tooltip;
 };
@@ -49,5 +49,5 @@ struct InputState
   char32_t keyPressed;
 };
 
-} // namespace sgui
 } // namespace Impl
+} // namespace sgui

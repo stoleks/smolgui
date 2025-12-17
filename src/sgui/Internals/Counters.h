@@ -4,8 +4,9 @@
 #include <cstdint>
 #include <unordered_map>
 
-namespace sgui
+namespace sgui::Impl
 {
+
 /**
  * For widgets that need a pair of begin and end function call
  */
@@ -15,8 +16,6 @@ enum class GroupType {
   Menu
 };
 
-namespace Impl
-{
 /**
  * @brief class to store simple counters
  */
@@ -63,5 +62,4 @@ private:
   std::unordered_map <GroupType, uint32_t> mCounters;
 };
 
-} // namespace Impl
-} // namespace sgui
+} // namespace sgui::Impl

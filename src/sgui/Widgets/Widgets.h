@@ -32,15 +32,4 @@ enum class Widget
   Separation
 };
 
-
-/**
- * @brief List gui elements states
- */
-enum class ItemState
-{
-  Active,
-  Hovered,
-  Neutral
-};
-
 } // namespace sgui

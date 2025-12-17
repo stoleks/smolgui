@@ -1,4 +1,4 @@
-#include "Gui.h"
+#include "sgui/Gui.h"
 
 #include <string>
 #include <sstream>
@@ -226,9 +226,9 @@ sf::Vector2f Gui::cursorPosition () const
 /////////////////////////////////////////////////
 bool Gui::isActive () const
 {
-  return mGuiState.hoveredItem != NullItemID
-    || mGuiState.activeItem != NullItemID
-    || mGuiState.keyboardFocus != NullItemID;
+  return mGuiState.hoveredItem != NullID
+    || mGuiState.activeItem != NullID
+    || mGuiState.keyboardFocus != NullID;
 }
 
 /////////////////////////////////////////////////
@@ -261,7 +261,7 @@ void Gui::beginFrame ()
   // reset cursor position
   mCursorPosition = sf::Vector2f ();
   // clear hovered item
-  mGuiState.hoveredItem = NullItemID;
+  mGuiState.hoveredItem = NullID;
 }
 
 /////////////////////////////////////////////////
@@ -272,12 +272,12 @@ void Gui::endFrame (const float tooltipDelay)
 
   // if left button is not pressed there is no active item
   if (!mInputState.mouseLeftDown) {
-    mGuiState.activeItem = NullItemID;
+    mGuiState.activeItem = NullID;
   }
   // if right button is released we lost all focus
   if (mInputState.mouseRightReleased) {
-    mGuiState.activeItem = NullItemID;
-    mGuiState.keyboardFocus = NullItemID;
+    mGuiState.activeItem = NullID;
+    mGuiState.keyboardFocus = NullID;
   }
 
   // reset widget count and scroll data
@@ -428,7 +428,7 @@ bool Gui::beginWindow (
 {
   // if window is closed skip everything
   if (settings.closed) return false;
-  mChecker.begin (GroupType::Window);
+  mChecker.begin (Impl::GroupType::Window);
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
@@ -447,7 +447,7 @@ bool Gui::beginWindow (
     const auto titleBoxWithoutButtons = sf::FloatRect (mCursorPosition, titleBoxSize - reduceCloseButtonWidth);
     const auto drawBox = sf::FloatRect (mCursorPosition, titleBoxSize);
     mRender.setCurrentClippingLayer (drawBox);
-    const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.info);
+    const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.tooltip);
 
     // draw title box and window name
     mRender.draw <Widget::TitleBox> (drawBox, {state});
@@ -551,7 +551,7 @@ void Gui::endWindow ()
     mCursorPosition = active.position;
     // remove clipping and track window not closed
     removeClipping ();
-    mChecker.end (GroupType::Window);
+    mChecker.end (Impl::GroupType::Window);
   } else {
     spdlog::warn ("There is no window to end");
   }
@@ -563,7 +563,7 @@ void Gui::beginPanel (
   const Constraints& constraints,
   const WidgetOptions& options)
 {
-  mChecker.begin (GroupType::Panel);
+  mChecker.begin (Impl::GroupType::Panel);
   const auto name = initializeActivable ("Panel");
 
   // compute position and create a new group
@@ -581,7 +581,7 @@ void Gui::beginPanel (
   }
 
   // draw panel box if requested
-  const auto state = interactWithMouse (settings, panelBox, name, options.info);
+  const auto state = interactWithMouse (settings, panelBox, name, options.tooltip);
   if (settings.visible) {
     mRender.draw <Widget::Box> (panelBox, {state});
   }
@@ -616,7 +616,7 @@ void Gui::endPanel ()
     updateSpacing (active.size);
     // remove clipping layer and track panel not closed by user
     removeClipping ();
-    mChecker.end (GroupType::Panel);
+    mChecker.end (Impl::GroupType::Panel);
   } else {
     spdlog::warn ("There is no panel to end");
   }
@@ -637,7 +637,7 @@ void Gui::beginMenu ()
   }
 
   // assign unique id to the widget
-  mChecker.begin (GroupType::Menu);
+  mChecker.begin (Impl::GroupType::Menu);
   const auto name = initializeActivable ("MenuBar");
 
   // construct a menu bar according to the parent size
@@ -678,7 +678,7 @@ void Gui::endMenu ()
 
     // end group and track menu not closed
     endGroup ();
-    mChecker.end (GroupType::Menu);
+    mChecker.end (Impl::GroupType::Menu);
   } else {
     spdlog::warn ("There are no menu to end");
   }
@@ -709,13 +709,13 @@ bool Gui::menuItem (
 
   // compute item status
   auto state = itemStatus (box, name, mInputState.mouseLeftReleased || mInputState.mouseLeftDown);
-  const auto clicked = (state == ItemState::Active);
+  const auto clicked = (state == Impl::ItemState::Active);
 
   // update overall group status
   if (mGroupsActiveItem.has (parentMenu.groupId)) {
     auto& id = mGroupsActiveItem.get (parentMenu.groupId);
     if (id == itemId) {
-      state = ItemState::Active;
+      state = Impl::ItemState::Active;
     }
     if (clicked) {
       id = itemId;
@@ -729,7 +729,7 @@ bool Gui::menuItem (
   mRender.clipping.moveToLayer (layerId);
 
   // update cursor position and return item status
-  return state == ItemState::Active && !clicked;
+  return state == Impl::ItemState::Active && !clicked;
 }
 
 /////////////////////////////////////////////////
@@ -878,14 +878,14 @@ bool Gui::checkBox (
   // get status of the widget,
   const auto size = textHeight () * sf::Vector2f (2.f, 1.f);
   const auto box = sf::FloatRect (position, size);
-  auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
+  auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
   // check or uncheck if asked
-  if (state == ItemState::Active) {
+  if (state == Impl::ItemState::Active) {
     checked = !checked;
   }
   // if checked, draw checkBox as active
   if (checked) {
-    state = ItemState::Active;
+    state = Impl::ItemState::Active;
   }
   mRender.draw <Widget::CheckBox> (box, {state});
 
@@ -1064,7 +1064,7 @@ void Gui::inputKey (
   // if this widget has keyboard focus update key
   const auto focused = mGuiState.keyboardFocus == name;
   if (focused) {
-    state = ItemState::Active;
+    state = Impl::ItemState::Active;
     key = mInputState.keyPressed;
   }
 
@@ -1099,7 +1099,7 @@ void Gui::progressBar (
   mRender.draw <Widget::ProgressFilling> (box, { sgui::clamp (0.f, 1.f, progress) });
 
   // handle icon hovering
-  itemStatus (sf::FloatRect (position, size), name, false, options.info);
+  itemStatus (sf::FloatRect (position, size), name, false, options.tooltip);
 
   // update cursor position
   updateSpacing (size);
@@ -1277,10 +1277,10 @@ std::string Gui::comboBox (
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   // we need this to reset combo box if no item was hovered in previous loop
   auto& clock = mComboBoxClocks.get (comboBoxId);
-  if (state == ItemState::Active || state == ItemState::Hovered) {
+  if (state == Impl::ItemState::Active || state == Impl::ItemState::Hovered) {
     clock = std::min (clock, 0.f); // click is stronger than hovering
     // if we click, we want that comboBox stay open "indefinitely"
-    if (state == ItemState::Active) {
+    if (state == Impl::ItemState::Active) {
       clock = -100000.f;
     }
     mGuiState.comboBoxFocus = name;
@@ -1289,7 +1289,7 @@ std::string Gui::comboBox (
 
   // close combo box after 500 milliseconds if it is not hovered
   if (clock > 0.5f && (mGuiState.comboBoxFocus == name)) {
-    mGuiState.comboBoxFocus = NullItemID;
+    mGuiState.comboBoxFocus = NullID;
   }
 
   // get selected text of the combo box
@@ -1300,7 +1300,7 @@ std::string Gui::comboBox (
   const auto initialPosition = mainBoxPosition + sf::Vector2f (0.f, itemSize.y);
   if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
     const auto itemCount = std::min (std::size_t (6), list.size ());
-    auto panel = Panel ({}, normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y}));
+    auto panel = Panel (normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y}));
     panel.hasHeader = false;
     // open the window that will contains the combo box item
     mCursorPosition = initialPosition;
@@ -1342,14 +1342,14 @@ bool Gui::dropListItem (
   // get item status
   const auto box = sf::FloatRect (mCursorPosition, itemSize);
   const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-  const auto status = (state == ItemState::Active) || (mGuiState.activeItem == name);
-  if (state == ItemState::Hovered) {
+  const auto status = (state == Impl::ItemState::Active) || (mGuiState.activeItem == name);
+  if (state == Impl::ItemState::Hovered) {
     clock = std::min (clock, 0.f);
   }
 
   // draw item
   if (selectedName == itemName) {
-    mRender.draw <Widget::ItemBox> (box, {ItemState::Active});
+    mRender.draw <Widget::ItemBox> (box, {Impl::ItemState::Active});
   } else {
     mRender.draw <Widget::ItemBox> (box, {state});
   }
@@ -1371,7 +1371,7 @@ bool Gui::dropListItem (
 bool Gui::scrollThroughPanel (
   Impl::GroupData& panel,
   const sf::FloatRect& panelBox,
-  const ItemState panelState,
+  const Impl::ItemState panelState,
   const bool horizontal)
 {
   if (isPanelScrollable (panel)) {
@@ -1419,7 +1419,7 @@ sf::Vector2f Gui::scroller (
   float& percent,
   const sf::FloatRect& panelBox,
   const sf::Vector2f& scrollSize,
-  const ItemState panelState,
+  const Impl::ItemState panelState,
   const bool horizontal)
 {
   const auto name = initializeActivable ("Scroller");
@@ -1446,13 +1446,13 @@ sf::Vector2f Gui::scroller (
 
   // if active, compute current scrolling
   if (mGuiState.activeItem == name) {
-    state = ItemState::Active;
+    state = Impl::ItemState::Active;
     percent = sliderValue (box, 0.f, 1.f, horizontal);
   }
 
   // if parent is active and scroller is inactive (we can't drag and scroll), scroll with wheel
-  const auto parentIsActive = panelState == ItemState::Hovered || panelState == ItemState::Active;
-  const auto scrollerIsInactive = state != ItemState::Active;
+  const auto parentIsActive = panelState == Impl::ItemState::Hovered || panelState == Impl::ItemState::Active;
+  const auto scrollerIsInactive = state != Impl::ItemState::Active;
   if (parentIsActive && scrollerIsInactive && mInputState.mouseScrolled) {
     // note that 0% is the top scrollbar, so if delta > 0 we need to subtract pixels
     auto length = box.size.y;
@@ -1478,7 +1478,7 @@ sf::Vector2f Gui::scroller (
 /////////////////////////////////////////////////
 float Gui::sliderBar (
   const sf::FloatRect& parentBox,
-  const ItemState state,
+  const Impl::ItemState state,
   const float percent,
   const bool horizontal)
 {
@@ -1503,7 +1503,7 @@ float Gui::sliderBar (
 /////////////////////////////////////////////////
 float Gui::scrollerBar (
   const sf::FloatRect& parentBox,
-  const ItemState state,
+  const Impl::ItemState state,
   const float percent,
   const float extraSize,
   const bool horizontal)
@@ -1694,15 +1694,15 @@ void Gui::removeClipping ()
 }
 
 /////////////////////////////////////////////////
-ItemState Gui::interactWithMouse (
+Impl::ItemState Gui::interactWithMouse (
   Panel& settings,
   const sf::FloatRect& box,
-  const ItemID& name,
-  const Tooltip& info)
+  const std::string& name,
+  const Tooltip& tooltip)
 {
   // move panel according to mouse displacement
   const auto leftClick = mInputState.mouseLeftDown;
-  const auto state = itemStatus (box, name, leftClick, info);
+  const auto state = itemStatus (box, name, leftClick, tooltip);
   const auto isActive = mGuiState.activeItem == name;
   if (isActive && settings.movable) {
     settings.position.x += mInputState.mouseDisplacement.x;
@@ -1718,35 +1718,35 @@ ItemState Gui::interactWithMouse (
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-ItemState Gui::itemStatus (
+Impl::ItemState Gui::itemStatus (
   const sf::FloatRect& boundingBox,
-  const ItemID& item,
+  const std::string& item,
   bool condition,
-  const Tooltip& info,
+  const Tooltip& tooltip,
   bool forceActive)
 {
-  auto state = ItemState::Neutral;
+  auto state = Impl::ItemState::Neutral;
 
   // if mouse collide with the boundingBox
   if (boundingBox.contains (mInputState.mousePosition)
   && !mRender.clipping.isClipped (mInputState.mousePosition)) {
     // enter hovered state
-    state = ItemState::Hovered;
+    state = Impl::ItemState::Hovered;
     mGuiState.hoveredItem = item;
 
     // if no widget is active, enter active state
-    if ((mGuiState.activeItem == NullItemID || forceActive) && condition) {
+    if ((mGuiState.activeItem == NullID || forceActive) && condition) {
       // we want to store item ID to move it, but we don't want infinite click
       mGuiState.activeItem = item;
       if (mInputState.updated) {
-        state = ItemState::Active;
+        state = Impl::ItemState::Active;
       }
     }
 
     // update tooltip info
-    if (info.active) {
+    if (tooltip.active) {
       mGuiState.hoveredItemBox = boundingBox;
-      mGuiState.tooltip = info;
+      mGuiState.tooltip = tooltip;
       mGuiState.tooltip.parent = item;
     }
   }
@@ -1755,14 +1755,14 @@ ItemState Gui::itemStatus (
 }
 
 /////////////////////////////////////////////////
-void Gui::playSound (const ItemState state)
+void Gui::playSound (const Impl::ItemState state)
 {
   const auto isPanel = mActiveWidgetSoundId == "Panel";
   const auto isWindow = mActiveWidgetSoundId == "Window";
   const auto isMenu = mActiveWidgetSoundId == "MenuBar";
   const auto noRepetition = mActiveWidgetSoundId != mPreviousWidgetSoundId;
   const auto isValid = mSoundIsOn && !isWindow && !isPanel && !isMenu && noRepetition;
-  if (mInputState.updated && state == ItemState::Active && isValid) {
+  if (mInputState.updated && state == Impl::ItemState::Active && isValid) {
     mSoundPlayer.play (mActiveWidgetSoundId);
   }
 }

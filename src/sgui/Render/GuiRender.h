@@ -8,11 +8,12 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "TextureMeshes.h"
-#include "MeshFunctions.h"
-#include "ClippingLayers.h"
+#include "sgui/Render/TextureMeshes.h"
+#include "sgui/Render/MeshFunctions.h"
+#include "sgui/Render/ClippingLayers.h"
 #include "sgui/Core/Shapes.h"
 #include "sgui/Widgets/Widgets.h"
+#include "sgui/Internals/ItemStates.h"
 #include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui
@@ -24,13 +25,13 @@ struct WidgetDrawOptions {
   // Helper ctors
   WidgetDrawOptions () = default;
   WidgetDrawOptions (const float p) : progress (p) {}
-  WidgetDrawOptions (const ItemState& s) : state (s) {}
-  WidgetDrawOptions (const ItemState& s, bool h) : horizontal (h), state (s) {}
+  WidgetDrawOptions (const Impl::ItemState& s) : state (s) {}
+  WidgetDrawOptions (const Impl::ItemState& s, bool h) : horizontal (h), state (s) {}
   WidgetDrawOptions (const std::string& n) : name (n) {}
   // data
   bool horizontal = true;
   float progress = 1.f;
-  ItemState state = ItemState::Neutral;
+  Impl::ItemState state = Impl::ItemState::Neutral;
   std::string name = "";
 };
 
@@ -165,7 +166,7 @@ private:
    */
   template <Widget Type>
   constexpr std::string toString () const;
-  std::string toString (const ItemState state) const;
+  std::string toString (const Impl::ItemState state) const;
 private:
   // define on which render we work
   bool mTooltipMode;

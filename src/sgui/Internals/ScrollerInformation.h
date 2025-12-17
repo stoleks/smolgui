@@ -2,9 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
-namespace sgui
-{
-namespace Impl
+namespace sgui::Impl
 {
 /**
  * @brief class to store group scroller position and to compute its size
@@ -40,5 +38,4 @@ private:
   sf::Vector2f mGroupPosition = {};
 };
 
-} // namespace Impl
-} // namespace sgui
+} // namespace sgui::Impl

@@ -5,10 +5,11 @@
 
 #include "sgui/Widgets/Style.h"
 #include "sgui/Widgets/Panel.h"
-#include "sgui/Internals/ScrollerInformation.h"
+#include "sgui/Internals/Counters.h"
 #include "sgui/Internals/GuiGroup.h"
 #include "sgui/Internals/GuiStates.h"
-#include "sgui/Internals/Counters.h"
+#include "sgui/Internals/ItemStates.h"
+#include "sgui/Internals/ScrollerInformation.h"
 
 #include "sgui/Core/ObjectPool.h"
 #include "sgui/Core/Interpolation.h"
@@ -437,10 +438,10 @@ private:
   // this need to be called after endGroup to clean clipping layer.
   void removeClipping ();
   // move a group with the mouse if its possible
-  ItemState interactWithMouse (
+  Impl::ItemState interactWithMouse (
          Panel& settings,
          const sf::FloatRect& box,
-         const ItemID& name,
+         const std::string& name,
          const Tooltip& info);
   // cache plot data
   void cachePlotData (const std::function<float (float)>& slope);
@@ -452,24 +453,24 @@ private:
   bool scrollThroughPanel (
          Impl::GroupData& panel,
          const sf::FloatRect& panelBox,
-         const ItemState panelState,
+         const Impl::ItemState panelState,
          const bool horizontal);
   sf::Vector2f scroller (
          float& scrollPercent,
          const sf::FloatRect& panelBox,
          const sf::Vector2f& scrollSize,
-         const ItemState panelState,
+         const Impl::ItemState panelState,
          const bool horizontal);
   // to handle scroll bar in a slider
   float sliderBar (
          const sf::FloatRect& parentBox,
-         const ItemState state,
+         const Impl::ItemState state,
          const float scrollPercent,
          const bool horizontal);
   // to handle scroll bar in a scroller
   float scrollerBar (
          const sf::FloatRect& parentBox,
-         const ItemState state,
+         const Impl::ItemState state,
          const float scrollPercent,
          const float extraSize,
          const bool horizontal);
@@ -490,9 +491,9 @@ private:
          const std::string& itemName,
          const sf::Vector2f& itemSize);
   // Utility function that return status of widget, it is not clickable by default
-  ItemState itemStatus (
+  Impl::ItemState itemStatus (
          const sf::FloatRect& boundingbox,
-         const ItemID& item,
+         const std::string& item,
          const bool condition = false,
          const Tooltip& tooltip = {},
          const bool forceActive = false);
@@ -547,7 +548,7 @@ private:
          const std::optional <sf::Event>& event);
   void handleKeyboardInputs (const std::optional <sf::Event>& event);
   // to play sounds
-  void playSound (const ItemState state);
+  void playSound (const Impl::ItemState state);
 private:
   bool mSoundIsOn = false;
   // plot parameters

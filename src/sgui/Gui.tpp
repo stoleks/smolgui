@@ -15,12 +15,12 @@ bool Gui::clickable (
 
   // draw widget in its state and update cursor position
   const auto box = sf::FloatRect (position, size);
-  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.info);
+  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
   mRender.draw <ButtonType> (box, {state});
   updateSpacing (size);
 
   // it has been clicked if state is active
-  return state == ItemState::Active;
+  return state == Impl::ItemState::Active;
 }
 
 /**
@@ -48,12 +48,12 @@ void Gui::slider (
   }
   const auto size = textHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
-  auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.info);
+  auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.tooltip);
   mRender.draw <Widget::Slider> (box, {state, isHorizontal});
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
-    state = ItemState::Active;
+    state = Impl::ItemState::Active;
     value = sliderValue (box, min, max, isHorizontal);
   }
 
@@ -126,7 +126,7 @@ void Gui::inputNumber (
 
   // draw text box
   if (focused) {
-    state = ItemState::Active;
+    state = Impl::ItemState::Active;
   }
   mRender.draw <Widget::TextBox> (box, {state});
 
@@ -207,7 +207,7 @@ void Gui::handleNumberKeyInput (
     }
     // if enter is pressed we lost focus
     if (key == L'\n') {
-      mGuiState.keyboardFocus = NullItemID;
+      mGuiState.keyboardFocus = NullID;
     }
   }
 }

@@ -1,30 +1,10 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
-#include "Constraints.h"
+#include "sgui/Widgets/Constraints.h"
 
 namespace sgui
 {
-
-/////////////////////////////////////////////////
-/**
- * @brief Defines number of slices for stretchable widgets
- */
-enum class Slices {
-  One,
-  Three,
-  Nine
-};
-
-/**
- * @brief Defines type of tiling for center part of widgets
- */
-enum class TileMode {
-  Stretch, // extend central part
-  Hide,    // don't draw central part
-  Repeat,  // repeat central part
-  Rotate   // repeat and rotate central part
-};
 
 /////////////////////////////////////////////////
 /**
@@ -39,26 +19,19 @@ enum class TextType {
 
 /////////////////////////////////////////////////
 /**
- * @brief define identifier for widgets
- */
-using ItemID = std::string;
-const auto NullItemID = ItemID ("Null");
-
-/////////////////////////////////////////////////
-/**
  * @brief store tooltip in a function with its parent widget ID
  */
 struct Tooltip
 {
   Tooltip () = default;
-  Tooltip (
-         const std::function <void (void)>& def,
-         const bool locked = false,
-         const bool active = true);
+  Tooltip (const std::function <void (void)>& def,
+    const bool lock = false,
+    const bool activ = true)
+    : locked (lock), active (activ), display (def) {}
   // data
-  ItemID parent;
   bool locked = false;
   bool active = false;
+  std::string parent = "";
   std::function <void (void)> display;
 };
 
@@ -72,16 +45,16 @@ struct WidgetOptions
   /**
    * @brief Full constructor, but with options if only description is required
    */
-  WidgetOptions (
-        const std::string& description,
-        const Tooltip& info = {},
-        const sf::Vector2f& displacement = {},
-        const float length = 4.5f,
-        const bool horizontal = false);
+  WidgetOptions (const std::string& des,
+    const Tooltip& inf = {},
+    const sf::Vector2f& disp = {},
+    const float len = 4.5f,
+    const bool hor = false)
+    : horizontal (hor), length (len), displacement (disp), description (des), tooltip (inf) {}
   /**
    * @brief When only a tooltip is needed
    */
-  WidgetOptions (const Tooltip& inf) : info (inf) {}
+  WidgetOptions (const Tooltip& inf) : tooltip (inf) {}
   /**
    * @brief When only the relative displacement is needed
    */
@@ -91,7 +64,7 @@ struct WidgetOptions
   float length = 4.5f;
   sf::Vector2f displacement = {};
   std::string description = "";
-  Tooltip info = {};
+  Tooltip tooltip = {};
 };
 
 /**

@@ -1,4 +1,4 @@
-#include "GuiRender.h"
+#include "sgui/Render/GuiRender.h"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -336,13 +336,13 @@ void GuiRender::drawLayer (
 }
 
 /////////////////////////////////////////////////
-std::string GuiRender::toString (const ItemState state) const
+std::string GuiRender::toString (const Impl::ItemState state) const
 {
-  if (state == ItemState::Active) {
+  if (state == Impl::ItemState::Active) {
     return "Act";
-  } else if (state == ItemState::Hovered) {
+  } else if (state == Impl::ItemState::Hovered) {
     return "Hov";
-  } else if (state == ItemState::Neutral) {
+  } else if (state == Impl::ItemState::Neutral) {
     return "Neu";
   }
   return "";
