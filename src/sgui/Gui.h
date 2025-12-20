@@ -250,6 +250,7 @@ public:
   void image (
          const std::string& textureId,
          const sf::Vector2f& size = {},
+         const Slices slices = Slices::One,
          const WidgetOptions& options = {});
   /**
    * @brief display a clickable button that return true if pressed

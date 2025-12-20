@@ -112,10 +112,10 @@ void GuiRender::draw (
     appendMesh (std::move (newWidget), box);
   }
   if (options.slices == Slices::Three) {
-    addThreePatch (box, widgetCode + stateCode, options.horizontal, options.progress);
+    addThreeSlices (box, widgetCode + stateCode, options.horizontal, options.progress);
   }
   if (options.slices == Slices::Nine) {
-    addNinePatch (box, widgetCode + stateCode);
+    addNineSlices (box, widgetCode + stateCode);
   }
 }
 
@@ -141,124 +141,111 @@ void GuiRender::draw (
 /////////////////////////////////////////////////
 std::string GuiRender::toString (const Widget widget) const
 {
-  if (widget == Widget::Panel) {
-    return "Box::"/*"panel"*/;
-  } else if (widget == Widget::Window) {
-    return "Window::"/*"window"*/;
-  } else if (widget == Widget::TextBox) {
-    return "TextBox::"/*"text_box"*/;
-  } else if (widget == Widget::ItemBox) {
-    return "ItemBox::"/*"item_box"*/;
-  } else if (widget == Widget::MenuBox) {
-    return "MenuBox::"/*"menu_box"*/;
-  } else if (widget == Widget::MenuItemBox) {
-    return "MenuItemBox::"/*"menu_item_box"*/;
-  } else if (widget == Widget::TitleBox) {
-    return "TitleBox::"/*"title_box"*/;
-  } else if (widget == Widget::Button) {
-    return "TextButton::"/*"button"*/;
-  } else if (widget == Widget::CheckBox) {
-    return "CheckBox::"/*"check_box"*/;
-  } else if (widget == Widget::SliderBar) {
-    return "SliderBar::"/*"slider_bar"*/;
-  } else if (widget == Widget::ScrollerBar) {
-    return "ScrollerBar::"/*"scroller_bar"*/;
-  } else if (widget == Widget::Slider) {
-    return "Slider::"/*"slider"*/;
-  } else if (widget == Widget::Scroller) {
-    return "Scroller::"/*"scroller"*/;
-  } else if (widget == Widget::ProgressBar) {
-    return "ProgressBar::"/*"progress_bar"*/;
-  } else if (widget == Widget::ProgressFilling) {
-    return "ProgressFilling::"/*"progress_filling"*/;
-  } else if (widget == Widget::Separation) {
-    return "Separation";
-  }
+  if      (widget == Widget::Panel)        { return "panel"; }
+  else if (widget == Widget::Window)       { return "window"; }
+  else if (widget == Widget::TextBox)      { return "text_box"; }
+  else if (widget == Widget::ItemBox)      { return "item_box"; }
+  else if (widget == Widget::MenuBox)      { return "menu_box"; }
+  else if (widget == Widget::MenuItemBox)  { return "menu_item_box"; }
+  else if (widget == Widget::TitleBox)     { return "title_box"; }
+  else if (widget == Widget::Button)       { return "button"; }
+  else if (widget == Widget::IconButton)   { return "icon_button"; }
+  else if (widget == Widget::TitleButton)  { return "title_button"; }
+  else if (widget == Widget::CheckBox)     { return "check_box"; }
+  else if (widget == Widget::SliderBar)    { return "slider_bar"; }
+  else if (widget == Widget::ScrollerBar)  { return "scroller_bar"; }
+  else if (widget == Widget::Slider)       { return "slider"; }
+  else if (widget == Widget::Scroller)     { return "scroller"; }
+  else if (widget == Widget::ProgressBar)  { return "progress_bar"; }
+  else if (widget == Widget::ProgressFill) { return "filling"; }
+  else if (widget == Widget::Separation)   { return "separation"; }
   return "";
 }
 
 /////////////////////////////////////////////////
 std::string GuiRender::toString (const Impl::ItemState state) const
 {
-  if (state == Impl::ItemState::Active) {
-    return "Act"/*"-a"*/;
-  } else if (state == Impl::ItemState::Hovered) {
-    return "Hov"/*"-h"*/;
-  } else if (state == Impl::ItemState::Neutral) {
-    return "Neu"/*"-n"*/;
-  }
+  if      (state == Impl::ItemState::Active)  { return "_a"; }
+  else if (state == Impl::ItemState::Hovered) { return "_h"; }
+  else if (state == Impl::ItemState::Neutral) { return "_n"; }
   return "";
 }
 
 /////////////////////////////////////////////////
 // Implementation of draw interfaces
 /////////////////////////////////////////////////
-void GuiRender::addThreePatch (
+void GuiRender::addThreeSlices (
   const sf::FloatRect& box,
-  const std::string& boxTypeAndState,
+  const std::string& widgetTypeState,
   const bool horizontal,
   const float percentToDraw)
 {
-  // compute box part sizes
-  const auto smallestSide = std::min (box.size.x, box.size.y);
-  const auto cornerSize = smallestSide * sf::Vector2f (1, 1);
-  auto percentCorner = 0.f;
-  auto centerSize = box.size;
-  auto shift = sf::Vector2f ();
+  // get texture x/y ratio
+  auto leftTexture = mTexturesUV.texture (widgetTypeState + "l");
+  const auto textureSize = leftTexture[4].texCoords - leftTexture[0].texCoords;
+
+  // compute end part size
+  auto endSize = box.size;
   if (horizontal) {
-    shift.x = smallestSide;
-    centerSize.x -= 2*smallestSide;
-    percentCorner = smallestSide / box.size.x;
+    endSize.x = std::round (endSize.y * textureSize.x / textureSize.y);
   } else {
-    shift.y = smallestSide;
-    centerSize.y -= 2*smallestSide;
-    percentCorner = smallestSide / box.size.y;
+    endSize.y = std::round (endSize.x * textureSize.x / textureSize.y);
   }
-  const auto percentMiddle = 1.f - 2.f*percentCorner;
+
+  // compute middle part size
+  auto percentEnd = 0.f;
+  auto centerSize = box.size;
+  if (horizontal) {
+    centerSize.x = std::max (0.f, centerSize.x - 2.f*endSize.x);
+    percentEnd = endSize.x / box.size.x;
+  } else {
+    centerSize.y = std::max (0.f, centerSize.y - 2*endSize.y);
+    percentEnd = endSize.y / box.size.y;
+  }
+  const auto percentMiddle = 1.f - 2.f*percentEnd;
 
   // compute box part positions
-  const auto centerPos = box.position + shift;
   const auto leftPos = box.position;
-  auto rightPos = centerPos;
+  auto centerPos = box.position;
+  auto rightPos = box.position;
   if (horizontal) {
-    rightPos.x += centerSize.x;
+    centerPos.x += endSize.x;
+    rightPos.x += endSize.x + centerSize.x;
   } else {
-    rightPos.y += centerSize.y;
+    centerPos.y += endSize.y;
+    rightPos.y += endSize.y + centerSize.y;
   }
 
   // draw left corner with the right filling
-  // the filling percent is simply the total percent divided by the fraction taken by the patch
-  const auto pLeft = sgui::clamp (0.f, 1.f, percentToDraw / percentCorner);
+  // the filling percent is simply the total percent divided by the fraction taken by the slice
+  const auto pLeft = sgui::clamp (0.f, 1.f, percentToDraw / percentEnd);
   if (percentToDraw > 0.01f && pLeft > 0.01f) {
-    const auto left = boxTypeAndState + "::Left"/*"-l"*/;
-    auto leftBox = mTexturesUV.texture (left);
-    appendMesh (std::move (leftBox), sf::FloatRect (leftPos, cornerSize), horizontal, pLeft);
+    auto leftBox = mTexturesUV.texture (widgetTypeState + "l");
+    appendMesh (std::move (leftBox), sf::FloatRect (leftPos, endSize), horizontal, pLeft);
   }
 
   // draw middle if box is large enough
-  const auto pMiddle  = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner) / percentMiddle);
+  const auto pMiddle  = sgui::clamp (0.f, 1.f, (percentToDraw - percentEnd) / percentMiddle);
   if (centerSize.length () > 0.01f && pMiddle > 0.01f) {
-    const auto center = boxTypeAndState + "::Cent"/*"-c"*/;
-    auto centerBox = mTexturesUV.texture (center);
+    auto centerBox = mTexturesUV.texture (widgetTypeState + "c");
     appendMesh (std::move (centerBox), sf::FloatRect (centerPos, centerSize), horizontal, pMiddle);
   }
 
   // draw right corner with the remaining filling
-  const auto pRight = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner - percentMiddle) / percentCorner);
+  const auto pRight = sgui::clamp (0.f, 1.f, (percentToDraw - percentEnd - percentMiddle) / percentEnd);
   if (pRight > 0.01f) {
-    const auto right = boxTypeAndState + "::Righ"/*"-r"*/;
-    auto rightBox = mTexturesUV.texture (right);
-    appendMesh (std::move (rightBox), sf::FloatRect (rightPos, cornerSize), horizontal, pRight);
+    auto rightBox = mTexturesUV.texture (widgetTypeState + "r");
+    appendMesh (std::move (rightBox), sf::FloatRect (rightPos, endSize), horizontal, pRight);
   }
 }
 
 /////////////////////////////////////////////////
-void GuiRender::addNinePatch (
+void GuiRender::addNineSlices (
   const sf::FloatRect& box,
-  const std::string& boxTypeAndState)
+  const std::string& widgetTypeState)
 {
   // get corner size, we assume that all 4 corner have the same size
-  auto topLeftTexture = mTexturesUV.texture (boxTypeAndState + "::Top::Left"/*"-l-t"*/);
+  auto topLeftTexture = mTexturesUV.texture (widgetTypeState + "tl");
   const auto textureSize = topLeftTexture[4].texCoords - topLeftTexture[0].texCoords;
   const auto smallestSide = std::min (box.size.x, box.size.y);
   const auto cornerSize = std::min (smallestSide / 2.f, textureSize.x) * sf::Vector2f (1.f, 1.f);
@@ -276,32 +263,32 @@ void GuiRender::addNinePatch (
   appendMesh (std::move (topLeftTexture), topLeft, true);
   // draw top center corner
   const auto topCenter = sf::FloatRect (box.position + cornerSize.x*ux, middleTopSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Cent"/*-c-t"*/), topCenter, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "tc"), topCenter, true);
   // draw top right corner
   const auto topRight = sf::FloatRect (box.position + (cornerSize.x + middleSize.x)*ux, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Righ"/*"-r-t"*/), topRight, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "tr"), topRight, true);
 
   // MIDDLE PART
   // draw center left
   const auto midLeft = sf::FloatRect (box.position + cornerSize.y*uy, middleSideSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Left"/*"-l-m"*/), midLeft, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "ml"), midLeft, true);
   // draw center
   const auto midCenter = sf::FloatRect (box.position + cornerSize, middleSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Cent"/*"-c-m"*/), midCenter, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "mc"), midCenter, true);
   // draw center right
   const auto midRight = sf::FloatRect (box.position + cornerSize + middleSize.x*ux, middleSideSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Righ"/*"-r-m"*/), midRight, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "mr"), midRight, true);
   
   // BOTTOM PART
   // draw bottom left
   const auto bottomLeft = sf::FloatRect (box.position + (cornerSize.y + middleSize.y)*uy, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Left"/*"-l-b"*/), bottomLeft, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "bl"), bottomLeft, true);
   // draw bottom
   const auto bottomCenter = sf::FloatRect (box.position + cornerSize + middleSize.y*uy, middleTopSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Cent"/*"-c-b"*/), bottomCenter, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "bc"), bottomCenter, true);
   // draw bottom right
   const auto bottomRight = sf::FloatRect (box.position + cornerSize + middleSize, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Righ"/*"-r-b"*/), bottomRight, true);
+  appendMesh (mTexturesUV.texture (widgetTypeState + "br"), bottomRight, true);
 }
 
 /////////////////////////////////////////////////

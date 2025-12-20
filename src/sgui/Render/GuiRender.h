@@ -137,7 +137,7 @@ private:
    * to draw slider, title box, etc. i.e. widget that posses
    * 2 corner with fixed size and a stretched center patch
    */
-  void addThreePatch (
+  void addThreeSlices (
          const sf::FloatRect& box,
          const std::string& boxTypeAndState,
          const bool horizontal = true,
@@ -146,7 +146,7 @@ private:
    * to draw window box, panel box, etc. with 4 corner
    * with fixed size and 5 stretched center patch
    */
-  void addNinePatch (
+  void addNineSlices (
          const sf::FloatRect& box,
          const std::string& boxTypeAndState);
   /**

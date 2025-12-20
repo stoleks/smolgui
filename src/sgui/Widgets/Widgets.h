@@ -25,7 +25,7 @@ enum class Widget
   Slider,
   Scroller,
   ProgressBar,
-  ProgressFilling,
+  ProgressFill,
   Separation,
   Image
 };

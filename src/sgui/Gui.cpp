@@ -808,6 +808,7 @@ void Gui::separation (const float thick)
 void Gui::image (
   const std::string& textureId,
   const sf::Vector2f& size,
+  const Slices slices,
   const WidgetOptions& options)
 {
   // if size is not specified, we take the texture size by default
@@ -818,7 +819,7 @@ void Gui::image (
   }
   // draw texture
   const auto box = sf::FloatRect (position, textureSize);
-  mRender.draw (box, {textureId}, Impl::ItemState::None);
+  mRender.draw (box, {textureId, slices}, Impl::ItemState::None);
   updateSpacing (textureSize);
 }
 
@@ -1117,7 +1118,7 @@ void Gui::progressBar (
   // draw progress bar and its filling
   const auto box = sf::FloatRect (position, size);
   mRender.draw (box, {Widget::ProgressBar, Slices::Three});
-  mRender.draw (box, {Widget::ProgressFilling, Slices::Three, sgui::clamp (0.f, 1.f, progress)});
+  mRender.draw (box, {Widget::ProgressFill, Slices::Three, sgui::clamp (0.f, 1.f, progress)});
 
   // handle icon hovering
   itemStatus (sf::FloatRect (position, size), name, false, options.tooltip);
