@@ -24,15 +24,33 @@ namespace sgui
 struct WidgetDrawOptions {
   // Helper ctors
   WidgetDrawOptions () = default;
-  WidgetDrawOptions (const float p) : progress (p) {}
-  WidgetDrawOptions (const Impl::ItemState& s) : state (s) {}
-  WidgetDrawOptions (const Impl::ItemState& s, bool h) : horizontal (h), state (s) {}
-  WidgetDrawOptions (const std::string& n) : name (n) {}
+  WidgetDrawOptions (const Widget w) : widget (w) {}
+  WidgetDrawOptions (const Widget w, const Slices s) : widget (w), slices (s) {}
+  WidgetDrawOptions (const Widget w, bool h) : horizontal (h), widget (w), slices (Slices::Three) {}
+  WidgetDrawOptions (const Widget w, const Slices s, bool h) : horizontal (h), widget (w), slices (s) {}
+  WidgetDrawOptions (const Widget w, const float p) : progress (p), widget (w) {}
+  WidgetDrawOptions (const Widget w, const Slices s, const float p) : progress (p), widget (w), slices (s) {}
+  WidgetDrawOptions (const std::string& n) : image (n) {}
+  WidgetDrawOptions (const std::string& n, const Slices s) : image (n), slices (s) {}
   // data
   bool horizontal = true;
   float progress = 1.f;
-  Impl::ItemState state = Impl::ItemState::Neutral;
-  std::string name = "";
+  std::string image = "";
+  Widget widget = Widget::Image;
+  Slices slices = Slices::One;
+};
+
+/**
+ * @brief Store options for drawing text
+ */
+struct TextDrawOptions {
+  TextDrawOptions () = default;
+  TextDrawOptions (const sf::Vector2f& p, const sf::Color& c, uint32_t s)
+    : position (p), color (c), size (s) {}
+  // data
+  sf::Vector2f position = {};
+  sf::Color color = sf::Color::White;
+  uint32_t size = 16u;
 };
 
 /**
@@ -66,6 +84,24 @@ public:
    */
   void clear ();
   /**
+   * @brief interface to draw Gui standard element
+   * @param Type Widget type to draw, as defined in `Widget`
+   * @param box Rect of the widget to draw
+   * @param state State of the widget to draw
+   * @param horizontal If widget is horizontal (`true`) or vertical (`false`). It's mportant for sliders.
+   */
+  void draw (
+         const sf::FloatRect& box,
+         const WidgetDrawOptions& options = {},
+         const Impl::ItemState& state = Impl::ItemState::Neutral);
+  /**
+   * @brief interface to draw Gui text using utf8
+   */
+  void draw (
+         const std::string& text,
+         const sf::Font& font,
+         const TextDrawOptions& options = {});
+  /**
    * @brief Get text size as if it was drawn on screen
    * @param text Text from which we get the size
    * @param fontSize Size of the text font
@@ -75,26 +111,6 @@ public:
          const std::string& text,
          const sf::Font& font,
          const uint32_t fontSize) const;
-  /**
-   * @brief interface to draw Gui standard element
-   * @param Type Widget type to draw, as defined in `Widget`
-   * @param box Rect of the widget to draw
-   * @param state State of the widget to draw
-   * @param horizontal If widget is horizontal (`true`) or vertical (`false`). It's mportant for sliders.
-   */
-  template <Widget Type>
-  void draw (
-         const sf::FloatRect& box,
-         const WidgetDrawOptions options = {});
-  /**
-   * @brief interface to draw Gui text using utf8
-   */
-  void drawText (
-         const sf::Vector2f& position,
-         const std::string& text,
-         const sf::Color& textColor,
-         const sf::Font& font,
-         const uint32_t fontSize);
   /**
    * @brief set specific render for tooltip
    */
@@ -164,8 +180,7 @@ private:
   /**
    * to convert type to name
    */
-  template <Widget Type>
-  constexpr std::string toString () const;
+  std::string toString (const Widget widget) const;
   std::string toString (const Impl::ItemState state) const;
 private:
   // define on which render we work
@@ -181,5 +196,3 @@ private:
 };
 
 } // namespace sgui
-
-#include "GuiRender.tpp"

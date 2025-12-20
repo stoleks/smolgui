@@ -3,33 +3,51 @@
 namespace sgui
 {
 
+/////////////////////////////////////////////////
 /**
  * @brief List widget textures available in gui
  */
 enum class Widget
 {
-  Box,
-  WindowBox,
-  TitleBox,
+  Panel,
+  Window,
   TextBox,
-  MultiLineTextBox,
   ItemBox,
   MenuBox,
   MenuItemBox,
+  TitleBox,
   Button,
-  TextButton,
   IconButton,
-  IconTextButton,
   TitleButton,
   CheckBox,
-  Icon,
   SliderBar,
   ScrollerBar,
   Slider,
   Scroller,
   ProgressBar,
   ProgressFilling,
-  Separation
+  Separation,
+  Image
+};
+
+/////////////////////////////////////////////////
+/**
+ * @brief Defines number of slices for stretchable widgets
+ */
+enum class Slices {
+  One,
+  Three,
+  Nine
+};
+
+/**
+ * @brief Defines type of tiling for center part of 9-slices widgets
+ */
+enum class TileMode {
+  Stretch, // extend central part
+  Hide,    // don't draw central part
+  Repeat,  // repeat central part
+  Rotate   // repeat and rotate central part
 };
 
 } // namespace sgui

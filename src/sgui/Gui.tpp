@@ -1,29 +1,6 @@
 namespace sgui {
 
 /**
- *  base for clickable widgets
- */
-/////////////////////////////////////////////////
-template <Widget ButtonType>
-bool Gui::clickable (
-  const sf::Vector2f& size,
-  const WidgetOptions& options)
-{
-  // Initialize widget name and position
-  const auto name = initializeActivable ("Clickable");
-  const auto position = computeRelativePosition (options.displacement);
-
-  // draw widget in its state and update cursor position
-  const auto box = sf::FloatRect (position, size);
-  const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
-  mRender.draw <ButtonType> (box, {state});
-  updateSpacing (size);
-
-  // it has been clicked if state is active
-  return state == Impl::ItemState::Active;
-}
-
-/**
  *  slider
  */
 /////////////////////////////////////////////////
@@ -49,7 +26,7 @@ void Gui::slider (
   const auto size = textHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.tooltip);
-  mRender.draw <Widget::Slider> (box, {state, isHorizontal});
+  mRender.draw (box, {Widget::Slider, isHorizontal}, state);
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
@@ -128,7 +105,7 @@ void Gui::inputNumber (
   if (focused) {
     state = Impl::ItemState::Active;
   }
-  mRender.draw <Widget::TextBox> (box, {state});
+  mRender.draw (box, {Widget::TextBox, Slices::Three}, state);
 
   // draw label and number
   const auto numStr = label + fmt::format ("{}", number);

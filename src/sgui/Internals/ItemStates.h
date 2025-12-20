@@ -11,7 +11,8 @@ enum class ItemState
 {
   Active,
   Hovered,
-  Neutral
+  Neutral,
+  None
 };
 
 } // namespace sgui::Impl

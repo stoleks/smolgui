@@ -78,28 +78,6 @@ sf::Vector2f GuiRender::textSize (
   return content.getLocalBounds ().size;
 }
 
-
-/////////////////////////////////////////////////
-// draw
-/////////////////////////////////////////////////
-void GuiRender::drawText (
-  const sf::Vector2f& position,
-  const std::string& text,
-  const sf::Color& textColor,
-  const sf::Font& font,
-  const uint32_t fontSize)
-{
-  // set text properties
-  auto content = sf::Text (font);
-  content.setCharacterSize (fontSize);
-  content.setPosition (position);
-  content.setFillColor (textColor);
-  // we use explicit utf8 encoding to handle special character like 'é'
-  content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
-  // draw text
-  mTexts.at (clipping.activeLayer ()).emplace_back (std::move (content));
-}
-
 /////////////////////////////////////////////////
 void GuiRender::setTooltipMode ()
 {
@@ -119,6 +97,98 @@ sf::Vector2f GuiRender::textureSize (const std::string& texture) const
   return mesh[4].texCoords - mesh[0].texCoords;
 }
 
+/////////////////////////////////////////////////
+// draw
+/////////////////////////////////////////////////
+void GuiRender::draw (
+  const sf::FloatRect& box,
+  const WidgetDrawOptions& options,
+  const Impl::ItemState& state)
+{
+  const auto widgetCode = toString (options.widget);
+  const auto stateCode = toString (state);
+  if (options.slices == Slices::One) {
+    auto newWidget = mTexturesUV.texture (widgetCode + options.image + stateCode);
+    appendMesh (std::move (newWidget), box);
+  }
+  if (options.slices == Slices::Three) {
+    addThreePatch (box, widgetCode + stateCode, options.horizontal, options.progress);
+  }
+  if (options.slices == Slices::Nine) {
+    addNinePatch (box, widgetCode + stateCode);
+  }
+}
+
+/////////////////////////////////////////////////
+void GuiRender::draw (
+  const std::string& text,
+  const sf::Font& font,
+  const TextDrawOptions& options)
+{
+  // set text properties
+  auto content = sf::Text (font);
+  content.setCharacterSize (options.size);
+  content.setPosition (options.position);
+  content.setFillColor (options.color);
+  // we use explicit utf8 encoding to handle special character like 'é'
+  content.setString (sf::String::fromUtf8 (text.begin (), text.end ()));
+  // draw text
+  mTexts.at (clipping.activeLayer ()).emplace_back (std::move (content));
+}
+
+/////////////////////////////////////////////////
+// To string
+/////////////////////////////////////////////////
+std::string GuiRender::toString (const Widget widget) const
+{
+  if (widget == Widget::Panel) {
+    return "Box::"/*"panel"*/;
+  } else if (widget == Widget::Window) {
+    return "Window::"/*"window"*/;
+  } else if (widget == Widget::TextBox) {
+    return "TextBox::"/*"text_box"*/;
+  } else if (widget == Widget::ItemBox) {
+    return "ItemBox::"/*"item_box"*/;
+  } else if (widget == Widget::MenuBox) {
+    return "MenuBox::"/*"menu_box"*/;
+  } else if (widget == Widget::MenuItemBox) {
+    return "MenuItemBox::"/*"menu_item_box"*/;
+  } else if (widget == Widget::TitleBox) {
+    return "TitleBox::"/*"title_box"*/;
+  } else if (widget == Widget::Button) {
+    return "TextButton::"/*"button"*/;
+  } else if (widget == Widget::CheckBox) {
+    return "CheckBox::"/*"check_box"*/;
+  } else if (widget == Widget::SliderBar) {
+    return "SliderBar::"/*"slider_bar"*/;
+  } else if (widget == Widget::ScrollerBar) {
+    return "ScrollerBar::"/*"scroller_bar"*/;
+  } else if (widget == Widget::Slider) {
+    return "Slider::"/*"slider"*/;
+  } else if (widget == Widget::Scroller) {
+    return "Scroller::"/*"scroller"*/;
+  } else if (widget == Widget::ProgressBar) {
+    return "ProgressBar::"/*"progress_bar"*/;
+  } else if (widget == Widget::ProgressFilling) {
+    return "ProgressFilling::"/*"progress_filling"*/;
+  } else if (widget == Widget::Separation) {
+    return "Separation";
+  }
+  return "";
+}
+
+/////////////////////////////////////////////////
+std::string GuiRender::toString (const Impl::ItemState state) const
+{
+  if (state == Impl::ItemState::Active) {
+    return "Act"/*"-a"*/;
+  } else if (state == Impl::ItemState::Hovered) {
+    return "Hov"/*"-h"*/;
+  } else if (state == Impl::ItemState::Neutral) {
+    return "Neu"/*"-n"*/;
+  }
+  return "";
+}
 
 /////////////////////////////////////////////////
 // Implementation of draw interfaces
@@ -160,7 +230,7 @@ void GuiRender::addThreePatch (
   // the filling percent is simply the total percent divided by the fraction taken by the patch
   const auto pLeft = sgui::clamp (0.f, 1.f, percentToDraw / percentCorner);
   if (percentToDraw > 0.01f && pLeft > 0.01f) {
-    const auto left = boxTypeAndState + "::Left";
+    const auto left = boxTypeAndState + "::Left"/*"-l"*/;
     auto leftBox = mTexturesUV.texture (left);
     appendMesh (std::move (leftBox), sf::FloatRect (leftPos, cornerSize), horizontal, pLeft);
   }
@@ -168,7 +238,7 @@ void GuiRender::addThreePatch (
   // draw middle if box is large enough
   const auto pMiddle  = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner) / percentMiddle);
   if (centerSize.length () > 0.01f && pMiddle > 0.01f) {
-    const auto center = boxTypeAndState + "::Cent";
+    const auto center = boxTypeAndState + "::Cent"/*"-c"*/;
     auto centerBox = mTexturesUV.texture (center);
     appendMesh (std::move (centerBox), sf::FloatRect (centerPos, centerSize), horizontal, pMiddle);
   }
@@ -176,7 +246,7 @@ void GuiRender::addThreePatch (
   // draw right corner with the remaining filling
   const auto pRight = sgui::clamp (0.f, 1.f, (percentToDraw - percentCorner - percentMiddle) / percentCorner);
   if (pRight > 0.01f) {
-    const auto right = boxTypeAndState + "::Righ";
+    const auto right = boxTypeAndState + "::Righ"/*"-r"*/;
     auto rightBox = mTexturesUV.texture (right);
     appendMesh (std::move (rightBox), sf::FloatRect (rightPos, cornerSize), horizontal, pRight);
   }
@@ -188,7 +258,7 @@ void GuiRender::addNinePatch (
   const std::string& boxTypeAndState)
 {
   // get corner size, we assume that all 4 corner have the same size
-  auto topLeftTexture = mTexturesUV.texture (boxTypeAndState + "::Top::Left");
+  auto topLeftTexture = mTexturesUV.texture (boxTypeAndState + "::Top::Left"/*"-l-t"*/);
   const auto textureSize = topLeftTexture[4].texCoords - topLeftTexture[0].texCoords;
   const auto smallestSide = std::min (box.size.x, box.size.y);
   const auto cornerSize = std::min (smallestSide / 2.f, textureSize.x) * sf::Vector2f (1.f, 1.f);
@@ -206,32 +276,32 @@ void GuiRender::addNinePatch (
   appendMesh (std::move (topLeftTexture), topLeft, true);
   // draw top center corner
   const auto topCenter = sf::FloatRect (box.position + cornerSize.x*ux, middleTopSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Cent"), topCenter, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Cent"/*-c-t"*/), topCenter, true);
   // draw top right corner
   const auto topRight = sf::FloatRect (box.position + (cornerSize.x + middleSize.x)*ux, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Righ"), topRight, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Top::Righ"/*"-r-t"*/), topRight, true);
 
   // MIDDLE PART
   // draw center left
   const auto midLeft = sf::FloatRect (box.position + cornerSize.y*uy, middleSideSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Left"), midLeft, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Left"/*"-l-m"*/), midLeft, true);
   // draw center
   const auto midCenter = sf::FloatRect (box.position + cornerSize, middleSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Cent"), midCenter, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Cent"/*"-c-m"*/), midCenter, true);
   // draw center right
   const auto midRight = sf::FloatRect (box.position + cornerSize + middleSize.x*ux, middleSideSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Righ"), midRight, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Mid::Righ"/*"-r-m"*/), midRight, true);
   
   // BOTTOM PART
   // draw bottom left
   const auto bottomLeft = sf::FloatRect (box.position + (cornerSize.y + middleSize.y)*uy, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Left"), bottomLeft, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Left"/*"-l-b"*/), bottomLeft, true);
   // draw bottom
   const auto bottomCenter = sf::FloatRect (box.position + cornerSize + middleSize.y*uy, middleTopSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Cent"), bottomCenter, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Cent"/*"-c-b"*/), bottomCenter, true);
   // draw bottom right
   const auto bottomRight = sf::FloatRect (box.position + cornerSize + middleSize, cornerSize);
-  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Righ"), bottomRight, true);
+  appendMesh (mTexturesUV.texture (boxTypeAndState + "::Bot::Righ"/*"-r-b"*/), bottomRight, true);
 }
 
 /////////////////////////////////////////////////
@@ -333,19 +403,6 @@ void GuiRender::drawLayer (
   for (auto text : mTexts.at (layer)) {
     target.draw (text, states);
   }
-}
-
-/////////////////////////////////////////////////
-std::string GuiRender::toString (const Impl::ItemState state) const
-{
-  if (state == Impl::ItemState::Active) {
-    return "Act";
-  } else if (state == Impl::ItemState::Hovered) {
-    return "Hov";
-  } else if (state == Impl::ItemState::Neutral) {
-    return "Neu";
-  }
-  return "";
 }
 
 } // namespace sgui

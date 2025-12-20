@@ -254,9 +254,10 @@ public:
   /**
    * @brief display a clickable button that return true if pressed
    */
-  template <Widget ButtonType = Widget::Button>
   bool clickable (
          const sf::Vector2f& size,
+         const Widget ButtonType = Widget::IconButton,
+         const Slices slices = Slices::One,
          const WidgetOptions& options = {});
   /**
    * @brief button with a text displayed over it

@@ -46,6 +46,7 @@ int main()
   auto mainPanel = layout.get <sgui::Panel> ("mainPanel");
   mainPanel.hasMenu = true;
   auto closablePanel = layout.get <sgui::Panel> ("closablePanel");
+  closablePanel.position.x = mainPanel.position.x + gui.denormalizeSize (mainPanel.size).x + 10.f;
   auto constrainedPanel = layout.get <sgui::Panel> ("constrainedPanels");
   // data
   bool displayFunction = false;

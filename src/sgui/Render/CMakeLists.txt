@@ -6,7 +6,6 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/sgui/Render)
 set (SRC
   ${SRCROOT}/GuiRender.cpp
   ${INCROOT}/GuiRender.h
-  ${INCROOT}/GuiRender.tpp
   ${SRCROOT}/Plotter.cpp
   ${INCROOT}/Plotter.h
   ${SRCROOT}/PrimitiveShapeRender.cpp

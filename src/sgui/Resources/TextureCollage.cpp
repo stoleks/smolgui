@@ -1,6 +1,7 @@
 #include "TextureCollage.h"
 
 #include <filesystem>
+#include <algorithm>
 
 namespace sgui 
 {
