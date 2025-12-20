@@ -9,15 +9,21 @@
 int main ()
 {
   // build collage of all widgets
+  spdlog::info ("Texture collage");
+  const std::string textureFile = ExamplesDir"/widgets_collage.png";
   auto collage = sgui::TextureCollage (ContentsDir"/widgets/");
-  if (!collage.image ().saveToFile (ExamplesDir"/widgets_collage.png")) {
-    spdlog::warn ("Unable to save {}", ExamplesDir"/widgets_collage.png");
+  if (!collage.image ().saveToFile (textureFile)) {
+    spdlog::warn ("Unable to save {}", textureFile);
   }
-  sgui::saveInFile (collage.atlas (), ExamplesDir"/atlas_collage.json");
+  const std::string atlasFile = ExamplesDir"/atlas_collage.json";
+  spdlog::info ("Save atlas to {}", atlasFile);
+  sgui::saveInFile (collage.atlas (), atlasFile);
 
   // load texture atlas and texture
-  auto atlas = sgui::TextureAtlas (ExamplesDir"/atlas_collage.json");
-  auto texture = sf::Texture (ExamplesDir"/widgets_collage.png");
+  spdlog::info ("Load texture created in {}", textureFile);
+  auto texture = sf::Texture (textureFile);
+  spdlog::info ("Load atlas created in {}", atlasFile);
+  auto atlas = sgui::TextureAtlas (atlasFile);
   
   // build a vertex array that display all textures
   sf::VertexArray sprites;

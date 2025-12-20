@@ -13,9 +13,9 @@ int main()
    * Resources loading
    */
   // fonts
-  auto fonts = sgui::FontHolder ();
-  fonts.load ("normal", sgui::DefaultFont);
-  fonts.load ("bold",   sgui::DefaultBoldFont);
+  auto fontsData = sgui::FontHolder ();
+  fontsData.load ("normal", sgui::DefaultFont);
+  fontsData.load ("bold",   sgui::DefaultBoldFont);
   // texture and atlas
   auto atlas = sgui::TextureAtlas (sgui::DefaultAtlas);
   auto texture = sf::Texture (sgui::DefaultTexture);
@@ -38,7 +38,7 @@ int main()
    * Gui initialization
    */
   auto gui = sgui::Gui ();
-  gui.initialize (fonts.get ("normal"), texture, atlas, window);
+  gui.initialize (fontsData.get ("normal"), texture, atlas, window);
 
   /**
    * Load gui layout and set data
@@ -157,10 +157,10 @@ int main()
         }
         gui.separation ();
         // text and text edit
-        gui.text ("Select font size");
         auto& fonts = style.fontSize;
-        gui.slider (fonts.title, 12u, 26u, {"Title font size"});
-        gui.slider (fonts.subtitle, 10u, 22u, {"Subtitle font size"});
+        gui.text (fmt::format ("Select font size. Normal font size is {}", fonts.normal));
+        gui.slider (fonts.title, 12u, 26u, {fmt::format ("Title font size {}", fonts.title)});
+        gui.slider (fonts.subtitle, 10u, 22u, {fmt::format ("Subtitle font size {}", fonts.subtitle)});
         if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
         }
@@ -187,12 +187,12 @@ int main()
         // top panel
         constraint.vertical = sgui::VerticalAlignment::Top;
         constraint.horizontal = sgui::HorizontalAlignment::None;
-	const auto outSize = constrainedPanel.size;
-	constrainedPanel.size *= 3.f;
+       	const auto outSize = constrainedPanel.size;
+        constrainedPanel.size = gui.normalizeSize ({180.f, 40.f});
         gui.beginPanel (constrainedPanel, constraint);
         gui.text ("Top panel in group");
         gui.endPanel ();
-	constrainedPanel.size = outSize;
+        constrainedPanel.size = outSize;
         gui.endWindow ();
       }
       // bottom panel
