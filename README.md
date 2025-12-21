@@ -39,29 +39,33 @@ Example code
 You can find more complete examples in the examples folder.
 
 ```cpp
-#include "sgui/sgui.h"
+#include <sgui/Gui.h>
+#include <sgui/DefaultFiles.h>
+#include <sgui/Resources/IconsFontAwesome7.h>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 int main()
 {
   // Resources loading
-  auto style = sgui::Style ();
-  style.fontColor = sf::Color::White;
-  auto font = sf::Font (ContentsDir"/Luciole-Regular.ttf");
-  auto atlas = sgui::TextureAtlas (ContentsDir"/atlas.json");
-  auto texture = sf::Texture (ContentsDir"/widgets.png");
+  auto font = sf::Font (sgui::DefaultFont);
+  auto atlas = sgui::TextureAtlas (sgui::DefaultAtlas);
+  auto texture = sf::Texture (sgui::DefaultTexture);
   // Window initialization
   auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
   window.setFramerateLimit (60);
+  // For demo render
+  sf::RenderTexture image ({640u, 480u});
+  auto exportSuccess = false;
   // Gui initialization
   auto gui = sgui::Gui ();
-  gui.setResources (font, texture);
-  gui.setTextureAtlas (atlas);
-  gui.setStyle (style);
-  gui.setView (window);
+  gui.initialize (font, texture, atlas, window);
   // Window settings and main loop
-  auto mainPanel = sgui::Panel ({ 0.f, 0.f}, { 1.f, 1.f });
-  mainPanel.title = std::string("Main window");
+  auto mainPanel = sgui::Panel ({ 1.f, 1.f });
+  mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);
   auto timer = sf::Clock ();
+  auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
+  auto style = sgui::Style ();
   while (window.isOpen ())
   {
     // Inputs
@@ -77,21 +81,34 @@ int main()
     // Gui
     gui.beginFrame ();
     if (gui.beginWindow (mainPanel)) {
-      if (gui.textButton ("Close window")) {
+      if (gui.button ("Close window")) {
         window.close ();
       }
       gui.text ("Select font size");
-      gui.slider (style.fontSize.title, 12u, 26u, {"Title font size"});
-      if (gui.iconTextButton ("plus", "Increase normal font size")) {
+      const auto descr = fmt::format ("Title font |{}| size is {}", ICON_FA_FONT, style.fontSize.title);
+      gui.slider (style.fontSize.title, 12u, 26u, {descr});
+      if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal + 1);
       }
-      if (gui.iconTextButton ("minus", "Decrease normal font size")) {
+      if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
+      gui.text (fmt::format ("|{}| Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
+      const auto selected = gui.comboBox (combo);
       gui.inputColor (style.fontColor, {"Font color: "});
+      gui.text (selected);
+      const auto pngFile = DemoDir"/minimalDemo.png";
+      gui.text (fmt::format ("Saved to file assets/minimalDemo.png with success {}", exportSuccess));
+      if (gui.button ("Save demo in file")) {
+        image.clear ();
+        image.draw (gui);
+        image.display ();
+        exportSuccess = image.getTexture ().copyToImage ().saveToFile (pngFile);
+      }
       gui.endWindow ();
     }
     gui.endFrame ();
+
     // Drawing
     window.clear ();
     window.draw (gui);
@@ -100,4 +117,4 @@ int main()
 }
 ```
 
-![Screenshot of minimal demo](https://github.com/stoleks/smolgui/blob/main/examples/minimalDemo.png)
+![Screenshot of minimal demo](https://github.com/stoleks/smolgui/blob/main/examples/assets/minimalDemo.png)
