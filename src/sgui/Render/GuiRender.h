@@ -13,7 +13,7 @@
 #include "sgui/Render/ClippingLayers.h"
 #include "sgui/Core/Shapes.h"
 #include "sgui/Widgets/Widgets.h"
-#include "sgui/Internals/ItemStates.h"
+#include "sgui/Widgets/ItemStates.h"
 #include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui
@@ -22,22 +22,24 @@ namespace sgui
  * @brief Store options for drawing widgets
  */
 struct WidgetDrawOptions {
-  // Helper ctors
   WidgetDrawOptions () = default;
-  WidgetDrawOptions (const Widget w) : widget (w) {}
-  WidgetDrawOptions (const Widget w, const Slices s) : widget (w), slices (s) {}
-  WidgetDrawOptions (const Widget w, bool h) : horizontal (h), widget (w), slices (Slices::Three) {}
-  WidgetDrawOptions (const Widget w, const Slices s, bool h) : horizontal (h), widget (w), slices (s) {}
-  WidgetDrawOptions (const Widget w, const float p) : progress (p), widget (w) {}
-  WidgetDrawOptions (const Widget w, const Slices s, const float p) : progress (p), widget (w), slices (s) {}
-  WidgetDrawOptions (const std::string& n) : image (n) {}
-  WidgetDrawOptions (const std::string& n, const Slices s) : image (n), slices (s) {}
+  /**
+   * @brief Constructor for most widgets
+   */
+  WidgetDrawOptions (const Widget w, const Slices s = Slices::One, const ItemState is = ItemState::Neutral, const bool h = true)
+    : horizontal (h), widget (w), slices (s), state (is) {}
+  /**
+   * @brief Constructor for image
+   */
+  WidgetDrawOptions (const std::string& n, const Slices s = Slices::One, const ItemState is = ItemState::None)
+    : image (n), slices (s), state (is) {}
   // data
   bool horizontal = true;
   float progress = 1.f;
   std::string image = "";
   Widget widget = Widget::Image;
   Slices slices = Slices::One;
+  ItemState state = ItemState::Neutral;
 };
 
 /**
@@ -92,8 +94,7 @@ public:
    */
   void draw (
          const sf::FloatRect& box,
-         const WidgetDrawOptions& options = {},
-         const Impl::ItemState& state = Impl::ItemState::Neutral);
+         const WidgetDrawOptions& options = {});
   /**
    * @brief interface to draw Gui text using utf8
    */
@@ -181,7 +182,7 @@ private:
    * to convert type to name
    */
   std::string toString (const Widget widget) const;
-  std::string toString (const Impl::ItemState state) const;
+  std::string toString (const ItemState state) const;
 private:
   // define on which render we work
   bool mTooltipMode;

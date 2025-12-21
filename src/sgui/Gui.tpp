@@ -16,22 +16,19 @@ void Gui::slider (
   const auto position = computeRelativePosition (options.displacement);
 
   // get status of the widget
-  auto dimVector = sf::Vector2f (1, 1);
-  const auto isHorizontal = !options.horizontal;
-  if (isHorizontal) {
-    dimVector.x = options.length;
-  } else {
-    dimVector.y = options.length;
+  auto dimVector = options.size;
+  if (options.horizontal) {
+    std::swap (dimVector.x, dimVector.y);
   }
   const auto size = textHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.tooltip);
-  mRender.draw (box, {Widget::Slider, isHorizontal}, state);
+  mRender.draw (box, {Widget::Slider, Slices::Three, state, !options.horizontal});
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
-    state = Impl::ItemState::Active;
-    value = sliderValue (box, min, max, isHorizontal);
+    state = ItemState::Active;
+    value = sliderValue (box, min, max, !options.horizontal);
   }
 
   // draw text next to the slider
@@ -42,7 +39,7 @@ void Gui::slider (
 
   // compute scrollBar relative position
   const auto percent = sgui::remap (min, max, 0.05f, 0.95f, value);
-  sliderBar (box, state, percent, isHorizontal);
+  sliderBar (box, state, percent, !options.horizontal);
 }
 
 /////////////////////////////////////////////////
@@ -103,9 +100,9 @@ void Gui::inputNumber (
 
   // draw text box
   if (focused) {
-    state = Impl::ItemState::Active;
+    state = ItemState::Active;
   }
-  mRender.draw (box, {Widget::TextBox, Slices::Three}, state);
+  mRender.draw (box, {Widget::TextBox, Slices::Three, state});
 
   // draw label and number
   const auto numStr = label + fmt::format ("{}", number);

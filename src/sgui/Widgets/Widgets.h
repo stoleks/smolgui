@@ -27,7 +27,8 @@ enum class Widget
   ProgressBar,
   ProgressFill,
   Separation,
-  Image
+  Image,
+  None
 };
 
 /////////////////////////////////////////////////

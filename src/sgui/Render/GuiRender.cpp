@@ -101,11 +101,10 @@ sf::Vector2f GuiRender::textureSize (const std::string& texture) const
 /////////////////////////////////////////////////
 void GuiRender::draw (
   const sf::FloatRect& box,
-  const WidgetDrawOptions& options,
-  const Impl::ItemState& state)
+  const WidgetDrawOptions& options)
 {
   const auto widgetCode = toString (options.widget);
-  const auto stateCode = toString (state);
+  const auto stateCode = toString (options.state);
   if (options.slices == Slices::One) {
     auto newWidget = mTexturesUV.texture (widgetCode + options.image + stateCode);
     appendMesh (std::move (newWidget), box);
@@ -162,11 +161,11 @@ std::string GuiRender::toString (const Widget widget) const
 }
 
 /////////////////////////////////////////////////
-std::string GuiRender::toString (const Impl::ItemState state) const
+std::string GuiRender::toString (const ItemState state) const
 {
-  if      (state == Impl::ItemState::Active)  { return "_a"; }
-  else if (state == Impl::ItemState::Hovered) { return "_h"; }
-  else if (state == Impl::ItemState::Neutral) { return "_n"; }
+  if      (state == ItemState::Active)  { return "_a"; }
+  else if (state == ItemState::Hovered) { return "_h"; }
+  else if (state == ItemState::Neutral) { return "_n"; }
   return "";
 }
 

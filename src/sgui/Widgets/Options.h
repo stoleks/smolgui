@@ -2,6 +2,8 @@
 
 #include <SFML/System/Vector2.hpp>
 #include "sgui/Widgets/Constraints.h"
+#include "sgui/Widgets/Widgets.h"
+#include "sgui/Widgets/ItemStates.h"
 
 namespace sgui
 {
@@ -45,12 +47,8 @@ struct WidgetOptions
   /**
    * @brief Full constructor, but with options if only description is required
    */
-  WidgetOptions (const std::string& des,
-    const Tooltip& inf = {},
-    const sf::Vector2f& disp = {},
-    const float len = 4.5f,
-    const bool hor = false)
-    : horizontal (hor), length (len), displacement (disp), description (des), tooltip (inf) {}
+  WidgetOptions (const std::string& des, const Tooltip& t = {}, const sf::Vector2f& d = {})
+    : displacement (d), description (des), tooltip (t) {}
   /**
    * @brief When only a tooltip is needed
    */
@@ -59,12 +57,19 @@ struct WidgetOptions
    * @brief When only the relative displacement is needed
    */
   WidgetOptions (const sf::Vector2f disp) : displacement (disp) {}
+  /**
+   * @brief To control panel appearance
+   */
+  WidgetOptions (const Widget w, const ItemState s)
+    : widget (w), state (s) {}
   // data
   bool horizontal = false;
-  float length = 4.5f;
+  sf::Vector2f size = { 6.f, 1.f }; // for slider and progress bar
   sf::Vector2f displacement = {};
   std::string description = "";
   Tooltip tooltip = {};
+  Widget widget = Widget::None;
+  ItemState state = ItemState::None;
 };
 
 /**

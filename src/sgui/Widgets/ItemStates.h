@@ -1,6 +1,6 @@
 #pragma once
 
-namespace sgui::Impl
+namespace sgui
 {
 
 /////////////////////////////////////////////////
@@ -15,4 +15,4 @@ enum class ItemState
   None
 };
 
-} // namespace sgui::Impl
+} // namespace sgui

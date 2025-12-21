@@ -23,7 +23,8 @@ int main()
   auto texts = sgui::TextContainer ();
   texts.loadFromFile (ExamplesDir"/english_demo.json", "english");
   texts.loadFromFile (ExamplesDir"/french_demo.json", "french");
-  texts.setTongue ("english");
+  auto currentTongue = "english";
+  texts.setTongue (currentTongue);
   // layout
   auto layout = sgui::Layout ();
   layout.loadFromFile (ExamplesDir"/layout.json");
@@ -114,9 +115,7 @@ int main()
         const auto phaseMax = 10.f;
         const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
         gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
-        gui.progressBar (sliderValue / phaseMax, gui.textSize ("b").y * sf::Vector2f (24.f, 4.f));
-        gui.sameLine ();
-        gui.text (fmt::format ("{} %", sliderValue / phaseMax * 100.f));
+        gui.progressBar (sliderValue / phaseMax, {fmt::format ("{} %", sliderValue / phaseMax * 100.f)});
         // display it
         gui.checkBox (displayFunction, {"Display a function"});
         if (displayFunction) {
@@ -138,14 +137,19 @@ int main()
 
       if (gui.beginWindow (mainPanel)) {
         auto getText = false;
+        auto tongue = "";
         // use menu to change tongue
         gui.beginMenu ();
         if (gui.menuItem ("Switch to french")) {
-          texts.setTongue ("french");
-          getText = true;
+          tongue = "french";
+          texts.setTongue (tongue);
         }
         if (gui.menuItem ("Switch to english")) {
-          texts.setTongue ("english");
+          tongue = "english";
+          texts.setTongue (tongue);
+        }
+        if (tongue != currentTongue) {
+          currentTongue = tongue;
           getText = true;
         }
         gui.endMenu ();

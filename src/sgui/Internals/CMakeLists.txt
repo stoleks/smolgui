@@ -10,7 +10,6 @@ set (SRC
   ${SRCROOT}/Counters.cpp
   ${INCROOT}/Counters.h
   ${INCROOT}/GuiStates.h
-  ${INCROOT}/ItemStates.h
   ${INCROOT}/GuiGroup.h
 )
 source_group ("" FILES ${SRC})
