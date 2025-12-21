@@ -19,7 +19,7 @@ namespace sgui
  */
 /////////////////////////////////////////////////
 Gui::Gui ()
-  : mFontawesome (ContentsDir"/fa-7-free-Solid-900.otf")
+  : mFontawesome (SguiContentsDir"/fa-7-free-Solid-900.otf")
 {}
 
 /////////////////////////////////////////////////
@@ -968,24 +968,24 @@ void Gui::inputColor (
   sf::Color& color,
   const WidgetOptions& options)
 {
-  // draw description
-  auto disp = options.displacement;
-  if (options.description != "") {
-    text (options.description, {}, options);
-    sameLine ();
-    disp = sf::Vector2f ();
-  }
-
   // change color with four input number
   const auto min = std::uint8_t (0);
   const auto max = std::uint8_t (255);
-  inputNumber (color.r, {disp}, min, max, "r: ", true);
+  inputNumber (color.r, {options.displacement}, min, max, "r: ", true);
   sameLine ();
   inputNumber (color.g, {}, min, max, "g: ", true);
   sameLine ();
   inputNumber (color.b, {}, min, max, "b: ", true);
   sameLine ();
   inputNumber (color.a, {}, min, max, "a: ", true);
+  
+  // draw description
+  if (options.description != "") {
+    sameLine ();
+    auto descriptionOptions = options;
+    descriptionOptions.displacement = {};
+    text (options.description, {}, descriptionOptions);
+  }
 }
 
 /////////////////////////////////////////////////

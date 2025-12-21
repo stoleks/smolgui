@@ -79,7 +79,11 @@ void Gui::inputNumber (
   // compute text box dimension
   auto width = textSize (label + "10000").x;
   if (!fixedWidth) {
-    width = std::max (width, textSize (label + fmt::format ("{}", number)).x);
+    if constexpr (std::is_floating_point_v <Type>) {
+      width = std::max (width, textSize (label + fmt::format ("{:.3f}", number)).x);
+    } else {
+      width = std::max (width, textSize (label + fmt::format ("{}", number)).x);
+    }
   }
   const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, textHeight ());
 
@@ -105,10 +109,16 @@ void Gui::inputNumber (
   mRender.draw (box, {Widget::TextBox, Slices::Three, state});
 
   // draw label and number
-  const auto numStr = label + fmt::format ("{}", number);
-  const auto numWidth = textSize (numStr).x;
+  auto numberStr = std::string ("");
+  if constexpr (std::is_floating_point_v <Type>) {
+    numberStr = fmt::format ("{:.3f}", number);
+  } else {
+    numberStr = fmt::format ("{}", number);
+  }
+  const auto inputStr = label + numberStr;
+  const auto numWidth = textSize (inputStr).x;
   const auto shiftToCenter = sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
-  handleTextDrawing (position + shiftToCenter, numStr);
+  handleTextDrawing (position + shiftToCenter, inputStr);
 
   // draw description
   const auto descrPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
@@ -125,18 +135,17 @@ void Gui::inputVector2 (
   const sf::Vector2<Type>& min,
   const sf::Vector2<Type>& max)
 {
-  // draw description
-  auto disp = options.displacement;
-  if (options.description != "") {
-    text (options.description, {}, options);
-    sameLine ();
-    disp = sf::Vector2f ();
-  }
-
-  // change vector with two input number
-  inputNumber (vector.x, {disp}, min.x, max.x, "x: ", true);
+  inputNumber (vector.x, {options.displacement}, min.x, max.x, "x: ", true);
   sameLine ();
   inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
+  
+  // draw description
+  if (options.description != "") {
+    sameLine ();
+    auto descriptionOptions = options;
+    descriptionOptions.displacement = {};
+    text (options.description, {}, descriptionOptions);
+  }
 }
 
 /////////////////////////////////////////////////
@@ -147,19 +156,19 @@ void Gui::inputVector3 (
   const sf::Vector3<Type>& min,
   const sf::Vector3<Type>& max)
 {
-  // draw description
-  auto disp = options.displacement;
-  if (options.description != "") {
-    text (options.description, {}, options);
-    sameLine ();
-    disp = sf::Vector2f ();
-  }
-
-  inputNumber (vector.x, {disp}, min.x, max.x, "x: ", true);
+  inputNumber (vector.x, {options.displacement}, min.x, max.x, "x: ", true);
   sameLine ();
   inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
   sameLine ();
   inputNumber (vector.z, {}, min.z, max.z, "z: ", true);
+
+  // draw description
+  if (options.description != "") {
+    sameLine ();
+    auto descriptionOptions = options;
+    descriptionOptions.displacement = {};
+    text (options.description, {}, descriptionOptions);
+  }
 }
 
 /////////////////////////////////////////////////

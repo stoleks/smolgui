@@ -21,13 +21,13 @@ int main()
   auto texture = sf::Texture (sgui::DefaultTexture);
   // texts
   auto texts = sgui::TextContainer ();
-  texts.loadFromFile (ExamplesDir"/english_demo.json", "english");
-  texts.loadFromFile (ExamplesDir"/french_demo.json", "french");
+  texts.loadFromFile (DemoDir"/english_demo.json", "english");
+  texts.loadFromFile (DemoDir"/french_demo.json", "french");
   auto currentTongue = "english";
   texts.setTongue (currentTongue);
   // layout
   auto layout = sgui::Layout ();
-  layout.loadFromFile (ExamplesDir"/layout.json");
+  layout.loadFromFile (DemoDir"/layout.json");
   
   /**
    * Window initialization
@@ -177,10 +177,10 @@ int main()
         gui.separation ();
         const auto shorterList = std::vector <std::string> {"One", "Two", "Three"};
         gui.comboBox (shorterList);
-        gui.inputColor (style.fontColor, {"Font color: "});
-        gui.inputNumber (inputValue, {"Input number with text!"});
-        gui.inputVector2 (vector, {"Input vector2: "});
-        gui.inputVector3 (vector3, {"Input vector3: "});
+        gui.inputColor (style.fontColor, {"font color"});
+        gui.inputNumber (inputValue, {"input number with text !"});
+        gui.inputVector2 (vector, {"input vector2: "});
+        gui.inputVector3 (vector3, {"input vector3: "});
         gui.sameLine ();
         const auto list = std::vector <std::string> {"1", "2", "3", "4", "5", "6", "7", "8"};
         gui.comboBox (list);

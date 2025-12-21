@@ -10,12 +10,12 @@ int main ()
 {
   // build collage of all widgets
   spdlog::info ("Texture collage");
-  const std::string textureFile = ExamplesDir"/widgets_collage.png";
-  auto collage = sgui::TextureCollage (ContentsDir"/widgets/");
+  const std::string textureFile = DemoDir"/widgets_collage.png";
+  auto collage = sgui::TextureCollage (SguiContentsDir"/widgets/");
   if (!collage.image ().saveToFile (textureFile)) {
     spdlog::warn ("Unable to save {}", textureFile);
   }
-  const std::string atlasFile = ExamplesDir"/atlas_collage.json";
+  const std::string atlasFile = DemoDir"/atlas_collage.json";
   spdlog::info ("Save atlas to {}", atlasFile);
   sgui::saveInFile (collage.atlas (), atlasFile);
 

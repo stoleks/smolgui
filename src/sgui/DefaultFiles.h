@@ -8,13 +8,13 @@ namespace sgui
   /**
    * Default fonts files
    */
-  const std::string DefaultFont = ContentsDir"/Luciole-Regular.ttf";
-  const std::string DefaultBoldFont = ContentsDir"/Luciole-Bold.ttf";
+  const std::string DefaultFont     = SguiContentsDir"/Luciole-Regular.ttf";
+  const std::string DefaultBoldFont = SguiContentsDir"/Luciole-Bold.ttf";
 
   /**
    * Default texture and atlas file for widgets
    */
-  const std::string DefaultTexture = ContentsDir"/widgets.png";
-  const std::string DefaultAtlas = ContentsDir"/atlas.json";
+  const std::string DefaultTexture = SguiContentsDir"/widgets.png";
+  const std::string DefaultAtlas   = SguiContentsDir"/atlas.json";
 
 } // namespace sgui

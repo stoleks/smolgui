@@ -1,6 +1,8 @@
 #include <sgui/Gui.h>
 #include <sgui/DefaultFiles.h>
 #include <sgui/Resources/IconsFontAwesome7.h>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 int main()
 {
@@ -11,6 +13,9 @@ int main()
   // Window initialization
   auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
   window.setFramerateLimit (60);
+  // For demo render
+  sf::RenderTexture image ({640u, 480u});
+  auto exportSuccess = false;
   // Gui initialization
   auto gui = sgui::Gui ();
   gui.initialize (font, texture, atlas, window);
@@ -33,7 +38,6 @@ int main()
     gui.setStyle (style);
     gui.updateTimer (timer.restart ());
     // Gui
-    auto cursorPos = sf::Vector2f ();
     gui.beginFrame ();
     if (gui.beginWindow (mainPanel)) {
       if (gui.button ("Close window")) {
@@ -52,7 +56,14 @@ int main()
       const auto selected = gui.comboBox (combo);
       gui.inputColor (style.fontColor, {"Font color: "});
       gui.text (selected);
-      cursorPos = gui.cursorPosition ();
+      const auto pngFile = DemoDir"/minimalDemo.png";
+      gui.text (fmt::format ("Saved to file assets/minimalDemo.png with success {}", exportSuccess));
+      if (gui.button ("Save demo in file")) {
+        image.clear ();
+        image.draw (gui);
+        image.display ();
+        exportSuccess = image.getTexture ().copyToImage ().saveToFile (pngFile);
+      }
       gui.endWindow ();
     }
     gui.endFrame ();
