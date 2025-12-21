@@ -17,7 +17,7 @@ public:
   /**
    * @brief Initialize clipping layers with a base view
    */
-  void initialize ();
+  uint32_t initialize ();
   /**
    * @brief Set current clipping layer used 
    * @return Index of the current clipping layer

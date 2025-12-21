@@ -1,15 +1,16 @@
-#include "ClippingLayers.h"
-
 #include <cmath>
 #include <spdlog/spdlog.h>
+#include "sgui/Render/ClippingLayers.h"
 
 namespace sgui 
 {
 /////////////////////////////////////////////////
-void ClippingLayers::initialize ()
+uint32_t ClippingLayers::initialize ()
 {
   mLayers.clear ();
   mLayers.push_back (baseView);
+  mActiveLayer = 0u;
+  return mActiveLayer;
 }
 
 /////////////////////////////////////////////////
@@ -29,9 +30,9 @@ uint32_t ClippingLayers::setCurrentLayer (const sf::FloatRect& mask)
   portTopLeft.x = (portTopLeft.x * viewportRatioX) + viewport.position.x;
   portTopLeft.y = (portTopLeft.y * viewportRatioY) + viewport.position.y;
 
-  // add new clipping layer
-  mActiveLayer = mLayers.size ();
+  // add a new clipping layer if it is valid
   if ((portSize.x >= 0) && (portSize.y >= 0)) {
+    mActiveLayer = mLayers.size ();
     auto clippingView = sf::View (sf::FloatRect (
       { std::round (mask.position.x), std::round (mask.position.y) },
       { std::round (mask.size.x), std::round (mask.size.y) }
@@ -63,7 +64,7 @@ void ClippingLayers::moveToLayer (const uint32_t layerId)
 /////////////////////////////////////////////////
 void ClippingLayers::disable ()
 {
-  mActiveLayer = 0;
+  mActiveLayer = 0u;
 }
 
 /////////////////////////////////////////////////

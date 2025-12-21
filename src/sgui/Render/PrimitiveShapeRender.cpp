@@ -1,6 +1,5 @@
-#include "PrimitiveShapeRender.h"
-
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "sgui/Render/PrimitiveShapeRender.h"
 
 namespace sgui
 {
@@ -15,7 +14,8 @@ void PrimitiveShapeRender::initializeClippingLayers ()
 {
   mShapes.emplace_back (sf::VertexArray ());
   mShapes.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
-  clipping.initialize ();
+  const auto activeLayer = clipping.initialize ();
+  mLayers.emplace_back (activeLayer);
 }
 
 /////////////////////////////////////////////////

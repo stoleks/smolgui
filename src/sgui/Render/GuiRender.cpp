@@ -1,9 +1,7 @@
-#include "sgui/Render/GuiRender.h"
-
 #include <SFML/Graphics/RenderTarget.hpp>
-
-#include "sgui/Serialization/LoadTextureAtlas.h"
+#include "sgui/Render/GuiRender.h"
 #include "sgui/Core/Interpolation.h"
+#include "sgui/Serialization/LoadTextureAtlas.h"
 
 namespace sgui
 {
@@ -60,9 +58,10 @@ void GuiRender::clear ()
 /////////////////////////////////////////////////
 void GuiRender::initializeClippingLayers ()
 {
+  const auto layer = clipping.initialize ();
+  mWidgetLayers.emplace_back (layer);
   mWidgets.emplace_back (sf::VertexArray ());
   mWidgets.back ().setPrimitiveType (sf::PrimitiveType::Triangles);
-  clipping.initialize ();
   mTexts.emplace_back (std::vector <sf::Text> ());
 }
 
@@ -368,8 +367,6 @@ void GuiRender::draw (
   for (const auto layer : mWidgetLayers) {
     drawLayer (target, states, layer);
   }
-  // draw windows titles
-  drawLayer (target, states, 0);
   // draw each tooltips
   for (const auto layer : mTooltipLayers) {
     drawLayer (target, states, layer);

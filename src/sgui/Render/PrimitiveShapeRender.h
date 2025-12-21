@@ -4,7 +4,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 
-#include "ClippingLayers.h"
+#include "sgui/Render/ClippingLayers.h"
 #include "sgui/Core/Polygon.h"
 
 namespace sgui
