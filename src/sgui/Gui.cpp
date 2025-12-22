@@ -1340,8 +1340,8 @@ std::string Gui::comboBox (
   const auto initialPosition = mainBoxPosition + sf::Vector2f (0.f, itemSize.y);
   if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
     const auto itemCount = std::min (std::size_t (6), list.size ());
-    auto panel = Panel (normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y}));
-    panel.hasHeader = false;
+    const auto panelSize = normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y});
+    auto panel = Panel ({{}, panelSize}, true, false);
     // open the window that will contains the combo box item
     mCursorPosition = initialPosition;
     beginWindow (panel);

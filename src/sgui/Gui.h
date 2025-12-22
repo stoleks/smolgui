@@ -5,7 +5,6 @@
 
 #include "sgui/Widgets/Style.h"
 #include "sgui/Widgets/Panel.h"
-#include "sgui/Widgets/ItemStates.h"
 #include "sgui/Internals/Counters.h"
 #include "sgui/Internals/GuiGroup.h"
 #include "sgui/Internals/GuiStates.h"
@@ -34,24 +33,28 @@ public:
   /**
    * @brief load fontawesome and call initialize
    */
-  Gui (sf::Font& font, sf::Texture& widgetTexture, const TextureAtlas& widgetAtlas, const sf::RenderWindow& window);
+  Gui (
+      sf::Font& font,
+      sf::Texture& widgetTexture,
+      const TextureAtlas& widgetAtlas,
+      const sf::RenderWindow& window);
   /**
    * @brief initialize window size and all required resources
    *   this need to be called once before beginFrame/endFrame
    */
   void initialize (
-         sf::Font& font,
-         sf::Texture& widgetTexture,
-         const TextureAtlas& widgetAtlas,
-         const sf::RenderWindow& window);
+      sf::Font& font,
+      sf::Texture& widgetTexture,
+      const TextureAtlas& widgetAtlas,
+      const sf::RenderWindow& window);
 
   ///////////////////////////////////////////////
   /**
    * @brief set resources
    */
   void setResources (
-         sf::Font& font,
-         sf::Texture& widgetTexture);
+      sf::Font& font,
+      sf::Texture& widgetTexture);
   /**
    * @brief set texture atlas
    */
@@ -64,8 +67,8 @@ public:
    * @brief to change font size, color and item padding.
    */
   void setStyle (
-         const Style& newStyle,
-         const bool defaultPadding = true);
+      const Style& newStyle,
+      const bool defaultPadding = true);
   /**
    * @brief set scroll wheel strength (should be ~ 20.f)
    */
@@ -91,8 +94,8 @@ public:
    * @param event obtained through pollEvent.
    */
   void update (
-         const sf::RenderWindow& window,
-         const std::optional <sf::Event>& event);
+      const sf::RenderWindow& window,
+      const std::optional <sf::Event>& event);
   /**
    * @brief set screen size, its required for panel and window 
    * to call it if no Gui::update was called
@@ -185,17 +188,17 @@ public:
    * @param options store special information (tooltip, horizontal)
    */
   bool beginWindow (
-         Panel& settings,
-         const Constraints& constraint = {},
-         const WidgetOptions& options = {});
+      Panel& settings,
+      const Constraints& constraint = {},
+      const WidgetOptions& options = {});
   /**
    * @brief build a window using window.panel.title as a key in texts.
    * @param window contains settings, constraints and options.
    * @param texts contains window title
    */
   bool beginWindow (
-         Window& window,
-         const TextContainer& texts = {});
+      Window& window,
+      const TextContainer& texts = {});
   /**
    * @brief enWindow need to be called to clean state after beginWindow.
    */
@@ -208,9 +211,9 @@ public:
    * @param options store special information (tooltip, horizontal)
    */
   void beginPanel (
-         Panel& settings,
-         const Constraints& constraint = {},
-         const WidgetOptions& options = {});
+      Panel& settings,
+      const Constraints& constraint = {},
+      const WidgetOptions& options = {});
   /**
    * @brief build a panel.
    * @param window contains settings, constraints and options.
@@ -238,8 +241,8 @@ public:
    * @param info optional tooltip.
    */
   bool menuItem (
-         const std::string& text,
-         const WidgetOptions& options = {});
+      const std::string& text,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   // as a general note for all widgets, displacement in options (if different from zero) 
@@ -252,42 +255,42 @@ public:
    * @brief draw an image
    */
   void image (
-         const std::string& textureId,
-         const sf::Vector2f& size = {},
-         const WidgetOptions& options = {});
+      const std::string& textureId,
+      const sf::Vector2f& size = {},
+      const WidgetOptions& options = {});
   /**
    * @brief display a clickable button that return true if pressed
    */
   bool clickable (
-         const sf::Vector2f& size,
-         const WidgetOptions& options = {});
+      const sf::Vector2f& size,
+      const WidgetOptions& options = {});
   /**
    * @brief button with a text displayed over it
    */
   bool button (
-         const std::string& text,
-         const WidgetOptions& options = {});
+      const std::string& text,
+      const WidgetOptions& options = {});
   /**
    * @brief clickable icon that work like a button
    */
   bool icon (
-         const std::string& iconName,
-         const WidgetOptions& options = {});
+      const std::string& iconName,
+      const WidgetOptions& options = {});
   /**
    * @brief display textured box that can be checked
    */
   bool checkBox (
-         bool& checked,
-         const WidgetOptions& options = {});
+      bool& checked,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
    * @brief display text, if a box size is given it will be formatted to fit in
    */
   void text (
-         const std::string& text,
-         const TextOptions& textOptions = {},
-         const WidgetOptions& options = {});
+      const std::string& text,
+      const TextOptions& textOptions = {},
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -299,65 +302,65 @@ public:
    */
   template <typename Type>
   void inputNumber (
-         Type& number,
-         const WidgetOptions& options = {},
-         const Type min = 0,
-         const Type max = 0,
-         const std::string& label = "",
-         const bool fixedWidth = false);
+      Type& number,
+      const WidgetOptions& options = {},
+      const Type min = 0,
+      const Type max = 0,
+      const std::string& label = "",
+      const bool fixedWidth = false);
   /**
    * @brief modify a vector2 value through text, using two inputNumber call
    */
   template <typename Type>
   void inputVector2 (
-         sf::Vector2<Type>& vector,
-         const WidgetOptions& options = {},
-         const sf::Vector2<Type>& min = {},
-         const sf::Vector2<Type>& max = {});
+      sf::Vector2<Type>& vector,
+      const WidgetOptions& options = {},
+      const sf::Vector2<Type>& min = {},
+      const sf::Vector2<Type>& max = {});
   /**
    * @brief modify a vector3 value through text, using three inputNumber call
    */
   template <typename Type>
   void inputVector3 (
-         sf::Vector3<Type>& vector,
-         const WidgetOptions& options = {},
-         const sf::Vector3<Type>& min = {},
-         const sf::Vector3<Type>& max = {});
+      sf::Vector3<Type>& vector,
+      const WidgetOptions& options = {},
+      const sf::Vector3<Type>& min = {},
+      const sf::Vector3<Type>& max = {});
   /**
    * @brief modify a color value through text
    */
   void inputColor (
-         sf::Color& color,
-         const WidgetOptions& options = {});
+      sf::Color& color,
+      const WidgetOptions& options = {});
   /**
    * @brief modify text on one or multiple line
    */
   void inputText (
-         std::string& text,
-         const TextOptions& textOptions = {},
-         const WidgetOptions& options = {});
+      std::string& text,
+      const TextOptions& textOptions = {},
+      const WidgetOptions& options = {});
   /**
    * @brief modify a specific character
    */
   void inputKey (
-         char& key,
-         const WidgetOptions& options = {});
+      char& key,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
    * @brief display advancement of a value between 0 and 1
    */
   void progressBar (
-         const float progress,
-         const WidgetOptions& options = {});
+      const float progress,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
    * @brief display selected item and all others selectables items when clicked
    */
   std::string comboBox (
-         const std::vector <std::string>& list,
-         const WidgetOptions& options = {});
+      const std::vector <std::string>& list,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
@@ -365,18 +368,18 @@ public:
    */
   template <typename Type>
   void slider (
-         Type& value,
-         const Type min,
-         const Type max,
-         const WidgetOptions& options = {});
+      Type& value,
+      const Type min,
+      const Type max,
+      const WidgetOptions& options = {});
 
   ///////////////////////////////////////////////
   /**
    * @brief set plot range and number of points sampled
    */
   void setPlotRange (
-         const PlotRange xRange,
-         const PlotRange yRange);
+      const PlotRange xRange,
+      const PlotRange yRange);
   void setSample (const uint32_t sample);
   /** 
    * @brief set plot size. This depend on the context of use. In a window/panel, 
@@ -393,24 +396,24 @@ public:
    *   until user request an update with forcePlotUpdate.
    */
   void plot (
-         const std::function<float (float)>& slope,
-         const float thickness = 1.f,
-         const sf::Color& lineColor = sf::Color::White);
+      const std::function<float (float)>& slope,
+      const float thickness = 1.f,
+      const sf::Color& lineColor = sf::Color::White);
   /**
    * @brief plot a function R -> R², i.e. a set of points. The data is cached
    *   and not recomputed until user request an update with forcePlotUpdate.
    */
   void plot (
-         const std::function<sf::Vector2f (float)>& slope,
-         const float thickness = 1.f,
-         const sf::Color& lineColor = sf::Color::White);
+      const std::function<sf::Vector2f (float)>& slope,
+      const float thickness = 1.f,
+      const sf::Color& lineColor = sf::Color::White);
   /**
    * @brief plot a set of points.
    */
   void plot (
-         const std::vector<sf::Vector2f>& points,
-         const float thickness = 1.f,
-         const sf::Color& lineColor = sf::Color::White);
+      const std::vector<sf::Vector2f>& points,
+      const float thickness = 1.f,
+      const sf::Color& lineColor = sf::Color::White);
   /**
    * @brief force cache update
    */
@@ -424,25 +427,16 @@ private:
   void addLastVerticalSpacing (const float amount = 1.f);
   void addLastHorizontalSpacing (const float amount = 1.f);
   // begin/end a group (subjacent struct of window/box/etc.)
-  void beginGroup (
-         const bool horizontal,
-         const sf::Vector2f& position,
-         const sf::Vector2f& size);
+  void beginGroup (const bool horizontal, const sf::Vector2f& position, const sf::Vector2f& size);
   void endGroup ();
   // window or panel utility functions
-  sf::Vector2f computePosition (
-         const Panel& settings,
-         const Constraints& constraint);
+  sf::Vector2f computePosition (const Panel& settings, const Constraints& constraint);
   // for nested clipping layer, this need to be called before beginGroup.
   sf::FloatRect handleParentClipBox (const sf::FloatRect& box);
   // this need to be called after endGroup to clean clipping layer.
   void removeClipping ();
   // move a group with the mouse if its possible
-  ItemState interactWithMouse (
-         Panel& settings,
-         const sf::FloatRect& box,
-         const std::string& name,
-         const Tooltip& info);
+  ItemState interactWithMouse (Panel& settings, const sf::FloatRect& box, const std::string& name, const Tooltip& info);
   // cache plot data
   void cachePlotData (const std::function<float (float)>& slope);
   void cachePlotData (const std::function<sf::Vector2f (float)>& slope);
@@ -450,84 +444,37 @@ private:
   void handlePlotBound ();
   // for scrollable panel or window
   bool isPanelScrollable (const Impl::GroupData& panel);
-  bool scrollThroughPanel (
-         Impl::GroupData& panel,
-         const sf::FloatRect& panelBox,
-         const ItemState panelState,
-         const bool horizontal);
-  sf::Vector2f scroller (
-         float& scrollPercent,
-         const sf::FloatRect& panelBox,
-         const sf::Vector2f& scrollSize,
-         const ItemState panelState,
-         const bool horizontal);
+  bool scrollThroughPanel (Impl::GroupData& panel, const sf::FloatRect& panelBox, const ItemState panelState, const bool horizontal);
+  sf::Vector2f scroller (float& scrollPercent, const sf::FloatRect& panelBox, const sf::Vector2f& scrollSize, const ItemState panelState, const bool horizontal);
   // to handle scroll bar in a slider
-  float sliderBar (
-         const sf::FloatRect& parentBox,
-         const ItemState state,
-         const float scrollPercent,
-         const bool horizontal);
+  float sliderBar (const sf::FloatRect& parentBox, const ItemState state, const float scrollPercent, const bool horizontal);
   // to handle scroll bar in a scroller
-  float scrollerBar (
-         const sf::FloatRect& parentBox,
-         const ItemState state,
-         const float scrollPercent,
-         const float extraSize,
-         const bool horizontal);
+  float scrollerBar (const sf::FloatRect& parentBox, const ItemState state, const float scrollPercent, const float extraSize, const bool horizontal);
   // to handle shifting value of scroller/slider
   template <typename Type>
-  Type sliderValue (
-         const sf::FloatRect& box,
-         const Type min,
-         const Type max,
-         const bool horizontal);
+  Type sliderValue (const sf::FloatRect& box, const Type min, const Type max, const bool horizontal);
   // draw tooltip of the hovered item
   void tooltip (const float apparitionDelay);
   bool tooltipNeedReset ();
   // to manage each item in a dropList
-  bool dropListItem (
-         float& clock,
-         const std::string& selectedName,
-         const std::string& itemName,
-         const sf::Vector2f& itemSize);
+  bool dropListItem (float& clock, const std::string& selectedName, const std::string& itemName, const sf::Vector2f& itemSize);
   // Utility function that return status of widget, it is not clickable by default
-  ItemState itemStatus (
-         const sf::FloatRect& boundingbox,
-         const std::string& item,
-         const bool condition = false,
-         const Tooltip& tooltip = {},
-         const bool forceActive = false);
+  ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition = false, const Tooltip& tooltip = {}, const bool forceActive = false);
   // handle all edge cases and special keys
   void handleKeyInput (std::string& text);
   // handle key for inputNumber
   template <typename Type>
-  void handleNumberKeyInput (
-         Type& number,
-         const bool focused,
-         const Type min,
-         const Type max);
+  void handleNumberKeyInput (Type& number, const bool focused, const Type min, const Type max);
   template <typename Type>
-  Type convertKeyIntoNumber (
-         std::string& key,
-         const Type min,
-         const Type max);
+  Type convertKeyIntoNumber (std::string& key, const Type min, const Type max);
   // format text to fit in a box
-  std::string formatText (
-         const std::string& text,
-         const sf::Vector2f& boxSize,
-         const TextType type = TextType::Normal);
+  std::string formatText (const std::string& text, const sf::Vector2f& boxSize, const TextType type = TextType::Normal);
   // get font size
   uint32_t getFontSize (const TextType type) const;
   // format text for fontawesome use
-  void handleTextDrawing (
-         const sf::Vector2f& position,
-         const std::string& text,
-        const TextType fontSize = TextType::Normal);
+  void handleTextDrawing (const sf::Vector2f& position, const std::string& text, const TextType fontSize = TextType::Normal);
   // draw a fontawesome icon
-  void fontawesomeIcon (
-        const sf::Vector2f& position,
-        const std::string& icon,
-        const uint32_t fontSize);
+  void fontawesomeIcon (const sf::Vector2f& position, const std::string& icon, const uint32_t fontSize);
   // to compute widget name and relative position to the cursor/group
   std::string initializeActivable (const std::string& key);
   sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
@@ -536,9 +483,7 @@ private:
   bool isValid (const Slices slices) const;
   bool isValid (const ItemState state) const;
   // to draw text description of widgets
-  sf::Vector2f widgetDescription (
-         const sf::Vector2f& position,
-         const std::string& description);
+  sf::Vector2f widgetDescription (const sf::Vector2f& position, const std::string& description);
   // to compute widget spacing and scrolling
   void updateSpacing (const sf::Vector2f& size);
   void updateScrolling ();
@@ -549,7 +494,6 @@ private:
   // to play sounds
   void playSound (const ItemState state);
 private:
-  bool mSoundIsOn = false;
   // plot parameters
   bool mPlotIsBounded = false;
   uint32_t mPlotSample = 50u;
@@ -557,7 +501,7 @@ private:
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   // Scroll intensity
-  float mPixelsPerScroll = 20.f;
+  float mPixelsPerScroll = 40.f;
   // data to keep track of same line call
   sf::Vector2f mResetCursorPosition = {};
   std::stack <sf::Vector2f> mSameLinePosition;
@@ -572,6 +516,7 @@ private:
   sf::Vector2f mPlotBound;
   std::string mActiveInputNumber;
   // to play sound
+  bool mSoundIsOn = false;
   std::string mPreviousWidgetSoundId = "";
   std::string mActiveWidgetSoundId = "";
   SoundPlayer mSoundPlayer;

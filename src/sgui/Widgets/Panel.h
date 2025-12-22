@@ -3,6 +3,7 @@
 #include <string>
 #include <functional>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "sgui/Widgets/Options.h"
 
@@ -16,12 +17,8 @@ namespace sgui
 struct Panel
 {
   Panel () = default;
-  Panel (
-         const sf::Vector2f& s,
-         const sf::Vector2f& pos = {},
-         const bool vis = true,
-         const bool header = true)
-    : visible (vis), hasHeader (header), position (pos), size (s) {}
+  Panel (const sf::FloatRect& box, const bool vis = true, const bool header = true)
+    : visible (vis), hasHeader (header), position (box.position), size (box.size) {}
   // data
   bool clipped    = true;
   bool closable   = false;

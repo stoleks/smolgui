@@ -26,10 +26,8 @@ enum class TextType {
 struct Tooltip
 {
   Tooltip () = default;
-  Tooltip (const std::function <void (void)>& def,
-    const bool lock = false,
-    const bool activ = true)
-    : locked (lock), active (activ), display (def) {}
+  Tooltip (const std::function <void (void)>& d, const bool l = false, const bool a = true)
+    : locked (l), active (a), display (d) {}
   // data
   bool locked = false;
   bool active = false;
@@ -63,15 +61,14 @@ struct WidgetOptions
   WidgetOptions (const Widget w, const Slices s = Slices::One, const ItemState is = ItemState::None)
     : widget (w), slices (s), state (is) {}
   // data
-  bool horizontal = false;
-  sf::Vector2f size = { 6.f, 1.f }; // for slider, progress bar and image
-  sf::Vector2f displacement = {};
-  std::string description = "";
-  Tooltip tooltip = {};
-  // to control appearance of widgets
-  Widget widget = Widget::None;
-  Slices slices = Slices::Default;
-  ItemState state = ItemState::None;
+  bool horizontal = false;           ///< Is widget horizontal or vertical ?
+  sf::Vector2f size = { 6.f, 1.f };  ///< For slider and progress bar
+  sf::Vector2f displacement = {};    ///< To override automatic position
+  std::string description = "";      ///< Widget description
+  Tooltip tooltip = {};              ///< Tooltip
+  Widget widget = Widget::None;      ///< Widget type
+  Slices slices = Slices::Default;   ///< Change default widget slicing
+  ItemState state = ItemState::None; ///< To force a specific state for a widget
 };
 
 /**

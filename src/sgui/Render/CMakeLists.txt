@@ -21,6 +21,7 @@ set (HELPER_SRC
   ${INCROOT}/MeshFunctions.h
   ${SRCROOT}/TextureMeshes.cpp
   ${INCROOT}/TextureMeshes.h
+  ${INCROOT}/DrawOptions.h
 )
 source_group ("drawable helper" FILES ${HELPER_SRC})
 

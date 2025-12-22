@@ -80,7 +80,7 @@ void Gui::inputNumber (
   auto width = textSize (label + "10000").x;
   if (!fixedWidth) {
     if constexpr (std::is_floating_point_v <Type>) {
-      width = std::max (width, textSize (label + fmt::format ("{:7.2f}", number)).x);
+      width = std::max (width, textSize (label + fmt::format ("{:7.2}", number)).x);
     } else {
       width = std::max (width, textSize (label + fmt::format ("{}", number)).x);
     }
