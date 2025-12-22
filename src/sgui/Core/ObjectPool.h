@@ -9,84 +9,89 @@ namespace sgui
 {
 /**  
  * @brief: implement a generic pool of objects that are stored continuously in
-    memory without fragmentation, and its more or less thread safe
-  */
-template <typename Object,
-          typename ObjectId = uint32_t>
+ *   memory without fragmentation, and is in theory thread safe
+ */
+template <typename Object, typename ObjectId = uint32_t>
 class ObjectPool
 {
 public:
+  /**
+   * Big five
+   */
   ObjectPool () = default;
   ObjectPool (ObjectPool <Object, ObjectId>&& rhs);
   ObjectPool (const ObjectPool <Object, ObjectId>& rhs);
   ObjectPool& operator=(ObjectPool <Object, ObjectId>&& rhs);
   ObjectPool& operator=(const ObjectPool <Object, ObjectId>& rhs);
   /**
-   * add object in pool
+   * @brief Add object in pool
+   * @param object Object to be added
+   * @param id Identifier that will serve to retrieve object
    */
-  Object& add (
-         Object&& object,
-         const ObjectId id);
-  Object& add (
-         const Object& object,
-         const ObjectId id);
+  Object& add (Object&& object, const ObjectId& id);
+  Object& add (const Object& object, const ObjectId& id);
   /**
-   * to build a new object in pool
+   * @brief Build a new object in pool
+   * @param id Identifier that will serve to retrieve object
+   * @params constructorArgs Parameters used to build object
    */
   template <typename... ObjectArgs>
-  Object& emplace (
-         const ObjectId id,
-         ObjectArgs&&... constructorArgs);
+  Object& emplace (const ObjectId& id, ObjectArgs&&... constructorArgs);
   /**
-   * remove object from pool
+   * @brief Remove a specific object from pool
+   * @param object Identifier of the object to be removed
    */
-  void remove (const ObjectId object);
+  void remove (const ObjectId& object);
   /**
-   * to reserve some amount of memory
+   * @brief Reserve some amount of memory
+   * @param amount Amount reserved in memory
    */
   void reserve (const size_t amount);
   /**
-   * to clear data
+   * @brief Clear data in object pool
    */
   void clear ();
   /**
-   * to test if an object exist in pool
+   * @brief Test if an object exists in pool
+   * @param object Identifier of the object searched
    */
-  bool has (const ObjectId object) const;
+  bool has (const ObjectId& object) const;
+  /**
+   * @brief Test if pool is empty
+   * @return True if the pool is empty
+   */
   bool empty () const;
   /**
-   * access object in pool
+   * @brief Get oject in pool
+   * @param object Identifier of the object searched
+   * @return Object with required identifier
    */
-  Object& get (const ObjectId object);
-  const Object& get (const ObjectId object) const;
+  Object& get (const ObjectId& object);
+  const Object& get (const ObjectId& object) const;
   /**
-   * get objects stored in pool
+   * @brief Change id of a stored object
+   * @param oldId Old identifier of the object
+   * @param newId New identifier of the object
    */
-  std::vector<Object>& objects ();
-  const std::vector<Object>& objects () const;
+  void changeId (const ObjectId& oldId, const ObjectId& newId);
   /**
-   * change id of a stored object
-   */
-  void changeId (
-         const ObjectId oldId,
-         const ObjectId newId);
-  /**
-   * get list of ids used to store object
+   * @brief Get list of all identifiers used to store object
    */
   std::vector<ObjectId> ids () const;
   /**
-   * to get count of pooled objects
+   * @brief Get count of pooled objects
+   * @return Return count of the pooled objects
    */
   size_t size () const;
   /**
-   * to iterate through pooled objects
+   * To iterate through pooled objects
    */
   auto begin () { return std::begin (mObjects); }
   auto end ()   { return std::end (mObjects); }
   auto begin () const { return std::cbegin (mObjects); }
   auto end ()   const { return std::cend (mObjects); }
 private:
-  void trackSlot (const ObjectId slot);
+  void trackSlot (const ObjectId& slot);
 private:
   using MutexType = std::shared_timed_mutex;
   using ReadLock  = std::shared_lock <MutexType>;
@@ -99,4 +104,4 @@ private:
 
 } // namespace sgui
 
-#include "ObjectPool.tpp"
+#include "sgui/Core/ObjectPool.tpp"

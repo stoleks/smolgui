@@ -48,10 +48,7 @@ public:
    * @param textureRect Texture position and size
    * @param framesCount Number of frames in the animation if needed (1 by default)
    */
-  void add (
-         const std::string& entry,
-         sf::IntRect&& textureRect,
-         const uint32_t framesCount = 1);
+  void add (const std::string& entry, sf::IntRect&& textureRect, const uint32_t framesCount = 1);
   /**
    * @brief Remove a texture from the atlas
    * @param entry Texture name
@@ -72,11 +69,9 @@ public:
    * @param frame Texture frame it its part of an animation
    * @return Texture rect if it's stored in the atlas, `std::nullopt` otherwise
    */
-  std::optional <sf::IntRect> textureRect (
-         const std::string& entry,
-         const uint32_t frame = 0) const;
+  std::optional <sf::IntRect> textureRect (const std::string& entry, const uint32_t frame = 0) const;
   /**
-   * iterator to store TextureAtlas in json
+   * Iterator to store TextureAtlas in json
    */
   auto begin () { return std::begin (mAtlas); }
   auto end ()   { return std::end (mAtlas); }

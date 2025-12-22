@@ -29,10 +29,10 @@ struct Tooltip
   Tooltip (const std::function <void (void)>& d, const bool l = false, const bool a = true)
     : locked (l), active (a), display (d) {}
   // data
-  bool locked = false;
-  bool active = false;
-  std::string parent = "";
-  std::function <void (void)> display;
+  bool locked = false;                 ///< is tooltip locked ?
+  bool active = false;                 ///< is tooltip active ?
+  std::string parent = "";             ///< widget parent identifier
+  std::function <void (void)> display; ///< function called to display tooltip
 };
 
 /////////////////////////////////////////////////
@@ -81,10 +81,10 @@ struct TextOptions
   TextOptions (const HorizontalAlignment alignment) : horizontal (alignment) {}
   TextOptions (const sf::Vector2f& size) : boxSize (size) {}
   // data
-  VerticalAlignment vertical = VerticalAlignment::None;
-  HorizontalAlignment horizontal = HorizontalAlignment::None;
-  TextType type = TextType::Normal;
-  sf::Vector2f boxSize = {};
+  VerticalAlignment vertical = VerticalAlignment::None;       ///< vertical alignment
+  HorizontalAlignment horizontal = HorizontalAlignment::None; ///< horizontal alignment
+  TextType type = TextType::Normal;                           ///< type of text
+  sf::Vector2f boxSize = {};                                  ///< box that contains text, no box = no limit
 };
 
 } // namespace sgui

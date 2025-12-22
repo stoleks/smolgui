@@ -44,9 +44,7 @@ public:
    */
   Resource& get (const Identifier& id);
 private:
-  /**
-   * hold resource and check that it possess unique id
-   */
+  // Hold resource and check that it has a unique id
   void holdResource (
          std::unique_ptr <Resource>&& resource,
          const Identifier& id,
@@ -84,4 +82,4 @@ namespace sgui {
   using TextHolder    = ResourcesHolder <TextContainer>;
 }
 
-#include "ResourcesHolder.tpp"
+#include "sgui/Resources/ResourcesHolder.tpp"

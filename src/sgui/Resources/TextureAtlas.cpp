@@ -1,6 +1,5 @@
-#include "TextureAtlas.h"
-
 #include <spdlog/spdlog.h>
+#include "sgui/Resources/TextureAtlas.h"
 #include "sgui/Serialization/LoadTextureAtlas.h"
 
 namespace sgui

@@ -1,13 +1,10 @@
 namespace sgui
 {
-/**
- * Line functions
- */
+
+/// Line
 /////////////////////////////////////////////////
 template <typename Type>
-Line<Type>::Line (
-  const sf::Vector2<Type>& begin,
-  const sf::Vector2<Type>& end)
+Line<Type>::Line (const sf::Vector2<Type>& begin, const sf::Vector2<Type>& end)
   : tail (begin), head (end)
 {}
 
@@ -18,26 +15,17 @@ sf::Vector2<Type> Line<Type>::direction () const
   return head - tail;
 }
 
-/**
- * Circle functions
- */
+/// Circle
 /////////////////////////////////////////////////
 template <typename Type>
-Circle<Type>::Circle (
-  const sf::Vector2<Type>& c,
-  Type r)
-  : radius (r),
-    center (c)
+Circle<Type>::Circle (const sf::Vector2<Type>& c, Type r)
+  : radius (r), center (c)
 {}
 
-
-/**
-* utility functions, center of a polygon/set of points
-*/
+/// Utility
 /////////////////////////////////////////////////
 template<typename Type>
-constexpr sf::Vector2f centroid (
-  const std::vector<sf::Vector2 <Type>>& vertices)
+constexpr sf::Vector2f centroid (const std::vector<sf::Vector2 <Type>>& vertices)
 {
   sf::Vector2f centroid;
   float signedArea = 0.f;

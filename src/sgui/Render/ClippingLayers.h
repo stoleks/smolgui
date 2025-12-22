@@ -46,10 +46,7 @@ public:
    */
   const sf::View& at (const uint32_t layerId) const;
 public:
-  /**
-   * @brief base view of the clipping layers 
-   */
-  sf::View baseView = {};
+  sf::View baseView = {}; ///< Base view of the clipping layers
 private:
   // clipping layer
   uint32_t mActiveLayer = 0;

@@ -1,15 +1,11 @@
-#include "TextureMeshes.h"
-
-#include <spdlog/spdlog.h>
-
-#include "MeshFunctions.h"
+#include "sgui/Render/TextureMeshes.h"
+#include "sgui/Render/MeshFunctions.h"
 #include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui
 {
 /////////////////////////////////////////////////
-void TextureMeshes::computeTextureMapping (
-  const TextureAtlas& map)
+void TextureMeshes::computeTextureMapping (const TextureAtlas& map)
 {
   // cache every textures specified in the atlas
   uint32_t count = 0u;

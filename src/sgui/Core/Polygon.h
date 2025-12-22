@@ -1,20 +1,14 @@
-/**
-  Polygon.h
-  Purpose : Simple data structure to make regular polygons and compute their center.
-  @author A. J.
-*/
-
 #pragma once
 
 #include <cmath>
-#include "Shapes.h"
+#include "sgui/Core/Shapes.h"
 
 namespace sgui
 {
 /////////////////////////////////////////////////
 /**
- * Polygon is a series of N points, ranged in
- * clock-wise order and that form a convex shape.
+ * @brief Polygon is a series of N points, ranged in clock-wise order and
+ * that form a convex shape.
  */
 template <size_t N>
 struct Polygon {
@@ -27,23 +21,21 @@ using Hexagon  = Polygon <6>;
 using Octogon  = Polygon <8>;
 
 /**
- * make a regular polygon, like hexagon or octogon
+ * @brief make a regular polygon, like hexagon or octogon, around a center
  */
 template <size_t N>
-Polygon<N> makeRegularPolygon (
-  const sf::Vector2f& center,
-  const float size);
+Polygon<N> makeRegularPolygon (const sf::Vector2f& center, const float size);
 
 
 /////////////////////////////////////////////////
 /**
- * Return center of polygon
+ * @brief Return center of polygon
  */
 template <size_t N>
 constexpr sf::Vector2f centroid (const Polygon<N>& polygon);
 
 /**
- * return a box bounding polygon
+ * @brief Return a box that bounds polygon
  */
 template <size_t N>
 constexpr sf::FloatRect boundingBox (const Polygon<N>& polygon);
@@ -51,4 +43,4 @@ constexpr sf::FloatRect boundingBox (const Polygon<N>& polygon);
 } // namespace sgui
 
 
-#include "Polygon.tpp"
+#include "sgui/Core/Polygon.tpp"

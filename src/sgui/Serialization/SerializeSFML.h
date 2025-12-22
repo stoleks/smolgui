@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector3.hpp>
 
-#include "Macro.h"
+#include "sgui/Serialization/Macro.h"
 
 // for readability
 using json = nlohmann::json;

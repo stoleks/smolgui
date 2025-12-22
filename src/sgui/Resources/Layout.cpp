@@ -1,5 +1,4 @@
-#include "Layout.h"
-
+#include "sgui/Resources/Layout.h"
 #include "sgui/Serialization/LoadLayout.h"
 
 namespace sgui
@@ -23,8 +22,7 @@ void Layout::saveInFile (const bool compact)
 }
 
 /////////////////////////////////////////////////
-std::vector <std::string> Layout::entries (
-  const std::string& set) const
+std::vector <std::string> Layout::entries (const std::string& set) const
 {
   if (m_layoutEntries.find (set) != std::end (m_layoutEntries)) {
     return m_layoutEntries.at (set);

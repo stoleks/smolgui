@@ -33,21 +33,4 @@ struct Style
   float itemSpacing = 5.f;
 };
 
-/////////////////////////////////////////////////
-/**
- * @brief define identifier for icon
- */
-using IconID = std::string;
-
-/**
- * @brief define standard gui icon information
- */
-struct Icon
-{
-  Icon () = default;
-  // data
-  IconID name;
-  sf::Vector2f position;
-};
-
 } // namespace sgui

@@ -20,19 +20,19 @@ struct Panel
   Panel (const sf::FloatRect& box, const bool vis = true, const bool header = true)
     : visible (vis), hasHeader (header), position (box.position), size (box.size) {}
   // data
-  bool clipped    = true;
-  bool closable   = false;
-  bool closed     = false;
-  bool visible    = true;
-  bool hasHeader  = true;
-  bool hasMenu    = false;
-  bool movable    = true;
-  bool reduced    = false;
-  bool scrollable = true;
-  bool isScrolled = false;
-  sf::Vector2f position = {};
-  sf::Vector2f size = {};
-  std::string title = "";
+  bool clipped    = true;     ///< is contents clipped ?
+  bool closable   = false;    ///< is it closable ?
+  bool closed     = false;    ///< is it closed ?
+  bool visible    = true;     ///< is it rendered ?
+  bool hasHeader  = true;     ///< has it an header ?
+  bool hasMenu    = false;    ///< has it a menu ?
+  bool movable    = true;     ///< is it movable ?
+  bool reduced    = false;    ///< is it reduced (header only) ?
+  bool scrollable = true;     ///< is it scrollable ?
+  bool isScrolled = false;    ///< is it scrolled ?
+  sf::Vector2f position = {}; ///< position of the panel
+  sf::Vector2f size = {};     ///< size of the panel
+  std::string title = "";     ///< title of the panel
 };
 
 /////////////////////////////////////////////////
@@ -43,9 +43,9 @@ struct Window
 {
   Window () = default;
   // data
-  Panel panel = {};
-  Constraints constraints = {};
-  WidgetOptions options = {};
+  Panel panel = {};             ///< panel of the window
+  Constraints constraints = {}; ///< position constraints 
+  WidgetOptions options = {};   ///< options of the window
 };
 
 } // namespace sgui

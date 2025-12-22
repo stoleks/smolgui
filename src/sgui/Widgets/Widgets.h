@@ -36,9 +36,9 @@ enum class Widget
  * @brief Defines number of slices for stretchable widgets
  */
 enum class Slices {
-  One,
-  Three,
-  Nine,
+  One,   // one image fully stretched
+  Three, // image cut in three with ends un-stretched
+  Nine,  // image cut in nine, with corners un-stretched
   Default
 };
 

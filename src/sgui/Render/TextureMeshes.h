@@ -18,17 +18,18 @@ class TextureMeshes
 {
 public:
   /**
-   * @brief compute texture mapping, this should be called before any texture() call
+   * @brief Compute texture mapping, this should be called before any texture() call
+   * @param texture Atlas of all the textures in the files
    */
   void computeTextureMapping (const TextureAtlas& textures);
   /**
    * @brief get computed texture mesh of an entry
+   * @param textureID Identifier of the texture
+   * @param frame Frame number of the texture, if it is animated
    */
-  Mesh texture (
-         const std::string& textureID,
-         const uint32_t frame = 0) const;
+  Mesh texture (const std::string& textureID, const uint32_t frame = 0) const;
   /**
-   * to iterate through stored meshes
+   * To iterate through stored meshes
    */
   auto begin () { return std::begin (mTextureMeshes); }
   auto end ()   { return std::end (mTextureMeshes); }
@@ -38,9 +39,8 @@ private:
   // For a clearer internal interface
   struct FrameAndIndex {
     FrameAndIndex () = default;
-    FrameAndIndex (uint32_t count, uint32_t index) :
-      framesCount (count), textureIndex (index)
-    {}
+    FrameAndIndex (uint32_t count, uint32_t index) 
+      : framesCount (count), textureIndex (index) {}
     uint32_t framesCount = 0u;
     uint32_t textureIndex = 0u;
   };

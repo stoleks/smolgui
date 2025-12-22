@@ -18,11 +18,10 @@ struct LayoutEntry
 {
   LayoutEntry () = default;
   // data
-  Icon icon;
   Panel panel;
+  Window window;
   sf::Vector2f position;
   Constraints constraints;
-  Window window;
 };
 
 
@@ -33,9 +32,7 @@ struct LayoutEntry
 template <typename LayoutData>
 constexpr std::string layoutTypeName ()
 {
-  if constexpr (std::is_same_v <LayoutData, Icon>) {
-    return std::string ("Icon::");
-  } else if constexpr (std::is_same_v <LayoutData, Panel>) {
+  if constexpr (std::is_same_v <LayoutData, Panel>) {
     return std::string ("Panel::");
   } else if constexpr (std::is_same_v <LayoutData, sf::Vector2f>) {
     return std::string ("Position::");
@@ -101,4 +98,4 @@ private:
 
 } // namespace sgui
 
-#include "Layout.tpp"
+#include "sgui/Resources/Layout.tpp"

@@ -34,7 +34,7 @@ enum class HorizontalAlignment
  */
 struct Constraints
 {
-  // data, zero means no constraints for position
+  // zero means no constraints for position
   VerticalAlignment vertical = VerticalAlignment::None;
   HorizontalAlignment horizontal = HorizontalAlignment::None;
   sf::Vector2f relativePosition = {};

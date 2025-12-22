@@ -3,10 +3,8 @@ namespace sgui
 /////////////////////////////////////////////////
 // Ctor
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-ObjectPool <Object, ObjectId>::ObjectPool (
-  ObjectPool <Object, ObjectId>&& rhs)
+template <typename Object, typename ObjectId>
+ObjectPool <Object, ObjectId>::ObjectPool (ObjectPool <Object, ObjectId>&& rhs)
 {
   WriteLock rhsLock (rhs.mMutex);
   mIdToSlot = std::move (rhs.mIdToSlot);
@@ -15,10 +13,8 @@ ObjectPool <Object, ObjectId>::ObjectPool (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-ObjectPool <Object, ObjectId>::ObjectPool (
-  const ObjectPool <Object, ObjectId>& rhs)
+template <typename Object, typename ObjectId>
+ObjectPool <Object, ObjectId>::ObjectPool (const ObjectPool <Object, ObjectId>& rhs)
 {
   WriteLock rhsLock (rhs.mMutex);
   mIdToSlot = rhs.mIdToSlot;
@@ -27,11 +23,9 @@ ObjectPool <Object, ObjectId>::ObjectPool (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 ObjectPool <Object, ObjectId>&
-ObjectPool <Object, ObjectId>::operator= (
-  ObjectPool <Object, ObjectId>&& rhs)
+ObjectPool <Object, ObjectId>::operator= (ObjectPool <Object, ObjectId>&& rhs)
 {
   if (this != &rhs) {
     WriteLock lhsLock (mMutex, std::defer_lock);
@@ -45,11 +39,9 @@ ObjectPool <Object, ObjectId>::operator= (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 ObjectPool <Object, ObjectId>&
-ObjectPool <Object, ObjectId>::operator= (
-  const ObjectPool <Object, ObjectId>& rhs)
+ObjectPool <Object, ObjectId>::operator= (const ObjectPool <Object, ObjectId>& rhs)
 {
   if (this != &rhs) {
     WriteLock lhsLock (mMutex, std::defer_lock);
@@ -66,11 +58,8 @@ ObjectPool <Object, ObjectId>::operator= (
 /////////////////////////////////////////////////
 // Class impl
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-Object& ObjectPool <Object, ObjectId>::add (
-  Object&& object,
-  const ObjectId id)
+template <typename Object, typename ObjectId>
+Object& ObjectPool <Object, ObjectId>::add (Object&& object, const ObjectId& id)
 {
   // quit if id exist in pool
   if (has (id)) return mObjects.back ();
@@ -78,18 +67,13 @@ Object& ObjectPool <Object, ObjectId>::add (
   // add object in pool and return it
   trackSlot (id);
   WriteLock lock (mMutex);
-  mObjects.emplace_back (
-    std::forward <Object> (object)
-  );
+  mObjects.emplace_back (std::forward <Object> (object));
   return mObjects.back ();
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-Object& ObjectPool <Object, ObjectId>::add (
-  const Object& object,
-  const ObjectId id)
+template <typename Object, typename ObjectId>
+Object& ObjectPool <Object, ObjectId>::add (const Object& object, const ObjectId& id)
 {
   // quit if id exist in pool
   if (has (id)) return mObjects.back ();
@@ -102,12 +86,9 @@ Object& ObjectPool <Object, ObjectId>::add (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 template <typename... ObjectArgs>
-Object& ObjectPool <Object, ObjectId>::emplace (
-  const ObjectId id,
-  ObjectArgs&&... constructorArgs)
+Object& ObjectPool <Object, ObjectId>::emplace (const ObjectId& id, ObjectArgs&&... constructorArgs)
 {
   // quit if id exist in pool
   if (has (id)) return mObjects.back ();
@@ -115,17 +96,13 @@ Object& ObjectPool <Object, ObjectId>::emplace (
   // emplace object in pool and return it
   trackSlot (id);
   WriteLock lock (mMutex);
-  mObjects.emplace_back (
-    std::forward <ObjectArgs> (constructorArgs)...
-  );
+  mObjects.emplace_back (std::forward <ObjectArgs> (constructorArgs)...);
   return mObjects.back ();
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-void ObjectPool <Object, ObjectId>::remove (
-  const ObjectId object)
+template <typename Object, typename ObjectId>
+void ObjectPool <Object, ObjectId>::remove (const ObjectId& object)
 {
   // quit if id does not exist in pool
   if (!has (object)) return;
@@ -147,10 +124,8 @@ void ObjectPool <Object, ObjectId>::remove (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-void ObjectPool <Object, ObjectId>::reserve (
-  const size_t amount)
+template <typename Object, typename ObjectId>
+void ObjectPool <Object, ObjectId>::reserve (const size_t amount)
 {
   WriteLock lock (mMutex);
   mIdToSlot.reserve (amount);
@@ -159,8 +134,7 @@ void ObjectPool <Object, ObjectId>::reserve (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 void ObjectPool <Object, ObjectId>::clear ()
 {
   WriteLock lock (mMutex);
@@ -170,18 +144,15 @@ void ObjectPool <Object, ObjectId>::clear ()
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-bool ObjectPool <Object, ObjectId>::has (
-  const ObjectId object) const
+template <typename Object, typename ObjectId>
+bool ObjectPool <Object, ObjectId>::has (const ObjectId& object) const
 {
   ReadLock lock (mMutex);
   return mIdToSlot.find (object) != std::cend (mIdToSlot);
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 bool ObjectPool <Object, ObjectId>::empty () const
 {
   ReadLock lock (mMutex);
@@ -189,51 +160,24 @@ bool ObjectPool <Object, ObjectId>::empty () const
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-Object& ObjectPool <Object, ObjectId>::get (
-  const ObjectId object)
+template <typename Object, typename ObjectId>
+Object& ObjectPool <Object, ObjectId>::get (const ObjectId& object)
 {
   ReadLock lock (mMutex);
   return mObjects [mIdToSlot [object]];
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-const Object& ObjectPool <Object, ObjectId>::get (
-  const ObjectId object) const
+template <typename Object, typename ObjectId>
+const Object& ObjectPool <Object, ObjectId>::get (const ObjectId& object) const
 {
   ReadLock lock (mMutex);
   return mObjects [mIdToSlot.at (object)];
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-std::vector <Object>&
-ObjectPool <Object, ObjectId>::objects ()
-{
-  ReadLock lock (mMutex);
-  return mObjects;
-}
-
-/////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-const std::vector <Object>&
-ObjectPool <Object, ObjectId>::objects () const
-{
-  ReadLock lock (mMutex);
-  return mObjects;
-}
-
-/////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-void ObjectPool <Object, ObjectId>::changeId (
-  const ObjectId oldId,
-  const ObjectId newId)
+template <typename Object, typename ObjectId>
+void ObjectPool <Object, ObjectId>::changeId (const ObjectId& oldId, const ObjectId& newId)
 {
   WriteLock lock (mMutex);
   const auto slot = mIdToSlot [oldId];
@@ -243,8 +187,7 @@ void ObjectPool <Object, ObjectId>::changeId (
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 std::vector <ObjectId>
 ObjectPool <Object, ObjectId>::ids () const
 {
@@ -258,8 +201,7 @@ ObjectPool <Object, ObjectId>::ids () const
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
+template <typename Object, typename ObjectId>
 size_t ObjectPool <Object, ObjectId>::size () const
 {
   ReadLock lock (mMutex);
@@ -267,10 +209,8 @@ size_t ObjectPool <Object, ObjectId>::size () const
 }
 
 /////////////////////////////////////////////////
-template <typename Object,
-          typename ObjectId>
-void ObjectPool <Object, ObjectId>::trackSlot (
-  const ObjectId id)
+template <typename Object, typename ObjectId>
+void ObjectPool <Object, ObjectId>::trackSlot (const ObjectId& id)
 {
   // compute slot and keep track of it and of id
   WriteLock lock (mMutex);

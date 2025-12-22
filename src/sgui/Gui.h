@@ -544,4 +544,4 @@ private:
 
 } // namespace sgui
 
-#include "Gui.tpp"
+#include "sgui/Gui.tpp"

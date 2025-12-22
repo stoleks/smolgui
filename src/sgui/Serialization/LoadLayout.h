@@ -10,13 +10,7 @@ class Layout;
 /**
  * save/load GuiLayout in json
  */
-bool loadFromFile (
-  Layout& layout,
-  const std::string& file);
-
-void saveInFile (
-  const Layout& layout,
-  const std::string& file,
-  const bool compact = false);
+bool loadFromFile (Layout& layout, const std::string& file);
+void saveInFile (const Layout& layout, const std::string& file, const bool compact = false);
 
 } // namespace sgui

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+
 #include "sgui/Widgets/Panel.h"
 #include "sgui/Resources/Layout.h"
 #include "sgui/Resources/TextureAtlas.h"
-#include "SerializeSFML.h"
+#include "sgui/Serialization/SerializeSFML.h"
 
 // for readability
 using json = nlohmann::json;
@@ -32,13 +33,9 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Constraints, vertical, horizont
  */
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Window, panel, constraints);
 /**
- * Icon
- */
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (Icon, name, position);
-/**
  * LayoutEntry
  */
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (LayoutEntry, icon, panel, position, constraints, window);
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT (LayoutEntry, panel, position, constraints, window);
 
 /**
  * convert VerticalAlignment to/from json

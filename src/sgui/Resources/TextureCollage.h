@@ -2,7 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics/Image.hpp>
-#include "TextureAtlas.h"
+#include "sgui/Resources/TextureAtlas.h"
 
 namespace sgui 
 {
@@ -13,8 +13,8 @@ struct CollageOptions {
   CollageOptions () = default;
   CollageOptions (const sf::Color& c);
   // data
-  bool useMask = false;
-  sf::Color maskColor = sf::Color::White;
+  bool useMask = false;                   ///< Use a mask to suppress a background color
+  sf::Color maskColor = sf::Color::White; ///< Background color to be suppressed
 };
 
 /**
@@ -29,10 +29,10 @@ public:
 public:
   /**
    * @brief build a texture from a collage of all images in the directory
+   * @param directory Directory from which all images will be patched
+   * @param options If a color need to be removed from images
    */
-  TextureCollage (
-      const std::string& directory,
-      const CollageOptions& options = {});
+  TextureCollage (const std::string& directory, const CollageOptions& options = {});
   /**
    * @brief get texture collage
    */

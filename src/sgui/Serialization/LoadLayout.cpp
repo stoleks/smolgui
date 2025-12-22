@@ -1,7 +1,5 @@
-#include "LoadLayout.h"
-
 #include <spdlog/spdlog.h>
-
+#include "sgui/Serialization/LoadLayout.h"
 #include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"
 #include "sgui/Serialization/SerializeSFML.h"
@@ -35,12 +33,6 @@ bool loadFromFile (
     else if (key.find (layoutTypeName <Panel> ()) != end) {
       auto data = LayoutEntry ();
       data.panel = entry.value ().get <Panel> ();
-      layout.add (file, key, std::move (data));
-    }
-    // or an icon
-    else if (key.find (layoutTypeName <Icon> ()) != end) {
-      auto data = LayoutEntry ();
-      data.icon = entry.value ().get <Icon> ();
       layout.add (file, key, std::move (data));
     }
     // or a window
@@ -80,10 +72,6 @@ void saveInFile (
     // panel
     else if (entry.find (layoutTypeName <Panel> ()) != end) {
       out [entry] = layout.get <Panel> (entry, false);
-    }
-    // icon
-    else if (entry.find (layoutTypeName <Icon> ()) != end) {
-      out [entry] = layout.get <Icon> (entry, false);
     }
     // window
     else if (entry.find (layoutTypeName <Window> ()) != end) {

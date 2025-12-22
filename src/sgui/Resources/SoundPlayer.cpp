@@ -1,6 +1,5 @@
-#include "SoundPlayer.h"
-
 #include <SFML/Audio/Listener.hpp>
+#include "sgui/Resources/SoundPlayer.h"
 
 namespace sgui
 {

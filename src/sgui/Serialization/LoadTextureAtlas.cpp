@@ -1,5 +1,4 @@
-#include "LoadTextureAtlas.h"
-
+#include "sgui/Serialization/LoadTextureAtlas.h"
 #include "sgui/Resources/TextureAtlas.h"
 #include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"

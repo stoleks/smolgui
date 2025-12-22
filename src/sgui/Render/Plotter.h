@@ -4,7 +4,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "PrimitiveShapeRender.h"
+#include "sgui/Render/PrimitiveShapeRender.h"
 
 namespace sgui
 {
@@ -14,11 +14,9 @@ namespace sgui
 struct PlotRange {
   PlotRange () = default;
   PlotRange (const float mi, const float ma)
-    : min (mi), max (ma)
-  {}
-  // data
-  float min = 0.f;
-  float max = 1.f;
+    : min (mi), max (ma) {}
+  float min = 0.f; ///< Minimum of the range
+  float max = 1.f; ///< Maximum of the range
 };
 
 
@@ -67,11 +65,7 @@ public:
    * @param lineColor set the color of the line
    * @param thickness set the thickness of the line
    */
-  void plot (
-         const std::function<float (float)>& slope,
-         const sf::Vector2f& position,
-         const sf::Color& lineColor,
-         const float thickness = 1.f);
+  void plot (const std::function<float (float)>& slope, const sf::Vector2f& position, const sf::Color& lineColor, const float thickness = 1.f);
   /**
    * @brief plot a parametric function (x, y) = f(t)
    * @param slope is a lambda of the form (x, y) = f(t)
@@ -79,11 +73,7 @@ public:
    * @param lineColor set the color of the line
    * @param thickness set the thickness of the line
    */
-  void plot (
-        const std::function<sf::Vector2f (float)>& slope,
-        const sf::Vector2f& position,
-        const sf::Color& lineColor,
-        const float thickness = 1.f);
+  void plot (const std::function<sf::Vector2f (float)>& slope, const sf::Vector2f& position, const sf::Color& lineColor, const float thickness = 1.f);
   /**
    * @brief plot a set of point
    * @param points is the set of point to be drawn
@@ -91,33 +81,19 @@ public:
    * @param lineColor set the color of the line/dot
    * @param thickness set the thickness of the line/dot
    */
-  void plot (
-         const std::vector <sf::Vector2f>& points,
-         const sf::Vector2f& position,
-         const sf::Color& lineColor,
-         const float thickness);
+  void plot (const std::vector <sf::Vector2f>& points, const sf::Vector2f& position, const sf::Color& lineColor, const float thickness);
 public:
-  PlotRange xRange = {};
-  PlotRange yRange = {};
-  PrimitiveShapeRender render;
+  PlotRange xRange = {};       ///< Plot range along x
+  PlotRange yRange = {};       ///< Plot range along y
+  PrimitiveShapeRender render; ///< Render used
 private:
-  /**
-   * to remap value in the draw area
-   */
-  sf::Vector2f toPlot (
-         const float pointX,
-         const float pointY) const;
+  // to remap value in the draw area
+  sf::Vector2f toPlot (const float pointX, const float pointY) const;
   sf::Vector2f toPlot (const sf::Vector2f& point) const;
-  /**
-   * plot boundaries and axes for bounded plot
-   */
+  // plot boundaries and axes for bounded plot
   void drawBorderAndAxes (const sf::Vector2f& position);
-  /**
-   * draw all function plotted
-   */
-  void draw (
-         sf::RenderTarget& target,
-         sf::RenderStates states) const override;
+  // draw all function plotted
+  void draw (sf::RenderTarget& target, sf::RenderStates states) const override;
 private:
   bool mBounded = false;
   uint32_t mSample = 50;

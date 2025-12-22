@@ -87,4 +87,4 @@ constexpr OutputType remap (
 
 } // namespace sgui
 
-#include "Interpolation.tpp"
+#include "sgui/Core/Interpolation.tpp"

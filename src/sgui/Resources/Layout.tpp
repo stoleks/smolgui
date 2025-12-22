@@ -2,8 +2,7 @@ namespace sgui
 {
 /////////////////////////////////////////////////
 template <typename LayoutType>
-bool Layout::has (
-  const std::string& entry) const
+bool Layout::has (const std::string& entry) const
 {
   const auto end = std::string::npos;
   for (const auto& set : m_setFilenames) {
@@ -38,9 +37,7 @@ const LayoutType& Layout::get (
   }
 
   // return requested entry
-  if constexpr (std::is_same_v <LayoutType, Icon>) {
-    return m_entries.at (key).icon;
-  } else if constexpr (std::is_same_v <LayoutType, Panel>) {
+  if constexpr (std::is_same_v <LayoutType, Panel>) {
     return m_entries.at (key).panel;
   } else if constexpr (std::is_same_v <LayoutType, sf::Vector2f>) {
     return m_entries.at (key).position;

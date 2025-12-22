@@ -2,24 +2,20 @@ namespace sgui
 {
 /////////////////////////////////////////////////
 template <size_t N>
-Polygon<N> makeRegularPolygon (
-  const sf::Vector2f& center,
-  const float polySize)
+Polygon<N> makeRegularPolygon (const sf::Vector2f& center, const float polySize)
 {
   auto poly = Polygon<N> ();
   constexpr auto deltaAngle = 360.f / N;
   for (uint32_t i = 0; i < N; i++) {
     float angle = PiRad * (deltaAngle * i);
-    poly.points[i] = center
-      + polySize * sf::Vector2f (std::cos (angle), std::sin (angle));
+    poly.points[i] = center + polySize * sf::Vector2f (std::cos (angle), std::sin (angle));
   }
   return poly;
 }
 
 /////////////////////////////////////////////////
 template <size_t N>
-constexpr sf::Vector2f centroid (
-  const Polygon<N>& polygon)
+constexpr sf::Vector2f centroid (const Polygon<N>& polygon)
 {
   auto points = std::vector <sf::Vector2f> ();
   for (const auto& point : polygon.points) {
@@ -30,8 +26,7 @@ constexpr sf::Vector2f centroid (
 
 /////////////////////////////////////////////////
 template <size_t N>
-constexpr sf::FloatRect boundingBox (
-  const Polygon<N>& polygon)
+constexpr sf::FloatRect boundingBox (const Polygon<N>& polygon)
 {
   auto minPos = polygon.points [0];
   auto maxPos = minPos;

@@ -1,11 +1,9 @@
-#include "MeshFunctions.h"
+#include "sgui/Render/MeshFunctions.h"
 
 namespace sgui
 {
 /////////////////////////////////////////////////
-void computeMesh (
-  Mesh& mesh,
-  const sf::FloatRect& box)
+void computeMesh (Mesh& mesh, const sf::FloatRect& box)
 {
   const auto left   = box.position.x;
   const auto top    = box.position.y;
@@ -22,9 +20,7 @@ void computeMesh (
 }
 
 /////////////////////////////////////////////////
-void computeMeshTexture (
-  Mesh& mesh,
-  const sf::IntRect& textureBox)
+void computeMeshTexture (Mesh& mesh, const sf::IntRect& textureBox)
 {
   const auto left   = static_cast<float> (textureBox.position.x);
   const auto top    = static_cast<float> (textureBox.position.y);
