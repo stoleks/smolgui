@@ -38,8 +38,7 @@ int main()
   /**
    * Gui initialization
    */
-  auto gui = sgui::Gui ();
-  gui.initialize (fontsData.get ("normal"), texture, atlas, window);
+  auto gui = sgui::Gui (fontsData.get ("normal"), texture, atlas, window);
 
   /**
    * Load gui layout and set data
@@ -177,13 +176,13 @@ int main()
         gui.separation ();
         const auto shorterList = std::vector <std::string> {"One", "Two", "Three"};
         gui.comboBox (shorterList);
-        gui.inputColor (style.fontColor, {"font color"});
-        gui.inputNumber (inputValue, {"input number with text !"});
-        gui.inputVector2 (vector, {"input vector2: "});
-        gui.inputVector3 (vector3, {"input vector3: "});
+        gui.inputNumber (inputValue, {"input number with text"});
+        gui.inputVector2 (vector, {"input vector2"});
         gui.sameLine ();
         const auto list = std::vector <std::string> {"1", "2", "3", "4", "5", "6", "7", "8"};
         gui.comboBox (list);
+        gui.inputVector3 (vector3, {"input vector3"});
+        gui.inputColor (style.fontColor, {"font color"});
         gui.checkBox (compactLayout, {"Compact layout"});
         if (gui.button ("Save layout")) {
           layout.saveInFile (compactLayout);

@@ -23,6 +23,17 @@ Gui::Gui ()
 {}
 
 /////////////////////////////////////////////////
+Gui::Gui (
+  sf::Font& font,
+  sf::Texture& textures,
+  const TextureAtlas& atlas,
+  const sf::RenderWindow& window)
+  : mFontawesome (SguiContentsDir"/fa-7-free-Solid-900.otf")
+{
+  initialize (font, textures, atlas, window);
+}
+
+/////////////////////////////////////////////////
 void Gui::initialize (
   sf::Font& font,
   sf::Texture& textures,
@@ -462,7 +473,7 @@ bool Gui::beginWindow (
       const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
       const auto reducePos = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
       mCursorPosition = reducePos;
-      if (clickable (buttonSize, Widget::TitleButton)) {
+      if (clickable (buttonSize, {Widget::TitleButton})) {
         settings.reduced = !(settings.reduced);
       }
       auto iconDown = ICON_FA_CIRCLE_CHEVRON_DOWN;
@@ -474,7 +485,7 @@ bool Gui::beginWindow (
       // close
       const auto closePos = reducePos + sf::Vector2f (buttonSize.x, 0.f);
       mCursorPosition = closePos;
-      if (clickable (buttonSize, Widget::TitleButton)) {
+      if (clickable (buttonSize, {Widget::TitleButton})) {
         settings.closed = true;
       }
       fontawesomeIcon (closePos + shift, ICON_FA_CIRCLE_XMARK, getFontSize (TextType::Title));
@@ -582,14 +593,10 @@ void Gui::beginPanel (
   // draw panel box if requested
   auto state = interactWithMouse (settings, panelBox, name, options.tooltip);
   if (settings.visible) {
-    auto widget = Widget::Panel;
-    if (options.widget != Widget::None) {
-      widget = options.widget;
-    }
-    if (options.state != ItemState::None) {
-      state = options.state;
-    }
-    mRender.draw (panelBox, {widget, Slices::Nine, state});
+    const auto widget = isValid (options.widget) ? options.widget : Widget::Panel;
+    const auto slices = isValid (options.slices) ? options.slices : Slices::Nine;
+    state = isValid (options.state) ? options.state : state;
+    mRender.draw (panelBox, {widget, slices, state});
   }
 
   // update cursor position
@@ -814,7 +821,6 @@ void Gui::separation (const float thick)
 void Gui::image (
   const std::string& textureId,
   const sf::Vector2f& size,
-  const Slices slices,
   const WidgetOptions& options)
 {
   // if size is not specified, we take the texture size by default
@@ -825,7 +831,7 @@ void Gui::image (
   }
   // draw texture
   const auto box = sf::FloatRect (position, textureSize);
-  mRender.draw (box, {textureId, slices, ItemState::None});
+  mRender.draw (box, {textureId, options.slices, ItemState::None});
   updateSpacing (textureSize);
 }
 
@@ -838,8 +844,6 @@ void Gui::image (
 /////////////////////////////////////////////////
 bool Gui::clickable (
   const sf::Vector2f& size,
-  const Widget buttonType,
-  const Slices slices,
   const WidgetOptions& options)
 {
   // Initialize widget name and position
@@ -849,7 +853,9 @@ bool Gui::clickable (
   // draw widget in its state and update cursor position
   const auto box = sf::FloatRect (position, size);
   const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
-  mRender.draw (box, {buttonType, slices, state});
+  const auto widget = isValid (options.widget) ? options.widget : Widget::IconButton;
+  const auto slices = isValid (options.slices) ? options.slices : Slices::One;
+  mRender.draw (box, {widget, slices, state});
   updateSpacing (size);
 
   // it has been clicked if state is active
@@ -865,7 +871,10 @@ bool Gui::button (
   const auto position = computeRelativePosition (options.displacement) + 1.5f*mPadding;
   const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
-  const auto clicked = clickable (size, Widget::Button, Slices::Three, options);
+  auto clickableOptions = options;
+  clickableOptions.widget = Widget::Button;
+  clickableOptions.slices = Slices::Three;
+  const auto clicked = clickable (size, clickableOptions);
   // draw a text over it
   handleTextDrawing (position, text);
   return clicked;
@@ -879,7 +888,7 @@ bool Gui::icon (
   // button part
   const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
   const auto position = computeRelativePosition (options.displacement);
-  const auto clicked = clickable (size, Widget::IconButton, Slices::One, options);
+  const auto clicked = clickable (size, options);
   // draw an icon with fontawesome over it and description next to it
   const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
   fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);
@@ -1042,8 +1051,7 @@ void Gui::inputText (
   const auto focused = mGuiState.keyboardFocus == name;
   if (focused) {
     if (mInputState.keyIsPressed) {
-      const auto isTooLarge = inputTextSize.x >= 0.94f*textPanel.size.x;
-      handleKeyInput (text, isTooLarge);
+      handleKeyInput (text);
     }
     state = ItemState::Active;
   }
@@ -1053,7 +1061,7 @@ void Gui::inputText (
   finalOptions.boxSize = textPanel.size;
   textPanel.size = normalizeSize (textPanel.size);
   mCursorPosition = box.position;
-  beginPanel (textPanel, {}, {Widget::TextBox, state});
+  beginPanel (textPanel, {}, {Widget::TextBox, Slices::Nine, state});
   // remove scroller size if needed
   if (textPanel.isScrolled) {
     finalOptions.boxSize.x -= textHeight ();
@@ -1793,8 +1801,8 @@ void Gui::playSound (const ItemState state)
   const auto isWindow = mActiveWidgetSoundId == "Window";
   const auto isMenu = mActiveWidgetSoundId == "MenuBar";
   const auto noRepetition = mActiveWidgetSoundId != mPreviousWidgetSoundId;
-  const auto isValid = mSoundIsOn && !isWindow && !isPanel && !isMenu && noRepetition;
-  if (mInputState.updated && state == ItemState::Active && isValid) {
+  const auto isValidSound = mSoundIsOn && !isWindow && !isPanel && !isMenu && noRepetition;
+  if (mInputState.updated && state == ItemState::Active && isValidSound) {
     mSoundPlayer.play (mActiveWidgetSoundId);
   }
 }
@@ -1806,9 +1814,7 @@ void Gui::playSound (const ItemState state)
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-void Gui::handleKeyInput (
-  std::string& text,
-  const bool textIsTooLarge)
+void Gui::handleKeyInput (std::string& text)
 {
   // we only handle key if inputs were updated
   if (!mInputState.updated) return;
@@ -1826,10 +1832,8 @@ void Gui::handleKeyInput (
       }
     }
   // add character to the text if it's not too large
-  } else if (!textIsTooLarge) {
-    if (mInputState.keyPressed != U'\u000D') {
-      text += character;
-    }
+  } else if (mInputState.keyPressed != U'\u000D') {
+    text += character;
   }
 }
 
@@ -2022,6 +2026,24 @@ sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement)
 
   // If there are no displacement, return initial position (that
   return mCursorPosition;
+}
+
+/////////////////////////////////////////////////
+bool Gui::isValid (const Widget widget) const
+{
+  return widget != Widget::None;
+}
+
+/////////////////////////////////////////////////
+bool Gui::isValid (const Slices slices) const
+{
+  return slices != Slices::Default;
+}
+
+/////////////////////////////////////////////////
+bool Gui::isValid (const ItemState state) const
+{
+  return state != ItemState::None;
 }
 
 /////////////////////////////////////////////////

@@ -38,7 +38,8 @@ enum class Widget
 enum class Slices {
   One,
   Three,
-  Nine
+  Nine,
+  Default
 };
 
 /**

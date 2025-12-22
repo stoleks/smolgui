@@ -17,8 +17,7 @@ int main()
   sf::RenderTexture image ({640u, 480u});
   auto exportSuccess = false;
   // Gui initialization
-  auto gui = sgui::Gui ();
-  gui.initialize (font, texture, atlas, window);
+  auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
   auto mainPanel = sgui::Panel ({ 1.f, 1.f });
   mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);

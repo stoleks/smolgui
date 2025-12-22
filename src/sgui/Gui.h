@@ -32,6 +32,10 @@ public:
    */
   Gui ();
   /**
+   * @brief load fontawesome and call initialize
+   */
+  Gui (sf::Font& font, sf::Texture& widgetTexture, const TextureAtlas& widgetAtlas, const sf::RenderWindow& window);
+  /**
    * @brief initialize window size and all required resources
    *   this need to be called once before beginFrame/endFrame
    */
@@ -250,15 +254,12 @@ public:
   void image (
          const std::string& textureId,
          const sf::Vector2f& size = {},
-         const Slices slices = Slices::One,
          const WidgetOptions& options = {});
   /**
    * @brief display a clickable button that return true if pressed
    */
   bool clickable (
          const sf::Vector2f& size,
-         const Widget ButtonType = Widget::IconButton,
-         const Slices slices = Slices::One,
          const WidgetOptions& options = {});
   /**
    * @brief button with a text displayed over it
@@ -418,9 +419,7 @@ private:
   /**
    * draw gui
    */
-  void draw (
-         sf::RenderTarget& target,
-         sf::RenderStates states) const override;
+  void draw (sf::RenderTarget& target, sf::RenderStates states) const override;
   // to remove or add last vertical or horizontal spacing
   void addLastVerticalSpacing (const float amount = 1.f);
   void addLastHorizontalSpacing (const float amount = 1.f);
@@ -498,10 +497,8 @@ private:
          const bool condition = false,
          const Tooltip& tooltip = {},
          const bool forceActive = false);
-  // handle all edge case and special keys
-  void handleKeyInput (
-         std::string& text,
-         const bool textIsTooLarge = false);
+  // handle all edge cases and special keys
+  void handleKeyInput (std::string& text);
   // handle key for inputNumber
   template <typename Type>
   void handleNumberKeyInput (
@@ -531,10 +528,13 @@ private:
         const sf::Vector2f& position,
         const std::string& icon,
         const uint32_t fontSize);
-  // to compute widget name 
+  // to compute widget name and relative position to the cursor/group
   std::string initializeActivable (const std::string& key);
-  // to compute position relative to the cursor/group
   sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
+  // to handle appearance options
+  bool isValid (const Widget widget) const;
+  bool isValid (const Slices slices) const;
+  bool isValid (const ItemState state) const;
   // to draw text description of widgets
   sf::Vector2f widgetDescription (
          const sf::Vector2f& position,
@@ -544,9 +544,7 @@ private:
   void updateScrolling ();
   Impl::GroupData getParentGroup ();
   // to process sfml events and store it in the internal state
-  void handleMouseInputs (
-         const sf::RenderWindow& window,
-         const std::optional <sf::Event>& event);
+  void handleMouseInputs (const sf::RenderWindow& window, const std::optional <sf::Event>& event);
   void handleKeyboardInputs (const std::optional <sf::Event>& event);
   // to play sounds
   void playSound (const ItemState state);

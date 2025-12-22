@@ -60,15 +60,17 @@ struct WidgetOptions
   /**
    * @brief To control panel appearance
    */
-  WidgetOptions (const Widget w, const ItemState s)
-    : widget (w), state (s) {}
+  WidgetOptions (const Widget w, const Slices s = Slices::One, const ItemState is = ItemState::None)
+    : widget (w), slices (s), state (is) {}
   // data
   bool horizontal = false;
-  sf::Vector2f size = { 6.f, 1.f }; // for slider and progress bar
+  sf::Vector2f size = { 6.f, 1.f }; // for slider, progress bar and image
   sf::Vector2f displacement = {};
   std::string description = "";
   Tooltip tooltip = {};
+  // to control appearance of widgets
   Widget widget = Widget::None;
+  Slices slices = Slices::Default;
   ItemState state = ItemState::None;
 };
 

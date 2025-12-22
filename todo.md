@@ -14,3 +14,4 @@ Improvements
 - [ ] Merge Button, IconButton IconTextButton and TextButton -> keep only textButton and change it to button, add an option to change its texture if required
 - [ ] Clarify WidgetOptions with sub-structures so that each variable has a clear meaning ?
 - [ ] Add Constraints to WidgetOptions instead of displacement ?
+- [ ] Change how menu work so that any widgets can be put in it.
