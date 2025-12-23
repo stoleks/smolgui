@@ -832,7 +832,8 @@ void Gui::image (
   }
   // draw texture
   const auto box = sf::FloatRect (position, textureSize);
-  mRender.draw (box, {textureId, options.slices, ItemState::None});
+  const auto slices = isValid (options.slices) ? options.slices : Slices::One;
+  mRender.draw (box, {textureId, slices, ItemState::None});
   updateSpacing (textureSize);
 }
 
