@@ -93,6 +93,7 @@ int main()
     auto constraint = layout.get <sgui::Constraints> ("alignment");
     gui.beginFrame ();
     {
+      // Closable panel
       if (gui.beginWindow (closablePanel)) {
         // Open or close
         gui.text ("A window");
@@ -105,7 +106,14 @@ int main()
         if (gui.button ("Add/remove header")) {
           mainPanel.hasHeader = !mainPanel.hasHeader;
         }
-        if (gui.button ("Add/remove closable options")) {
+        auto buttonTooltip = sgui::Tooltip ([&gui] () {
+          auto tooltipPanel = sgui::Panel ({{}, {60.f, 40.f}}, true, false);
+          if (gui.beginWindow (tooltipPanel)) {
+            gui.text ("Add or remove title button of this window.");
+            gui.endWindow ();
+          }
+        });
+        if (gui.button ("Add/remove closable options", {buttonTooltip})) {
           closablePanel.closable = !closablePanel.closable;
         }
         gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
@@ -133,7 +141,7 @@ int main()
         gui.slider (mainPanel.size.y, 0.05f, 0.7f, {"Slider from 0.05 to 0.7, value is : " + std::to_string (mainPanel.size.y)});
         gui.endWindow ();
       }
-
+      // Main panel
       if (gui.beginWindow (mainPanel)) {
         auto getText = false;
         auto tongue = "";

@@ -461,7 +461,7 @@ private:
   // Utility function that return status of widget, it is not clickable by default
   ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition = false, const Tooltip& tooltip = {}, const bool forceActive = false);
   // handle all edge cases and special keys
-  void handleKeyInput (std::string& text);
+  void handleKeyInput (std::string& text, size_t& textCursorIndex);
   // handle key for inputNumber
   template <typename Type>
   void handleNumberKeyInput (Type& number, const bool focused, const Type min, const Type max);
@@ -500,6 +500,7 @@ private:
   // Tooltip clock
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
+  float mTextCursorClock = 0.f;
   // Scroll intensity
   float mPixelsPerScroll = 40.f;
   // data to keep track of same line call
@@ -536,6 +537,8 @@ private:
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <std::string> mComboBoxActiveItem;
+  ObjectPool <size_t, std::string> mTextCursorPositions;
+  ObjectPool <uint8_t, std::string> mTextHasCursor;
   ObjectPool <float> mComboBoxClocks;
   ObjectPool <Panel, std::string> mInputTextPanels;
   ObjectPool <std::vector <sf::Vector2f>> mPlotsData;

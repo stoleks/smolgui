@@ -187,9 +187,10 @@ void Gui::handleNumberKeyInput (
     // if a key is pressed and is a digit handle if
     const auto key = mInputState.keyPressed;
     const auto digit = std::isdigit (static_cast<unsigned char> (key));
-    if (digit || key == '.' || key == '-' || key == L'\b') {
+    if (digit || key == '.' || key == L'\b') {
       // handle key and convert it into number
-      handleKeyInput (mActiveInputNumber);
+      size_t u = 0;
+      handleKeyInput (mActiveInputNumber, u);
       number = convertKeyIntoNumber <Type> (mActiveInputNumber, min, max);
     }
     // if enter is pressed we lost focus

@@ -406,6 +406,7 @@ void Gui::updateTimer (const sf::Time& deltaT)
   }
   mTipAppearClock += dt;
   mTipDisappearClock += dt;
+  mTextCursorClock += dt;
 }
 
 /////////////////////////////////////////////////
@@ -1006,6 +1007,10 @@ void Gui::inputText (
   // initialize widget name and position
   const auto name = initializeActivable ("InputText");
   const auto basePosition = computeRelativePosition (options.displacement);
+  if (!mTextCursorPositions.has (name)) {
+    mTextCursorPositions.emplace (name, text.length ());
+    mTextHasCursor.emplace (name, 1u);
+  }
 
   // draw description before the box
   const auto descriptionSize = widgetDescription (basePosition - 1.5f*mPadding, options.description);
@@ -1018,7 +1023,7 @@ void Gui::inputText (
     textPanel.size = textOptions.boxSize;
   }
 
-  // formats the text to fit in the parent box or in the requested box
+  // fit text box into the parent box or in the requested box
   auto& textPanel = mInputTextPanels.get (name);
   const auto inputTextSize = textSize (text);
   if (!mGroups.empty ()) {
@@ -1049,11 +1054,36 @@ void Gui::inputText (
 
   // if this widget has keyboard focus, handles it
   const auto focused = mGuiState.keyboardFocus == name;
+  auto& textCursorPosition = mTextCursorPositions.get (name);
+  auto& textHasCursor = mTextHasCursor.get (name);
   if (focused) {
-    if (mInputState.keyIsPressed) {
-      handleKeyInput (text);
+    if (textHasCursor == 0u && mTextCursorClock > 0.8f) {
+      text.erase (textCursorPosition, 1u);
+      textHasCursor = 1u;
+      mTextCursorClock = 0.f;
     }
+    if (mInputState.keyIsPressed) {
+      if (textHasCursor == 0u) {
+        text.erase (textCursorPosition, 1u);
+        textHasCursor = 1u;
+      }
+      handleKeyInput (text, textCursorPosition);
+      if (textHasCursor == 1u) {
+        text.insert (textCursorPosition, "|");
+        textHasCursor = 0u;
+      }
+    }
+    if (textHasCursor == 1u && mTextCursorClock > 0.2f) {
+      text.insert (textCursorPosition, "|");
+      textHasCursor = 0u;
+      mTextCursorClock = 0.f;
+    }
+
     state = ItemState::Active;
+  } else if (textHasCursor == 0u) {
+    text.erase (textCursorPosition, 1u);
+    textHasCursor = 1u;
+    mTextCursorClock = 0.f;
   }
 
   // open a panel and draw the text in it, we need to take care of size normalization
@@ -1814,13 +1844,17 @@ void Gui::playSound (const ItemState state)
  * ----------------------------------------------
  */
 /////////////////////////////////////////////////
-void Gui::handleKeyInput (std::string& text)
+void Gui::handleKeyInput (
+  std::string& text,
+  size_t& textCursorIndex)
 {
   // we only handle key if inputs were updated
   if (!mInputState.updated) return;
+
   // convert key into utf8 character
   std::string character;
   sf::Utf<8>::encode (mInputState.keyPressed, std::back_inserter (character));
+
   // erase last character
   if (character == "\b") {
     if (!text.empty ()) {
@@ -1831,9 +1865,14 @@ void Gui::handleKeyInput (std::string& text)
         text.resize (cp - text.data ());
       }
     }
-  // add character to the text if it's not too large
+    textCursorIndex = std::min (textCursorIndex, text.length ());
+  // add character to the text
   } else if (mInputState.keyPressed != U'\u000D') {
+    auto cursorAtTheEnd = textCursorIndex == text.length ();
     text += character;
+    if (cursorAtTheEnd) {
+      textCursorIndex = text.length ();
+    }
   }
 }
 
