@@ -21,7 +21,6 @@ int main()
   // Window settings and main loop
   auto mainPanel = sgui::Panel ({{}, { 1.f, 1.f }});
   mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);
-  auto timer = sf::Clock ();
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
   auto style = sgui::Style ();
   while (window.isOpen ())
@@ -35,7 +34,7 @@ int main()
       gui.update (window, event);
     }
     gui.setStyle (style);
-    gui.updateTimer (timer.restart ());
+    gui.updateTimer ();
     // Gui
     gui.beginFrame ();
     if (gui.beginWindow (mainPanel)) {

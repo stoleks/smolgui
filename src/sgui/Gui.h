@@ -105,7 +105,7 @@ public:
    * @brief to allow apparition of tooltip and animation to occur.
    * @param deltaT is the current time of the frame
    */
-  void updateTimer (const sf::Time& deltaT);
+  void updateTimer ();
 
   ///////////////////////////////////////////////
   /**
@@ -498,6 +498,7 @@ private:
   bool mPlotIsBounded = false;
   uint32_t mPlotSample = 50u;
   // Tooltip clock
+  sf::Clock mInternalClock = {};
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   float mTextCursorClock = 0.f;

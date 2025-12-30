@@ -63,7 +63,7 @@ int main()
    */
   auto style = sgui::Style ();
   auto timer = sf::Clock ();
-  auto t = sf::Clock ();
+  auto time = sf::Clock ();
   auto timeSinceLastUpdate = sf::Time::Zero;
   const auto timePerFrame = sf::seconds (1.f / 60.f);
   while (window.isOpen ())
@@ -84,7 +84,7 @@ int main()
         gui.update (window, event);
       }
       gui.setStyle (style);
-      gui.updateTimer (dt);
+      gui.updateTimer ();
     }
 
     /**
@@ -126,9 +126,9 @@ int main()
         // display it
         gui.checkBox (displayFunction, {"Display a function"});
         if (displayFunction) {
-          auto func = [t, sliderValue] (float x) {
-            const auto time = t.getElapsedTime ().asSeconds ();
-            const auto value = std::sin (sliderValue*time + 10.f*x);
+          auto func = [time, sliderValue] (float x) {
+            const auto t = time.getElapsedTime ().asSeconds ();
+            const auto value = std::sin (sliderValue*t + 10.f*x);
             return value;
           };
           gui.setSample (100u);

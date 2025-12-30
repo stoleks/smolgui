@@ -1,6 +1,6 @@
 smol gui
 ==========
-A small immediate gui library based on [SFML](https://github.com/SFML/SFML)
+A "small" immediate gui library based on [SFML](https://github.com/SFML/SFML), that aims to ease use of personal assets and resources.
 
 Dependencies
 -----
@@ -31,9 +31,111 @@ target_link_libraries (project
 )
 ```
 
-It will integrates SFML::Graphics, spdlog and nlohmann_json with it.
+It will integrates SFML::Graphics, spdlog and nlohmann_json with it. You compiler should supports c++17.
 
-Example code
+Usage
+-----
+
+This library offers an easy to use immediate gui for SFML user, every functions and classes are in the namespace sgui.
+This library requires a sf::Window, a sf::Font, a sf::Texture that contains widgets textures and a sgui::TextureAtlas that defines the sprites position and size of every UI widgets in the sprite sheet.
+You can look at the default [texture](https://github.com/stoleks/smolgui/blob/main/contents/widgets.png) and [atlas](https://github.com/stoleks/smolgui/blob/main/contents/atlas.json) in the contents/ folder.
+
+```cpp
+auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "A window");
+auto font = sf::Font ("my_font.ttf");
+auto texture = sf::Texture ("my_texture.png");
+auto atlas = sgui::TextureAtlas ("my_atlas.json");
+auto gui = sgui::Gui (font, texture, atlas, window);
+```
+
+If you want to use default texture, atlas and font furnished with this library, you can use sgui::DefaultTexture, sgui::DefaultAtlas and sgui::DefaultFont.
+When your sgui::Gui is initialized, you need to update its inputs and internal timer:
+
+```cpp
+while (window.isOpen ())
+{
+  while (const std::optional event = window.pollEvent ())
+  {
+    if (event->is <sf::Event::Closed> ()) {
+      window.close ();
+    }
+    gui.update (window, event);
+  }
+  gui.updateTimer ();
+}
+```
+
+Once this is done, you can begin to use gui features, anywhere in the main loop, but you need to enclose the functions called by a pair of Gui::beginFrame and Gui::endFrame call.
+
+```cpp
+gui.beginFrame ();
+// your gui code needs to be in-between this two functions calls.
+gui.endFrame ();
+```
+
+After the call to Gui::endFrame, you can draw the gui like a SFML drawable 
+
+```cpp
+window.clear ();
+window.draw (gui);
+window.display ();
+```
+
+All widgets in the gui are automatically placed vertically by default.
+If you want to organize them, you have two kind of container: a "Window" or a "Panel". 
+A window is closable, reducable and may have a menu bar, but both have a texture and are movable by default. 
+To specify their dimensions, you need to make a sgui::Panel and set its absolute pixel position and its relative fractional size. 
+The size is relative to the container in which it is opened, its parent.
+If no container is opened, its parent is simply the SFML window.
+If you don't specify a position or set-it to (0.f, 0.f), the container will be automatically placed after the last widget opened.
+```cpp
+gui.beginFrame ();
+// set two Panel, one for a window that will take all the sfml window, one for a panel that will be half of its parent size
+auto guiWindow = sgui::Panel ({{}, {1.f, 1.f});
+auto childPanel = sgui::Panel ({{}, {0.5f, 0.5f});
+// open a window 
+if (gui.beginWindow (guiWindow)) {
+  gui.text ("Text in the window before the panel");
+  // open a panel half the size of the window in it
+  gui.beginPanel (childPanel);
+  gui.text ("Text in the child panel");
+  gui.endPanel ();
+  gui.text ("Text in the window after the panel");
+  gui.endWindow ();
+}
+// open a panel after the window, half the size of the SFML window and at 40 pixels from the top-left corner
+auto freePanel = sgui::Panel ({{40.f 40.f}, {0.5f, 0.5f}});
+gui.beginPanel (freePanel)
+gui.text ("Text in the free panel");
+gui.endPanel ();
+gui.endFrame ();
+```
+Please note that if you want to move your Panel or Window, you need to declare your sgui::Panel outside of the main loop.
+
+List of widgets implemented
+-----
+
+Here is the complete list of widgets implemented, you should look a the smolgui demo if you want examples of uses: 
+- text: display a text
+- image: display an image in your sprite sheet
+- separation : draw a line of separation
+- button: clickable button with a text
+- icon: clickable button with a font awesome icon
+- checkBox: clickable check box
+- menuItem: button in a window menu.
+- inputNumber: to modify a number
+- inputVector2: to modify a sf::Vector2
+- inputVector3: to modify a sf::Vector3
+- inputColor: to modifiy a sf::Color
+- inputText: to modify a text
+- inputKey: to modify a char
+- progressBar: draw a progress bar
+- comboBox: display a selected std::string and a drop-down list of std::string
+- slider: to change a number between two value
+- plot: to display a function
+
+
+Complete example code
 -----
 
 You can find more complete examples in the examples folder.
@@ -58,12 +160,10 @@ int main()
   sf::RenderTexture image ({640u, 480u});
   auto exportSuccess = false;
   // Gui initialization
-  auto gui = sgui::Gui ();
-  gui.initialize (font, texture, atlas, window);
+  auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
   auto mainPanel = sgui::Panel ({ 1.f, 1.f });
   mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);
-  auto timer = sf::Clock ();
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
   auto style = sgui::Style ();
   while (window.isOpen ())
@@ -77,7 +177,7 @@ int main()
       gui.update (window, event);
     }
     gui.setStyle (style);
-    gui.updateTimer (timer.restart ());
+    gui.updateTimer ();
     // Gui
     gui.beginFrame ();
     if (gui.beginWindow (mainPanel)) {
@@ -118,3 +218,5 @@ int main()
 ```
 
 ![Screenshot of minimal demo](https://github.com/stoleks/smolgui/blob/main/examples/assets/minimalDemo.png)
+
+

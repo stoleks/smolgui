@@ -398,9 +398,9 @@ void Gui::setScreenSize (const sf::Vector2f& size)
 }
 
 /////////////////////////////////////////////////
-void Gui::updateTimer (const sf::Time& deltaT)
+void Gui::updateTimer ()
 {
-  const auto dt = deltaT.asSeconds ();
+  const auto dt = mInternalClock.restart ().asSeconds ();
   for (auto& clock : mComboBoxClocks) {
     clock += dt;
   }
@@ -966,7 +966,7 @@ void Gui::text (
   
   // draw text and update cursor position
   handleTextDrawing (position, formatted, textOptions.type);
-  updateSpacing (textSize (formatted));
+  updateSpacing (textSize (formatted) + mPadding);
 }
 
 /**
@@ -1056,6 +1056,7 @@ void Gui::inputText (
   // if this widget has keyboard focus, handles it
   const auto focused = mGuiState.keyboardFocus == name;
   auto& textCursorPosition = mTextCursorPositions.get (name);
+  textCursorPosition = clamp (size_t (0), text.size (), textCursorPosition); // handle edge case
   auto& textHasCursor = mTextHasCursor.get (name);
   if (focused) {
     if (textHasCursor == 0u && mTextCursorClock > 0.8f) {
@@ -1867,6 +1868,10 @@ void Gui::handleKeyInput (
       }
     }
     textCursorIndex = std::min (textCursorIndex, text.length ());
+  // move to left
+  // move to right
+  // move to start
+  // move to end
   // add character to the text
   } else if (mInputState.keyPressed != U'\u000D') {
     auto cursorAtTheEnd = textCursorIndex == text.length ();
