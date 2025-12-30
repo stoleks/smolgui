@@ -195,7 +195,7 @@ int main()
       }
       gui.text (fmt::format ("|{}| Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
       const auto selected = gui.comboBox (combo);
-      gui.inputColor (style.fontColor, {"Font color: "});
+      gui.inputColor (style.fontColor, {"font color"});
       gui.text (selected);
       const auto pngFile = DemoDir"/minimalDemo.png";
       gui.text (fmt::format ("Saved to file assets/minimalDemo.png with success {}", exportSuccess));
