@@ -1,22 +1,20 @@
+name: doxygen
 on:
-  push:
-    branches:
-      - main
-permissions:
-  contents: write
-
+  release:
+    types: [published]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Generate and Deploy Doxygen Docs
-        uses: AgarwalSaurav/ghaction-doxygen-ghpages@release/v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          working-directory: .
-          doxyfile-path: doc/Doxyfile
-          html-output-folder: doc/html
+          fetch-depth: 0
+      - name: Generate Documentation
+        uses: mattnotmitt/doxygen-action@edge
+      - name: Publish generated content to GitHub Pages
+        uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
+        with:
+          dir: docs/html
           branch: gh-pages
-          # env_list_file: path/to/env.list  # Uncomment and set if needed (see below)
+          token: ${{ secrets.ACCESS_TOKEN }}
