@@ -27,26 +27,6 @@ struct LayoutEntry
 
 /////////////////////////////////////////////////
 /**
- * @brief return special prefix to avoid name collision and to infer type from file
- */
-template <typename LayoutData>
-constexpr std::string layoutTypeName ()
-{
-  if constexpr (std::is_same_v <LayoutData, Panel>) {
-    return std::string ("Panel::");
-  } else if constexpr (std::is_same_v <LayoutData, sf::Vector2f>) {
-    return std::string ("Position::");
-  } else if constexpr (std::is_same_v <LayoutData, Window>) {
-    return std::string ("Window::");
-  } else {
-    return std::string ("Constraints::");
-  }
-  return "Err::";
-}
-
-
-/////////////////////////////////////////////////
-/**
  * @brief allow to store and load Gui layou
  */
 class Layout
@@ -95,6 +75,26 @@ private:
   std::unordered_map <std::string, LayoutEntry> m_entries;
   std::unordered_map <std::string, std::vector <std::string>> m_layoutEntries;
 };
+
+
+/////////////////////////////////////////////////
+/**
+ * @brief return special prefix to avoid name collision and to infer type from file
+ */
+template <typename LayoutData>
+constexpr std::string layoutTypeName ()
+{
+  if constexpr (std::is_same_v <LayoutData, Panel>) {
+    return std::string ("Panel::");
+  } else if constexpr (std::is_same_v <LayoutData, sf::Vector2f>) {
+    return std::string ("Position::");
+  } else if constexpr (std::is_same_v <LayoutData, Window>) {
+    return std::string ("Window::");
+  } else {
+    return std::string ("Constraints::");
+  }
+  return "Err::";
+}
 
 } // namespace sgui
 

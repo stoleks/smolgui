@@ -2,9 +2,7 @@
 
 namespace sgui
 {
-/**
- * @brief save json to file
- */
+/////////////////////////////////////////////////
 void saveInFile (
   const json& out,
   const std::string& file,
@@ -18,9 +16,8 @@ void saveInFile (
   }
   output.close ();
 }
-/**
- * @load json from file
- */
+
+/////////////////////////////////////////////////
 json loadFromFile (const std::string& file)
 {
   auto input = std::ifstream (file);

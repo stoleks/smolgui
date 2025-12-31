@@ -33,14 +33,27 @@ target_link_libraries (project
 
 It will integrates SFML::Graphics, spdlog and nlohmann_json with it. You compiler should supports c++17.
 
-Usage
+If you want to build the demos, you can set the BUILD_EXAMPLES command to ON 
+```console
+  cmake -D BUILD_SGUI_EXAMPLES=ON
+```
+
+You can also build documentation with doxygen.
+
+Basic usage
 -----
 
 This library offers an easy to use immediate gui for SFML user, every functions and classes are in the namespace sgui.
 This library requires a sf::Window, a sf::Font, a sf::Texture that contains widgets textures and a sgui::TextureAtlas that defines the sprites position and size of every UI widgets in the sprite sheet.
 You can look at the default [texture](https://github.com/stoleks/smolgui/blob/main/contents/widgets.png) and [atlas](https://github.com/stoleks/smolgui/blob/main/contents/atlas.json) in the contents/ folder.
 
+For a basic usage, all you need is in sgui/sgui.h header.
+
 ```cpp
+#include <sgui/sgui.h>
+
+...
+
 auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "A window");
 auto font = sf::Font ("my_font.ttf");
 auto texture = sf::Texture ("my_texture.png");
@@ -112,6 +125,19 @@ gui.endFrame ();
 ```
 Please note that if you want to move your Panel or Window, you need to declare your sgui::Panel outside of the main loop.
 
+
+Resources management
+-----
+
+Several classes are defined to ease resources management and to give more control outside of the code to user.
+- Layout allow to save and load from file gui layout with a simple key system. 
+It is used to store positions and constraints of panel and window.
+- TextureCollage allow to make a collage of several images in a specified folder in one texture, with automatic atlas generation.
+- TextContainer allow to store and load text in multiple language, with one file per language.
+- ResourcesHolder ease loading and management of resources.
+- TextureAtlas allow to define where widgets textures are located in the sprite sheet.
+
+
 List of widgets implemented
 -----
 
@@ -134,11 +160,13 @@ Here is the complete list of widgets implemented, you should look a the smolgui 
 - slider: to change a number between two value
 - plot: to display a function
 
+All widgets have a WidgetOptions parameter that allow to add a text description, change its position, add a tooltip.
+Options can also, set its render or change its size, depending on the widget.
 
 Complete example code
 -----
 
-You can find more complete examples in the examples folder.
+You can find demo with more widgets used in the examples folder.
 
 ```cpp
 #include <sgui/Gui.h>

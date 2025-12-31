@@ -37,11 +37,25 @@ FetchContent_Declare (spdlog
   GIT_PROGRESS TRUE
 )
 
+FetchContent_Declare (doxygen-awesome-css
+  URL https://github.com/jothepro/doxygen-awesome-css/archive/refs/heads/main.zip
+)
+
 FetchContent_MakeAvailable (
   SFML
   nlohmann-json
   spdlog
+  doxygen-awesome-css
 )
+
+####
+# Save the location the files were cloned into
+# This allows us to get the path to doxygen-awesome.css
+FetchContent_GetProperties(doxygen-awesome-css SOURCE_DIR AWESOME_CSS_DIR) 
+# Generate the Doxyfile
+set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in)
+set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
 
 ####
 # set library output directory
@@ -59,7 +73,7 @@ target_include_directories (${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/src")
 # get sources from subdirectories
 add_subdirectory (src)
 
-option (BUILD_EXAMPLES "Build the examples." OFF)
-if (BUILD_EXAMPLES)
+option (BUILD_SGUI_EXAMPLES "Build the examples." OFF)
+if (BUILD_SGUI_EXAMPLES)
   add_subdirectory (examples)
 endif()

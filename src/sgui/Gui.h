@@ -419,9 +419,7 @@ public:
    */
   void forcePlotUpdate ();
 private:
-  /**
-   * draw gui
-   */
+  // draw gui
   void draw (sf::RenderTarget& target, sf::RenderStates states) const override;
   // to remove or add last vertical or horizontal spacing
   void addLastVerticalSpacing (const float amount = 1.f);

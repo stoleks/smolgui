@@ -18,9 +18,8 @@ bool TextureAtlas::loadFromFile (const std::string& filename)
   return sgui::loadFromFile (*this, filename);
 }
 
-/**
- * Add and remove entry
- */
+/////////////////////////////////////////////////
+// Add and remove entry
 /////////////////////////////////////////////////
 void TextureAtlas::add (
   const std::string& entry,
@@ -47,9 +46,8 @@ void TextureAtlas::clear ()
   mAtlas.clear ();
 }
 
-/**
- * get entry information
- */
+/////////////////////////////////////////////////
+// get entry information
 /////////////////////////////////////////////////
 std::optional <sf::IntRect> TextureAtlas::textureRect (
   const std::string& entry,

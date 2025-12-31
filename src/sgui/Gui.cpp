@@ -12,11 +12,9 @@
 
 namespace sgui 
 {
-/**
- * ----------------------------------------------
- * Initialization of Gui
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Initialization of Gui
 /////////////////////////////////////////////////
 Gui::Gui ()
   : mFontawesome (SguiContentsDir"/fa-7-free-Solid-900.otf")
@@ -109,11 +107,8 @@ void Gui::setView (const sf::View& view)
 }
 
 
-/**
- * ----------------------------------------------
- *  to ease alignement
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to ease alignement
 /////////////////////////////////////////////////
 sf::Vector2f Gui::textSize (
   const std::string& text,
@@ -151,11 +146,9 @@ sf::Vector2f Gui::denormalizeSize (const sf::Vector2f& panelSize) const
 }
 
 
-/**
- * ----------------------------------------------
- *  function to manage cursor position
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// function to manage cursor position
 /////////////////////////////////////////////////
 void Gui::addSpacing (const sf::Vector2f& amount)
 {
@@ -228,11 +221,9 @@ sf::Vector2f Gui::cursorPosition () const
 }
 
 
-/**
- * ----------------------------------------------
- * To know if gui is hovered
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// To know if gui is hovered
 /////////////////////////////////////////////////
 bool Gui::isActive () const
 {
@@ -257,11 +248,9 @@ sf::Vector2f Gui::textureSize (const std::string& texture) const
 }
 
 
-/**
- * ----------------------------------------------
- * Gui state update
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Gui state update
 /////////////////////////////////////////////////
 void Gui::beginFrame ()
 {
@@ -435,11 +424,9 @@ void Gui::draw (
 }
 
 
-/**
- * ----------------------------------------------
- * begin/end anchor, menu, window or box
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// begin/end anchor, menu, window or box
 /////////////////////////////////////////////////
 bool Gui::beginWindow (
   Panel& settings,
@@ -646,11 +633,9 @@ void Gui::endPanel ()
 }
 
 
-/**
- * ----------------------------------------------
- * Menu related widget
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Menu related widget
 /////////////////////////////////////////////////
 void Gui::beginMenu ()
 {
@@ -799,11 +784,9 @@ bool Gui::tooltipNeedReset ()
 }
 
 
-/**
- * ----------------------------------------------
- * Decoration
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Decoration
 /////////////////////////////////////////////////
 void Gui::separation (const float thick)
 {
@@ -847,11 +830,9 @@ void Gui::image (
 }
 
 
-/**
- * ----------------------------------------------
- * Button related widget
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Button related widget
 /////////////////////////////////////////////////
 bool Gui::clickable (
   const sf::Vector2f& size,
@@ -909,11 +890,9 @@ bool Gui::icon (
   return clicked;
 }
 
-/**
- * ----------------------------------------------
- * Box related widget
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Box related widget
 /////////////////////////////////////////////////
 bool Gui::checkBox (
   bool& checked,
@@ -945,11 +924,9 @@ bool Gui::checkBox (
   return checked;
 }
 
-/**
- * ----------------------------------------------
- * Text related widget
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// Text related widget
 /////////////////////////////////////////////////
 void Gui::text (
   const std::string& text,
@@ -988,11 +965,9 @@ void Gui::text (
   updateSpacing (totalTextSize + mPadding);
 }
 
-/**
- * ----------------------------------------------
- *  text input related widget
- * ----------------------------------------------
- */
+
+/////////////////////////////////////////////////
+// text input related widget
 /////////////////////////////////////////////////
 void Gui::inputText (
   std::string& text,
@@ -1182,11 +1157,8 @@ void Gui::inputColor (
 }
 
 
-/**
- * ----------------------------------------------
- * to plot progress bar and spinning wheel
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to plot progress bar and spinning wheel
 /////////////////////////////////////////////////
 void Gui::progressBar (
   const float progress,
@@ -1213,11 +1185,8 @@ void Gui::progressBar (
 }
 
 
-/**
- * ----------------------------------------------
- * to plot functions in gui
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to plot functions in gui
 /////////////////////////////////////////////////
 void Gui::setPlotRange (
   const PlotRange xRange,
@@ -1349,11 +1318,8 @@ void Gui::handlePlotBound ()
 }
 
 
-/**
- * ----------------------------------------------
- * combo box
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// combo box
 /////////////////////////////////////////////////
 std::string Gui::comboBox (
   const std::vector <std::string>& list,
@@ -1469,11 +1435,8 @@ bool Gui::dropListItem (
 }
 
 
-/**
- * ----------------------------------------------
- *  scroller for scrollable window/panel
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// scroller for scrollable window/panel
 /////////////////////////////////////////////////
 bool Gui::scrollThroughPanel (
   Impl::GroupData& panel,
@@ -1646,11 +1609,8 @@ float Gui::scrollerBar (
 }
 
 
-/**
- * ----------------------------------------------
- * begin or end group
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// begin or end group
 /////////////////////////////////////////////////
 void Gui::beginGroup (
   const bool horizontal,
@@ -1686,11 +1646,8 @@ void Gui::endGroup ()
 }
 
 
-/**
- * ----------------------------------------------
- * window/panel utility functions
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// window/panel utility functions
 /////////////////////////////////////////////////
 sf::Vector2f Gui::computePosition (
   const Panel& panel,
@@ -1819,11 +1776,8 @@ ItemState Gui::interactWithMouse (
 }
 
 
-/**
- * ----------------------------------------------
- * to compute item status (active, hovered, neutral)
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to compute item status (active, hovered, neutral)
 /////////////////////////////////////////////////
 ItemState Gui::itemStatus (
   const sf::FloatRect& boundingBox,
@@ -1875,11 +1829,8 @@ void Gui::playSound (const ItemState state)
 }
 
 
-/**
- * ----------------------------------------------
- * to handle text related stuff
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to handle text related stuff
 /////////////////////////////////////////////////
 void Gui::handleKeyInput (
   std::string& text,
@@ -2038,11 +1989,8 @@ std::vector<std::string> Gui::formatText (
 }
 
 
-/**
- * ----------------------------------------------
- * to compute automatic position of widget
- * ----------------------------------------------
- */
+/////////////////////////////////////////////////
+// to compute automatic position of widget
 /////////////////////////////////////////////////
 std::string Gui::initializeActivable (const std::string& key)
 {

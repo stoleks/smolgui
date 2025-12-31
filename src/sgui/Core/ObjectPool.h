@@ -33,7 +33,7 @@ public:
   /**
    * @brief Build a new object in pool
    * @param id Identifier that will serve to retrieve object
-   * @params constructorArgs Parameters used to build object
+   * @param constructorArgs Parameters used to build object
    */
   template <typename... ObjectArgs>
   Object& emplace (const ObjectId& id, ObjectArgs&&... constructorArgs);
