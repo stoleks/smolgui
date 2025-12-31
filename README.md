@@ -167,6 +167,7 @@ Complete example code
 -----
 
 You can find demo with more widgets used in the examples folder.
+[Here](https://github.com/stoleks/card_printer/) you can find a personal project where I use this library.
 
 ```cpp
 #include <sgui/Gui.h>
