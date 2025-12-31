@@ -370,12 +370,21 @@ void Gui::handleKeyboardInputs (const std::optional <sf::Event>& event)
 {
   // by default no key are pressed
   mInputState.keyIsPressed = false;
+  mInputState.textIsEntered = false;
   // manage standard key value
   if (event->is <sf::Event::TextEntered> ()) {
-    auto key = event->getIf <sf::Event::TextEntered> ();
+    const auto key = event->getIf <sf::Event::TextEntered> ();
     if (key) {
       mInputState.keyPressed = key->unicode;
+      mInputState.textIsEntered = true;
+    }
+  }
+  // manage special key with scancode
+  if (event->is <sf::Event::KeyPressed> ()) {
+    const auto key = event->getIf <sf::Event::KeyPressed> ();
+    if (key) {
       mInputState.keyIsPressed = true;
+      mInputState.code = key->code;
     }
   }
 }
@@ -950,23 +959,33 @@ void Gui::text (
   // compute text position
   auto position = computeRelativePosition (options.displacement);
   
-  // center text vertically if asked
-  const auto parent = getParentGroup ();
-  const auto normalTextSize = textSize (text);
-  if (textOptions.vertical == VerticalAlignment::Center) {
-    position.y = parent.position.y + 0.5f*(parent.size.y - normalTextSize.y);
-  }
-  // or horizontally
-  if (textOptions.horizontal == HorizontalAlignment::Center) {
-    position.x = parent.position.x + 0.5f*(parent.size.x - normalTextSize.x);
-  }
-
   // format the text to fit in the box if one is furnished
-  const auto formatted = formatText (text, textOptions.boxSize, textOptions.type);
+  const auto parent = getParentGroup ();
+  auto boxSize = textOptions.boxSize;
+  if (boxSize.lengthSquared () < 0.01f) {
+    boxSize = parent.size;
+  }
+  const auto formatted = formatText (text, boxSize, textOptions.type);
   
   // draw text and update cursor position
-  handleTextDrawing (position, formatted, textOptions.type);
-  updateSpacing (textSize (formatted) + mPadding);
+  auto totalTextSize = sf::Vector2f ();
+  for (const auto& line : formatted) {
+    // center text vertically if asked
+    const auto normalTextSize = textSize (line);
+    if (textOptions.vertical == VerticalAlignment::Center) {
+      position.y = parent.position.y + 0.5f*(parent.size.y - normalTextSize.y);
+    }
+    // or horizontally
+    if (textOptions.horizontal == HorizontalAlignment::Center) {
+      position.x = parent.position.x + 0.5f*(parent.size.x - normalTextSize.x);
+    }
+    handleTextDrawing (position, line, textOptions.type);
+    const auto lineSize = textSize (line);
+    totalTextSize.x = std::max (totalTextSize.x, lineSize.x);
+    totalTextSize.y += lineSize.y;
+    position.y += lineSize.y;
+  }
+  updateSpacing (totalTextSize + mPadding);
 }
 
 /**
@@ -974,31 +993,6 @@ void Gui::text (
  *  text input related widget
  * ----------------------------------------------
  */
-/////////////////////////////////////////////////
-void Gui::inputColor (
-  sf::Color& color,
-  const WidgetOptions& options)
-{
-  // change color with four input number
-  const auto min = std::uint8_t (0);
-  const auto max = std::uint8_t (255);
-  inputNumber (color.r, {options.displacement}, min, max, "r: ", true);
-  sameLine ();
-  inputNumber (color.g, {}, min, max, "g: ", true);
-  sameLine ();
-  inputNumber (color.b, {}, min, max, "b: ", true);
-  sameLine ();
-  inputNumber (color.a, {}, min, max, "a: ", true);
-  
-  // draw description
-  if (options.description != "") {
-    sameLine ();
-    auto descriptionOptions = options;
-    descriptionOptions.displacement = {};
-    text (options.description, {}, descriptionOptions);
-  }
-}
-
 /////////////////////////////////////////////////
 void Gui::inputText (
   std::string& text,
@@ -1045,52 +1039,26 @@ void Gui::inputText (
     textPanel.size.y = textHeight () + 2.f*mPadding.y;
   }
 
-  // get status of the widget
+  // get status of the widget and take keyboard focus if clicked
   const auto box = sf::FloatRect (boxPosition, textPanel.size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown);
-  // take keyboard focus if clicked
   if (mGuiState.activeItem == name) {
     mGuiState.keyboardFocus = name;
   }
 
   // if this widget has keyboard focus, handles it
   const auto focused = mGuiState.keyboardFocus == name;
-  auto& textCursorPosition = mTextCursorPositions.get (name);
-  textCursorPosition = clamp (size_t (0), text.size (), textCursorPosition); // handle edge case
-  auto& textHasCursor = mTextHasCursor.get (name);
   if (focused) {
-    if (textHasCursor == 0u && mTextCursorClock > 0.8f) {
-      text.erase (textCursorPosition, 1u);
-      textHasCursor = 1u;
-      mTextCursorClock = 0.f;
-    }
-    if (mInputState.keyIsPressed) {
-      if (textHasCursor == 0u) {
-        text.erase (textCursorPosition, 1u);
-        textHasCursor = 1u;
-      }
-      handleKeyInput (text, textCursorPosition);
-      if (textHasCursor == 1u) {
-        text.insert (textCursorPosition, "|");
-        textHasCursor = 0u;
-      }
-    }
-    if (textHasCursor == 1u && mTextCursorClock > 0.2f) {
-      text.insert (textCursorPosition, "|");
-      textHasCursor = 0u;
-      mTextCursorClock = 0.f;
-    }
-
+    auto& textCursorIndex = mTextCursorPositions.get (name);
+    textCursorIndex = clamp (size_t (0), text.size (), textCursorIndex);
+    handleKeyInput (text, textCursorIndex);
     state = ItemState::Active;
-  } else if (textHasCursor == 0u) {
-    text.erase (textCursorPosition, 1u);
-    textHasCursor = 1u;
-    mTextCursorClock = 0.f;
   }
 
-  // open a panel and draw the text in it, we need to take care of size normalization
+  // set text options
   auto finalOptions = textOptions;
   finalOptions.boxSize = textPanel.size;
+  // take care of size normalization
   textPanel.size = normalizeSize (textPanel.size);
   mCursorPosition = box.position;
   beginPanel (textPanel, {}, {Widget::TextBox, Slices::Nine, state});
@@ -1098,13 +1066,55 @@ void Gui::inputText (
   if (textPanel.isScrolled) {
     finalOptions.boxSize.x -= textHeight ();
   }
+  // draw formatted text
+  auto cursorPosition = computeRelativePosition ({});
   Gui::text (text, finalOptions);
+  // draw blinking cursor in the text
+  if (focused) {
+    drawTextCursor (cursorPosition, name, text, finalOptions);
+  }
   endPanel ();
   textPanel.size = denormalizeSize (textPanel.size);
 
   // update cursor position
   mCursorPosition = basePosition;
   updateSpacing (mPadding + sf::Vector2f { box.size.x + descriptionSize.x, box.size.y });
+}
+
+
+/////////////////////////////////////////////////
+void Gui::drawTextCursor (
+  sf::Vector2f& position,
+  const std::string& inputTextId,
+  const std::string& text,
+  const TextOptions& options)
+{
+  // get cursor status
+  auto& textHasCursor = mTextHasCursor.get (inputTextId);
+  auto cursorIndex = mTextCursorPositions.get (inputTextId);
+  const auto formattedText = formatText (text, options.boxSize, options.type);
+  // compute cursor position in text
+  for (const auto& line : formattedText) {
+    if (cursorIndex > line.length ()) {
+      cursorIndex -= line.length ();
+      position.y += textSize (line).y;
+    } else {
+      position.x += textSize (line.substr (0, cursorIndex)).x;
+      break;
+    }
+  }
+  // draw a blinking cursor
+  if (textHasCursor == 0u) {
+    if (mTextCursorClock < 0.8f) {
+      mRender.draw ("|", *mFont, {sgui::round (position), mStyle.fontColor, getFontSize (options.type)});
+    } else {
+      textHasCursor = 1u;
+      mTextCursorClock = 0.f;
+    }
+  } else if (mTextCursorClock > 0.2f) {
+    textHasCursor = 0u;
+    mTextCursorClock = 0.f;
+  }
 }
 
 /////////////////////////////////////////////////
@@ -1144,6 +1154,31 @@ void Gui::inputKey (
 
   // update cursor position
   updateSpacing ({ boxSize.x + descrSize.x, boxSize.y });
+}
+
+/////////////////////////////////////////////////
+void Gui::inputColor (
+  sf::Color& color,
+  const WidgetOptions& options)
+{
+  // change color with four input number
+  const auto min = std::uint8_t (0);
+  const auto max = std::uint8_t (255);
+  inputNumber (color.r, {options.displacement}, min, max, "r: ", true);
+  sameLine ();
+  inputNumber (color.g, {}, min, max, "g: ", true);
+  sameLine ();
+  inputNumber (color.b, {}, min, max, "b: ", true);
+  sameLine ();
+  inputNumber (color.a, {}, min, max, "a: ", true);
+  
+  // draw description
+  if (options.description != "") {
+    sameLine ();
+    auto descriptionOptions = options;
+    descriptionOptions.displacement = {};
+    text (options.description, {}, descriptionOptions);
+  }
 }
 
 
@@ -1854,32 +1889,66 @@ void Gui::handleKeyInput (
   if (!mInputState.updated) return;
 
   // convert key into utf8 character
-  std::string character;
-  sf::Utf<8>::encode (mInputState.keyPressed, std::back_inserter (character));
-
-  // erase last character
-  if (character == "\b") {
-    if (!text.empty ()) {
-      // erase last utf-8 character by looking for continuation bytes
-      auto cp = text.data () + text.size ();
-      while (--cp >= text.data () && ((*cp & 0b10000000) && !(*cp & 0b01000000))) {}
-      if (cp >= text.data ()) {
-        text.resize (cp - text.data ());
+  std::string character ("");
+  if (mInputState.textIsEntered) {
+    sf::Utf<8>::encode (mInputState.keyPressed, std::back_inserter (character));
+    // erase character
+    if (character == "\b") {
+      if (!text.empty ()) {
+        // erase last utf-8 character by looking for continuation bytes
+        auto cp = text.data () + textCursorIndex;
+        while (--cp >= text.data () && ((*cp & 0x80) && !(*cp & 0x40))) {}
+        if (cp >= text.data ()) {
+          const auto afterCharacter = text.substr (textCursorIndex);
+          text.resize (cp - text.data ());
+          text += afterCharacter;
+          textCursorIndex = cp - text.data ();
+        }
+      }
+      textCursorIndex = std::min (textCursorIndex, text.length ());
+    // add character to the text
+    } else if (mInputState.keyPressed != U'\u000D') {
+      if (textCursorIndex == text.length ()) {
+        text += character;
+        textCursorIndex = text.length ();
+      } else {
+        const auto beforeCursor = text.substr (0, textCursorIndex);
+        const auto afterCursor = text.substr (textCursorIndex);
+        text = beforeCursor + character + afterCursor;
+        textCursorIndex += character.length ();
       }
     }
-    textCursorIndex = std::min (textCursorIndex, text.length ());
-  // move to left
-  // move to right
-  // move to start
-  // move to end
-  // add character to the text
-  } else if (mInputState.keyPressed != U'\u000D') {
-    auto cursorAtTheEnd = textCursorIndex == text.length ();
-    text += character;
-    if (cursorAtTheEnd) {
+  }
+
+  // move text cursor
+  if (mInputState.keyIsPressed) {
+    if (mInputState.code == sf::Keyboard::Key::Left) { // to left
+      textCursorIndex = clamp (size_t (0), text.length (), textCursorIndex - 1);
+    } else if (mInputState.code == sf::Keyboard::Key::Right) { // to right
+      textCursorIndex = clamp (size_t (0), text.length (), textCursorIndex + 1);
+    } else if (mInputState.code == sf::Keyboard::Key::Home) { // to start
+      textCursorIndex = 0;
+    } else if (mInputState.code == sf::Keyboard::Key::End) { // to end
       textCursorIndex = text.length ();
     }
   }
+
+}
+
+/////////////////////////////////////////////////
+size_t Gui::utf8Length (const std::string& text) const
+{
+  size_t size = 0;
+  for (size_t i = 0; i < text.length (); i++) {
+    size++;
+    auto c = static_cast <unsigned char> (text [i]);
+    if      (c >= 0 && c <= 127) { i += 0; }
+    else if ((c & 0xE0) == 0xC0) { i += 1; }
+    else if ((c & 0xF0) == 0xE0) { i += 2; }
+    else if ((c & 0xF8) == 0xF0) { i += 3; }
+    else { return size; }
+  }
+  return size;
 }
 
 /////////////////////////////////////////////////
@@ -1889,7 +1958,6 @@ void Gui::handleTextDrawing (
   const TextType type)
 {
   const auto fontSize = getFontSize (type);
-
   // searches fontawesome unicode in the string, delimited by "|" pair
   const auto firstMarkerPos = text.find ("|");
   if (firstMarkerPos != std::string::npos) {
@@ -1940,32 +2008,33 @@ uint32_t Gui::getFontSize (const TextType type) const
 }
 
 /////////////////////////////////////////////////
-std::string Gui::formatText (
+std::vector<std::string> Gui::formatText (
   const std::string& input,
   const sf::Vector2f& boxSize,
-  const TextType type)
+  const TextType type) const
 {
+  auto formattedText = std::vector <std::string> ();
   // if input is contrained by a box
   if (boxSize.lengthSquared () > 0.01f) {
-    auto formattedText = std::string ("");
     // read the string word by word
     auto in = std::istringstream (input);
     auto word = std::string ("");
     auto line = std::string ("");
     while (in >> word) {
       // add a new line if current word outpass box boundaries
-      line += " " + word;
-      const auto lineWidth = textSize (line, type).x;
+      const auto lineWidth = textSize (line + word + " ", type).x;
       if (lineWidth >= 0.98f*boxSize.x) {
-        formattedText += "\n" + word;
-        line = word;
+        formattedText.emplace_back (line);
+        line = word + " ";
       } else {
-        formattedText += " " + word;
+        line += word + " ";
       }
     }
+    formattedText.emplace_back (line);
     return formattedText;
   }
-  return input;
+  formattedText.emplace_back (input);
+  return formattedText;
 }
 
 
@@ -2055,7 +2124,7 @@ Impl::GroupData Gui::getParentGroup ()
 }
 
 /////////////////////////////////////////////////
-sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement)
+sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement) const
 {
   // If there is no active group, displacement = position
   const auto isNotNull = displacement.lengthSquared () > 0.01f;

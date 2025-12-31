@@ -1,9 +1,8 @@
 {
   "mainWindow":     "Fenêtre principale de la démo",
   "closableWindow": "Fenêtre fermable",
-  "textMultiLine":  "Vous pouvez modifier ce texte sur plusieurs lignes !",
-  "multiLine":      "Texte modifiable sur plusieurs lignes : ",
-  "textOneLine":    "Vous pouvez modifier ce texte !",
-  "oneLine":        "Texte modifiable :",
-  "centeredText":   "Texte centré !"
+  "textMultiLine":  "Vous pouvez modifier où vous voulez ce texte !",
+  "textOneLine":    "Un autre texte éditable.",
+  "textDescription":"Texte modifiable :",
+  "centeredText":   "Texte centré qui peut s'étendre sur plusieurs lignes sans problème ! Là je brode pour que vous puissiez voir le retour à la ligne..."
 }

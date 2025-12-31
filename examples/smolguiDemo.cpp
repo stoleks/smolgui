@@ -178,8 +178,8 @@ int main()
         if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
         }
-        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("multiLine")});
-        gui.inputText (oneLine, {}, {texts.get ("oneLine")});
+        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("textDescription")});
+        gui.inputText (oneLine, {}, {texts.get ("textDescription")});
         // input number and color 
         gui.separation ();
         const auto shorterList = std::vector <std::string> {"One", "Two", "Three"};

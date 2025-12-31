@@ -2,6 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Window/Keyboard.hpp>
 
 namespace sgui 
 {
@@ -46,7 +47,9 @@ struct InputState
   sf::Vector2f mouseDisplacement = {};
   // keyboard state
   bool keyIsPressed = false;
+  bool textIsEntered = false;
   char32_t keyPressed;
+  sf::Keyboard::Key code;
 };
 
 } // namespace Impl

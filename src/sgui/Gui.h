@@ -462,13 +462,15 @@ private:
   ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition = false, const Tooltip& tooltip = {}, const bool forceActive = false);
   // handle all edge cases and special keys
   void handleKeyInput (std::string& text, size_t& textCursorIndex);
+  void drawTextCursor (sf::Vector2f& position, const std::string& inputTextId, const std::string& text, const TextOptions& options);
+  size_t utf8Length (const std::string& text) const;
   // handle key for inputNumber
   template <typename Type>
   void handleNumberKeyInput (Type& number, const bool focused, const Type min, const Type max);
   template <typename Type>
   Type convertKeyIntoNumber (std::string& key, const Type min, const Type max);
   // format text to fit in a box
-  std::string formatText (const std::string& text, const sf::Vector2f& boxSize, const TextType type = TextType::Normal);
+  std::vector<std::string> formatText (const std::string& text, const sf::Vector2f& boxSize, const TextType type = TextType::Normal) const;
   // get font size
   uint32_t getFontSize (const TextType type) const;
   // format text for fontawesome use
@@ -477,7 +479,7 @@ private:
   void fontawesomeIcon (const sf::Vector2f& position, const std::string& icon, const uint32_t fontSize);
   // to compute widget name and relative position to the cursor/group
   std::string initializeActivable (const std::string& key);
-  sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {});
+  sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {}) const;
   // to handle appearance options
   bool isValid (const Widget widget) const;
   bool isValid (const Slices slices) const;
