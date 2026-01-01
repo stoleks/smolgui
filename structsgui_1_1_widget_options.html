@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.15.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>Smolgui: sgui::WidgetOptions Struct Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="theme-robot.css" rel="stylesheet" type="text/css"/>
+<link href="theme-round.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/jothepro/doxygen-awesome-css" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Smolgui
+   </div>
+   <div id="projectbrief">Immediate gui library based on SFML</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+<div id="theme-selection">
+ <label for="theme-select">Theme:</label>
+ <select id="theme-select">
+  <option value="theme-default">Default</option>
+  <option value="theme-round">Round</option>
+  <option value="theme-robot">Robot</option>
+ </select>
+</div>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.15.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('structsgui_1_1_widget_options.html','','structsgui_1_1_widget_options-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">sgui::WidgetOptions Struct Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Store widget options : tooltip, position, description.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_options_8h_source.html">Options.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a4043c272377b4a6a280e435c12a7ce4f" id="r_a4043c272377b4a6a280e435c12a7ce4f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4043c272377b4a6a280e435c12a7ce4f">WidgetOptions</a> ()=default</td></tr>
+<tr class="memitem:aa001db906500dec1a252770bd44e16b0" id="r_aa001db906500dec1a252770bd44e16b0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa001db906500dec1a252770bd44e16b0">WidgetOptions</a> (const std::string &amp;des, const <a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a> &amp;t={}, const sf::Vector2f &amp;d={})</td></tr>
+<tr class="memdesc:aa001db906500dec1a252770bd44e16b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Full constructor, but with options if only description is required.  <br /></td></tr>
+<tr class="memitem:a2bae831284de509237ada5eca9c17b90" id="r_a2bae831284de509237ada5eca9c17b90"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bae831284de509237ada5eca9c17b90">WidgetOptions</a> (const <a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a> &amp;inf)</td></tr>
+<tr class="memdesc:a2bae831284de509237ada5eca9c17b90"><td class="mdescLeft">&#160;</td><td class="mdescRight">When only a tooltip is needed.  <br /></td></tr>
+<tr class="memitem:aca338c410d4bd27ec1f45ec4c0b67e7a" id="r_aca338c410d4bd27ec1f45ec4c0b67e7a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca338c410d4bd27ec1f45ec4c0b67e7a">WidgetOptions</a> (const sf::Vector2f disp)</td></tr>
+<tr class="memdesc:aca338c410d4bd27ec1f45ec4c0b67e7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">When only the relative displacement is needed.  <br /></td></tr>
+<tr class="memitem:aed570148cba61b1745e40b6d2c9fae1b" id="r_aed570148cba61b1745e40b6d2c9fae1b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed570148cba61b1745e40b6d2c9fae1b">WidgetOptions</a> (const <a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501">Widget</a> w, const <a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44c">Slices</a> s=<a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44ca06c2cea18679d64399783748fa367bdd">Slices::One</a>, const <a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f">ItemState</a> is=<a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26fa6adf97f83acf6453d4a6a4b1070f3754">ItemState::None</a>)</td></tr>
+<tr class="memdesc:aed570148cba61b1745e40b6d2c9fae1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">To control panel appearance.  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a4617d7903227d4649dfdd8dde71fff68" id="r_a4617d7903227d4649dfdd8dde71fff68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4617d7903227d4649dfdd8dde71fff68">horizontal</a> = false</td></tr>
+<tr class="memdesc:a4617d7903227d4649dfdd8dde71fff68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Is widget horizontal or vertical ?  <br /></td></tr>
+<tr class="memitem:aa3d40b44240d6e3f3ea473184dab448b" id="r_aa3d40b44240d6e3f3ea473184dab448b"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3d40b44240d6e3f3ea473184dab448b">size</a> = { 6.f, 1.f }</td></tr>
+<tr class="memdesc:aa3d40b44240d6e3f3ea473184dab448b"><td class="mdescLeft">&#160;</td><td class="mdescRight">For slider and progress bar.  <br /></td></tr>
+<tr class="memitem:afba13f032309eaf3478566cb2fbc362e" id="r_afba13f032309eaf3478566cb2fbc362e"><td class="memItemLeft" align="right" valign="top">sf::Vector2f&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afba13f032309eaf3478566cb2fbc362e">displacement</a> = {}</td></tr>
+<tr class="memdesc:afba13f032309eaf3478566cb2fbc362e"><td class="mdescLeft">&#160;</td><td class="mdescRight">To override automatic position.  <br /></td></tr>
+<tr class="memitem:a010a9c2d534fdef15f9509a4e860577b" id="r_a010a9c2d534fdef15f9509a4e860577b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a010a9c2d534fdef15f9509a4e860577b">description</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:a010a9c2d534fdef15f9509a4e860577b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501" title="List widget textures available in gui.">Widget</a> description.  <br /></td></tr>
+<tr class="memitem:ad4842452cdb88872638601b031b8c9c0" id="r_ad4842452cdb88872638601b031b8c9c0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4842452cdb88872638601b031b8c9c0">tooltip</a> = {}</td></tr>
+<tr class="memdesc:ad4842452cdb88872638601b031b8c9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="structsgui_1_1_tooltip.html" title="store tooltip in a function with its parent widget ID">Tooltip</a>.  <br /></td></tr>
+<tr class="memitem:a3fd0c4849b1e2b0ca73f747794cd82d5" id="r_a3fd0c4849b1e2b0ca73f747794cd82d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501">Widget</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fd0c4849b1e2b0ca73f747794cd82d5">widget</a> = <a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a6adf97f83acf6453d4a6a4b1070f3754">Widget::None</a></td></tr>
+<tr class="memdesc:a3fd0c4849b1e2b0ca73f747794cd82d5"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501" title="List widget textures available in gui.">Widget</a> type.  <br /></td></tr>
+<tr class="memitem:a24a9736ecc1d56bdb2f83502effca9c3" id="r_a24a9736ecc1d56bdb2f83502effca9c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44c">Slices</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24a9736ecc1d56bdb2f83502effca9c3">slices</a> = <a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44ca7a1920d61156abc05a60135aefe8bc67">Slices::Default</a></td></tr>
+<tr class="memdesc:a24a9736ecc1d56bdb2f83502effca9c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change default widget slicing.  <br /></td></tr>
+<tr class="memitem:a53ac1e150234db8dce54332291d6d9c3" id="r_a53ac1e150234db8dce54332291d6d9c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f">ItemState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53ac1e150234db8dce54332291d6d9c3">state</a> = <a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26fa6adf97f83acf6453d4a6a4b1070f3754">ItemState::None</a></td></tr>
+<tr class="memdesc:a53ac1e150234db8dce54332291d6d9c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">To force a specific state for a widget.  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Store widget options : tooltip, position, description. </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a4043c272377b4a6a280e435c12a7ce4f" name="a4043c272377b4a6a280e435c12a7ce4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4043c272377b4a6a280e435c12a7ce4f">&#9670;&#160;</a></span>WidgetOptions() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::WidgetOptions::WidgetOptions </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa001db906500dec1a252770bd44e16b0" name="aa001db906500dec1a252770bd44e16b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa001db906500dec1a252770bd44e16b0">&#9670;&#160;</a></span>WidgetOptions() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::WidgetOptions::WidgetOptions </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>des</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>t</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>d</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Full constructor, but with options if only description is required. </p>
+
+</div>
+</div>
+<a id="a2bae831284de509237ada5eca9c17b90" name="a2bae831284de509237ada5eca9c17b90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bae831284de509237ada5eca9c17b90">&#9670;&#160;</a></span>WidgetOptions() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::WidgetOptions::WidgetOptions </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>inf</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When only a tooltip is needed. </p>
+
+</div>
+</div>
+<a id="aca338c410d4bd27ec1f45ec4c0b67e7a" name="aca338c410d4bd27ec1f45ec4c0b67e7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca338c410d4bd27ec1f45ec4c0b67e7a">&#9670;&#160;</a></span>WidgetOptions() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::WidgetOptions::WidgetOptions </td>
+          <td>(</td>
+          <td class="paramtype">const sf::Vector2f</td>          <td class="paramname"><span class="paramname"><em>disp</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>When only the relative displacement is needed. </p>
+
+</div>
+</div>
+<a id="aed570148cba61b1745e40b6d2c9fae1b" name="aed570148cba61b1745e40b6d2c9fae1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed570148cba61b1745e40b6d2c9fae1b">&#9670;&#160;</a></span>WidgetOptions() <span class="overload">[5/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::WidgetOptions::WidgetOptions </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501">Widget</a></td>          <td class="paramname"><span class="paramname"><em>w</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44c">Slices</a></td>          <td class="paramname"><span class="paramname"><em>s</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44ca06c2cea18679d64399783748fa367bdd">Slices::One</a></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f">ItemState</a></td>          <td class="paramname"><span class="paramname"><em>is</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26fa6adf97f83acf6453d4a6a4b1070f3754">ItemState::None</a></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>To control panel appearance. </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
+<a id="a010a9c2d534fdef15f9509a4e860577b" name="a010a9c2d534fdef15f9509a4e860577b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a010a9c2d534fdef15f9509a4e860577b">&#9670;&#160;</a></span>description</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string sgui::WidgetOptions::description = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501" title="List widget textures available in gui.">Widget</a> description. </p>
+
+</div>
+</div>
+<a id="afba13f032309eaf3478566cb2fbc362e" name="afba13f032309eaf3478566cb2fbc362e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afba13f032309eaf3478566cb2fbc362e">&#9670;&#160;</a></span>displacement</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sf::Vector2f sgui::WidgetOptions::displacement = {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>To override automatic position. </p>
+
+</div>
+</div>
+<a id="a4617d7903227d4649dfdd8dde71fff68" name="a4617d7903227d4649dfdd8dde71fff68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4617d7903227d4649dfdd8dde71fff68">&#9670;&#160;</a></span>horizontal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sgui::WidgetOptions::horizontal = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Is widget horizontal or vertical ? </p>
+
+</div>
+</div>
+<a id="aa3d40b44240d6e3f3ea473184dab448b" name="aa3d40b44240d6e3f3ea473184dab448b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3d40b44240d6e3f3ea473184dab448b">&#9670;&#160;</a></span>size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sf::Vector2f sgui::WidgetOptions::size = { 6.f, 1.f }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>For slider and progress bar. </p>
+
+</div>
+</div>
+<a id="a24a9736ecc1d56bdb2f83502effca9c3" name="a24a9736ecc1d56bdb2f83502effca9c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24a9736ecc1d56bdb2f83502effca9c3">&#9670;&#160;</a></span>slices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44c">Slices</a> sgui::WidgetOptions::slices = <a class="el" href="namespacesgui.html#a007107b4fefde84b6b0c3b633325c44ca7a1920d61156abc05a60135aefe8bc67">Slices::Default</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change default widget slicing. </p>
+
+</div>
+</div>
+<a id="a53ac1e150234db8dce54332291d6d9c3" name="a53ac1e150234db8dce54332291d6d9c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53ac1e150234db8dce54332291d6d9c3">&#9670;&#160;</a></span>state</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f">ItemState</a> sgui::WidgetOptions::state = <a class="el" href="namespacesgui.html#a593fd90d44c353f9344a39c6c365f26fa6adf97f83acf6453d4a6a4b1070f3754">ItemState::None</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>To force a specific state for a widget. </p>
+
+</div>
+</div>
+<a id="ad4842452cdb88872638601b031b8c9c0" name="ad4842452cdb88872638601b031b8c9c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4842452cdb88872638601b031b8c9c0">&#9670;&#160;</a></span>tooltip</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structsgui_1_1_tooltip.html">Tooltip</a> sgui::WidgetOptions::tooltip = {}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="structsgui_1_1_tooltip.html" title="store tooltip in a function with its parent widget ID">Tooltip</a>. </p>
+
+</div>
+</div>
+<a id="a3fd0c4849b1e2b0ca73f747794cd82d5" name="a3fd0c4849b1e2b0ca73f747794cd82d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fd0c4849b1e2b0ca73f747794cd82d5">&#9670;&#160;</a></span>widget</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501">Widget</a> sgui::WidgetOptions::widget = <a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a6adf97f83acf6453d4a6a4b1070f3754">Widget::None</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><a class="el" href="namespacesgui.html#ae07de69e3b62c448b2f45fe985759501" title="List widget textures available in gui.">Widget</a> type. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
+<li>D:/Utilisateurs/alex/projets/smolgui/src/sgui/Widgets/<a class="el" href="_options_8h_source.html">Options.h</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="namespacesgui.html">sgui</a></li><li class="navelem"><a href="structsgui_1_1_widget_options.html">WidgetOptions</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+  </ul>
+</div>
+</body>
+</html>

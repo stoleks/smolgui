@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.15.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>Smolgui: sgui::TextureAtlas Class Reference</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="theme-robot.css" rel="stylesheet" type="text/css"/>
+<link href="theme-round.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/jothepro/doxygen-awesome-css" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Smolgui
+   </div>
+   <div id="projectbrief">Immediate gui library based on SFML</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+<div id="theme-selection">
+ <label for="theme-select">Theme:</label>
+ <select id="theme-select">
+  <option value="theme-default">Default</option>
+  <option value="theme-round">Round</option>
+  <option value="theme-robot">Robot</option>
+ </select>
+</div>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.15.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Search',true);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(function(){initNavTree('classsgui_1_1_texture_atlas.html','','classsgui_1_1_texture_atlas-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">sgui::TextureAtlas Class Reference</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Contains texture position and sub-box of all sprites for a given sprite sheet. Animations ca be handled with the following restrictions:  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_texture_atlas_8h_source.html">TextureAtlas.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a55d0ba333aa9cc8f6de1e0f27ba1abf3" id="r_a55d0ba333aa9cc8f6de1e0f27ba1abf3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55d0ba333aa9cc8f6de1e0f27ba1abf3">TextureAtlas</a> ()=default</td></tr>
+<tr class="memdesc:a55d0ba333aa9cc8f6de1e0f27ba1abf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build an empty atlas.  <br /></td></tr>
+<tr class="memitem:a7a08ebe66d1bb9c129b39355d3ef8239" id="r_a7a08ebe66d1bb9c129b39355d3ef8239"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a08ebe66d1bb9c129b39355d3ef8239">TextureAtlas</a> (const std::string &amp;filename)</td></tr>
+<tr class="memdesc:a7a08ebe66d1bb9c129b39355d3ef8239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Build texture atlas from file.  <br /></td></tr>
+<tr class="memitem:aab5d30e7eb65c14baea01a2a6de1c4de" id="r_aab5d30e7eb65c14baea01a2a6de1c4de"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab5d30e7eb65c14baea01a2a6de1c4de">loadFromFile</a> (const std::string &amp;filename)</td></tr>
+<tr class="memdesc:aab5d30e7eb65c14baea01a2a6de1c4de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load texture atlas from file.  <br /></td></tr>
+<tr class="memitem:a81ddc3d71f2acdb7ea71d52db537f5e3" id="r_a81ddc3d71f2acdb7ea71d52db537f5e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a81ddc3d71f2acdb7ea71d52db537f5e3">add</a> (const std::string &amp;entry, sf::IntRect &amp;&amp;<a class="el" href="#adf1b9518c5bbf8b484bd69a3c1fa83c7">textureRect</a>, const uint32_t framesCount=1)</td></tr>
+<tr class="memdesc:a81ddc3d71f2acdb7ea71d52db537f5e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a texture to the atlas.  <br /></td></tr>
+<tr class="memitem:a0a978168f349e24dbd840ae7eb5c06e9" id="r_a0a978168f349e24dbd840ae7eb5c06e9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a978168f349e24dbd840ae7eb5c06e9">remove</a> (const std::string &amp;entry)</td></tr>
+<tr class="memdesc:a0a978168f349e24dbd840ae7eb5c06e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a texture from the atlas.  <br /></td></tr>
+<tr class="memitem:a6675cab535bd8e59352afe1601d3d67c" id="r_a6675cab535bd8e59352afe1601d3d67c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6675cab535bd8e59352afe1601d3d67c">clear</a> ()</td></tr>
+<tr class="memdesc:a6675cab535bd8e59352afe1601d3d67c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all textures from the atlas.  <br /></td></tr>
+<tr class="memitem:a78acf5fbd35d68841b4876bcccff235e" id="r_a78acf5fbd35d68841b4876bcccff235e"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78acf5fbd35d68841b4876bcccff235e">texturesCount</a> () const</td></tr>
+<tr class="memdesc:a78acf5fbd35d68841b4876bcccff235e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get number of textures stored in the atlas.  <br /></td></tr>
+<tr class="memitem:adf1b9518c5bbf8b484bd69a3c1fa83c7" id="r_adf1b9518c5bbf8b484bd69a3c1fa83c7"><td class="memItemLeft" align="right" valign="top">std::optional&lt; sf::IntRect &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf1b9518c5bbf8b484bd69a3c1fa83c7">textureRect</a> (const std::string &amp;entry, const uint32_t frame=0) const</td></tr>
+<tr class="memdesc:adf1b9518c5bbf8b484bd69a3c1fa83c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get texture rect of an entry, if the entry exist.  <br /></td></tr>
+<tr class="memitem:a4affe3e38ddd61269a3f425eceb22192" id="r_a4affe3e38ddd61269a3f425eceb22192"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4affe3e38ddd61269a3f425eceb22192">begin</a> ()</td></tr>
+<tr class="memitem:a7f2fa80be32b51b87591f6d654bf2ba4" id="r_a7f2fa80be32b51b87591f6d654bf2ba4"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f2fa80be32b51b87591f6d654bf2ba4">end</a> ()</td></tr>
+<tr class="memitem:a537ae8e1fe6019f376336baae8c069cb" id="r_a537ae8e1fe6019f376336baae8c069cb"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a537ae8e1fe6019f376336baae8c069cb">begin</a> () const</td></tr>
+<tr class="memitem:a8e9e2c32e55b921d2ad894be0a573300" id="r_a8e9e2c32e55b921d2ad894be0a573300"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e9e2c32e55b921d2ad894be0a573300">end</a> () const</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Contains texture position and sub-box of all sprites for a given sprite sheet. Animations ca be handled with the following restrictions: </p>
+<ul>
+<li>texture rect need to represent the first frame</li>
+<li>all frames stand in one line on the sprite sheet</li>
+<li>all frames have the same size as the first one </li>
+</ul>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a55d0ba333aa9cc8f6de1e0f27ba1abf3" name="a55d0ba333aa9cc8f6de1e0f27ba1abf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55d0ba333aa9cc8f6de1e0f27ba1abf3">&#9670;&#160;</a></span>TextureAtlas() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::TextureAtlas::TextureAtlas </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Build an empty atlas. </p>
+
+</div>
+</div>
+<a id="a7a08ebe66d1bb9c129b39355d3ef8239" name="a7a08ebe66d1bb9c129b39355d3ef8239"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a08ebe66d1bb9c129b39355d3ef8239">&#9670;&#160;</a></span>TextureAtlas() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">sgui::TextureAtlas::TextureAtlas </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Build texture atlas from file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>File from which atlas is loaded </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a81ddc3d71f2acdb7ea71d52db537f5e3" name="a81ddc3d71f2acdb7ea71d52db537f5e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81ddc3d71f2acdb7ea71d52db537f5e3">&#9670;&#160;</a></span>add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sgui::TextureAtlas::add </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>entry</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sf::IntRect &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>textureRect</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>framesCount</em></span><span class="paramdefsep"> = </span><span class="paramdefval">1</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a texture to the atlas. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">entry</td><td>Texture name </td></tr>
+    <tr><td class="paramname">textureRect</td><td>Texture position and size </td></tr>
+    <tr><td class="paramname">framesCount</td><td>Number of frames in the animation if needed (1 by default) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4affe3e38ddd61269a3f425eceb22192" name="a4affe3e38ddd61269a3f425eceb22192"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4affe3e38ddd61269a3f425eceb22192">&#9670;&#160;</a></span>begin() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto sgui::TextureAtlas::begin </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Iterator to store <a class="el" href="classsgui_1_1_texture_atlas.html" title="Contains texture position and sub-box of all sprites for a given sprite sheet. Animations ca be handl...">TextureAtlas</a> in json </p>
+
+</div>
+</div>
+<a id="a537ae8e1fe6019f376336baae8c069cb" name="a537ae8e1fe6019f376336baae8c069cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a537ae8e1fe6019f376336baae8c069cb">&#9670;&#160;</a></span>begin() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto sgui::TextureAtlas::begin </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6675cab535bd8e59352afe1601d3d67c" name="a6675cab535bd8e59352afe1601d3d67c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6675cab535bd8e59352afe1601d3d67c">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sgui::TextureAtlas::clear </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear all textures from the atlas. </p>
+
+</div>
+</div>
+<a id="a7f2fa80be32b51b87591f6d654bf2ba4" name="a7f2fa80be32b51b87591f6d654bf2ba4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f2fa80be32b51b87591f6d654bf2ba4">&#9670;&#160;</a></span>end() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto sgui::TextureAtlas::end </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8e9e2c32e55b921d2ad894be0a573300" name="a8e9e2c32e55b921d2ad894be0a573300"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e9e2c32e55b921d2ad894be0a573300">&#9670;&#160;</a></span>end() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto sgui::TextureAtlas::end </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab5d30e7eb65c14baea01a2a6de1c4de" name="aab5d30e7eb65c14baea01a2a6de1c4de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab5d30e7eb65c14baea01a2a6de1c4de">&#9670;&#160;</a></span>loadFromFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool sgui::TextureAtlas::loadFromFile </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load texture atlas from file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>File from which atlas is loaded </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><span class="tt">true</span> if loading was successful </dd></dl>
+
+</div>
+</div>
+<a id="a0a978168f349e24dbd840ae7eb5c06e9" name="a0a978168f349e24dbd840ae7eb5c06e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a978168f349e24dbd840ae7eb5c06e9">&#9670;&#160;</a></span>remove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sgui::TextureAtlas::remove </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>entry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Remove a texture from the atlas. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">entry</td><td>Texture name </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="adf1b9518c5bbf8b484bd69a3c1fa83c7" name="adf1b9518c5bbf8b484bd69a3c1fa83c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf1b9518c5bbf8b484bd69a3c1fa83c7">&#9670;&#160;</a></span>textureRect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; sf::IntRect &gt; sgui::TextureAtlas::textureRect </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>entry</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>frame</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get texture rect of an entry, if the entry exist. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">entry</td><td>Texture name </td></tr>
+    <tr><td class="paramname">frame</td><td>Texture frame it its part of an animation </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Texture rect if it's stored in the atlas, <span class="tt">std::nullopt</span> otherwise </dd></dl>
+
+</div>
+</div>
+<a id="a78acf5fbd35d68841b4876bcccff235e" name="a78acf5fbd35d68841b4876bcccff235e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78acf5fbd35d68841b4876bcccff235e">&#9670;&#160;</a></span>texturesCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t sgui::TextureAtlas::texturesCount </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get number of textures stored in the atlas. </p>
+<dl class="section return"><dt>Returns</dt><dd>Number of textures stored. </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>D:/Utilisateurs/alex/projets/smolgui/src/sgui/Resources/<a class="el" href="_texture_atlas_8h_source.html">TextureAtlas.h</a></li>
+<li>D:/Utilisateurs/alex/projets/smolgui/src/sgui/Resources/<a class="el" href="_texture_atlas_8cpp.html">TextureAtlas.cpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a href="namespacesgui.html">sgui</a></li><li class="navelem"><a href="classsgui_1_1_texture_atlas.html">TextureAtlas</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.15.0 </li>
+  </ul>
+</div>
+</body>
+</html>

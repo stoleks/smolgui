@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['radius_0',['radius',['../structsgui_1_1_circle.html#ad0db6169f49606348caed515bbaca5ee',1,'sgui::Circle']]],
+  ['reduced_1',['reduced',['../structsgui_1_1_panel.html#ade56694298711fd22b1dccd7089af340',1,'sgui::Panel']]],
+  ['relativeposition_2',['relativePosition',['../structsgui_1_1_constraints.html#acae72309eb7b19478a7a2e26a653eb24',1,'sgui::Constraints']]],
+  ['reload_3',['reload',['../classsgui_1_1_resources_holder.html#a855c9e6ec0bf70c2d3d9056797ca86e0',1,'sgui::ResourcesHolder::reload()'],['../classsgui_1_1_text_container.html#a9a1e8d66bc172efc45a9f1df5a9a63fd',1,'sgui::TextContainer::reload()']]],
+  ['remap_4',['remap',['../namespacesgui.html#a6b1efb29f4646f884cfeda5cd9d95b8b',1,'sgui']]],
+  ['remove_5',['remove',['../classsgui_1_1_object_pool.html#a650e1f48f694ad5987071afd44b77714',1,'sgui::ObjectPool::remove()'],['../classsgui_1_1_text_container.html#a87fe59a6ed559976941f53c9d047d2e7',1,'sgui::TextContainer::remove()'],['../classsgui_1_1_texture_atlas.html#a0a978168f349e24dbd840ae7eb5c06e9',1,'sgui::TextureAtlas::remove()']]],
+  ['removestoppedsounds_6',['removeStoppedSounds',['../classsgui_1_1_sound_player.html#ac0cc226a1669199b50872de74d7510f5',1,'sgui::SoundPlayer']]],
+  ['render_7',['render',['../classsgui_1_1_plotter.html#a70699d8cd86d4a6fd45d7801b2470fa0',1,'sgui::Plotter']]],
+  ['repeat_8',['Repeat',['../namespacesgui.html#ad5f76988804d20611a9e6d6194fbcc2fa7020426cfb0a204051be4b3053d2acc8',1,'sgui']]],
+  ['reserve_9',['reserve',['../classsgui_1_1_object_pool.html#afc72f6c1e597ab68a77ced01db45ee51',1,'sgui::ObjectPool']]],
+  ['resourcesholder_10',['ResourcesHolder',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_2eh_11',['ResourcesHolder.h',['../_resources_holder_8h.html',1,'']]],
+  ['resourcesholder_2etpp_12',['ResourcesHolder.tpp',['../_resources_holder_8tpp.html',1,'']]],
+  ['resourcesholder_3c_20layout_20_3e_13',['ResourcesHolder&lt; Layout &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20sf_3a_3afont_20_3e_14',['ResourcesHolder&lt; sf::Font &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20sf_3a_3ashader_20_3e_15',['ResourcesHolder&lt; sf::Shader &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20sf_3a_3asoundbuffer_20_3e_16',['ResourcesHolder&lt; sf::SoundBuffer &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20sf_3a_3atexture_20_3e_17',['ResourcesHolder&lt; sf::Texture &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20textcontainer_20_3e_18',['ResourcesHolder&lt; TextContainer &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['resourcesholder_3c_20textureatlas_20_3e_19',['ResourcesHolder&lt; TextureAtlas &gt;',['../classsgui_1_1_resources_holder.html',1,'sgui']]],
+  ['right_20',['Right',['../namespacesgui.html#aaebd2328d07c2cb1499449c8c2206a92a92b09c7c48c520c3c55e497875da437c',1,'sgui']]],
+  ['rotate_21',['Rotate',['../namespacesgui.html#ad5f76988804d20611a9e6d6194fbcc2fa8d2de5368588552fbae54044ac5c7b3d',1,'sgui']]],
+  ['rotatemeshtexture_22',['rotateMeshTexture',['../namespacesgui.html#a7284adf6ec7d035f4c3bc8f2271ef64e',1,'sgui']]],
+  ['round_23',['round',['../namespacesgui.html#a7d2b4d2f738558d9e626b8fe46bf7444',1,'sgui::round(const sf::Vector2&lt; Type &gt; &amp;value)'],['../namespacesgui.html#a610fa6f9e87b6096f13f366fd83b039d',1,'sgui::round(const sf::Vector3&lt; Type &gt; &amp;value)']]]
+];
