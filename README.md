@@ -9,6 +9,7 @@ Dependencies
 * [nlohmann-json](https://github.com/nlohmann/json)
 * [spdlog](https://github.com/gabime/spdlog)
 * [IconFontCppHeaders](https://github.com/juliettef/IconFontCppHeaders)
+* [Doxygen awesome css](https://github.com/jothepro/doxygen-awesome-css)
 
 Building and integrating into your CMake project
 -----
@@ -38,7 +39,7 @@ If you want to build the demos, you can set the BUILD_EXAMPLES command to ON
   cmake -D BUILD_SGUI_EXAMPLES=ON
 ```
 
-You can also build documentation with doxygen.
+You can check the documentation generated with doxygen [here](https://stoleks.github.io/smolgui/annotated.html), you can also generate the documentation locally, using the Doxyfile in docs/ folder.
 
 Basic usage
 -----
