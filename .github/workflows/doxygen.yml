@@ -1,8 +1,8 @@
 name: generate-doxygen-doc-site
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
