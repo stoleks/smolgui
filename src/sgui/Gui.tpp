@@ -97,7 +97,6 @@ void Gui::inputNumber (
     if (mGuiState.keyboardFocus != name) {
       mActiveInputNumberStr = formatNumberToString (number);
       mTextCursorPositions.get (name) = mActiveInputNumberStr.length ();
-      spdlog::info ("{}", mActiveInputNumberStr);
     }
     mGuiState.keyboardFocus = name;
   }
@@ -187,7 +186,6 @@ void Gui::handleNumberKeyInput (
   const Type max)
 {
   if (focused && (mInputState.textIsEntered || mInputState.keyIsPressed)) {
-    spdlog::warn ("'{}', key is '{}'", mActiveInputNumberStr, mInputState.keyPressed);
     // if a key is pressed and is a digit handle if
     const auto key = mInputState.keyPressed;
     const auto isDigit = std::isdigit (static_cast<unsigned char> (key));
@@ -202,7 +200,6 @@ void Gui::handleNumberKeyInput (
     if (key == L'\n') {
       mGuiState.keyboardFocus = NullID;
     }
-    spdlog::warn ("after modification '{}'", mActiveInputNumberStr);
   }
 }
 
@@ -217,7 +214,6 @@ Type Gui::convertKeyIntoNumber (
   auto number = Type (0);
   const auto numPos = key.find_last_of (' ');
   const auto numStr = key.substr (std::min (numPos + 1, key.length ()));
-  spdlog::info ("key: '{}', numStr: '{}'", key, numStr);
   if (numStr != "" && key != "." && key != "0") {
     // manage type
     if constexpr (std::is_same_v <Type, int>) {
