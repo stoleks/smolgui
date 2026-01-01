@@ -372,8 +372,8 @@ void Gui::handleKeyboardInputs (const std::optional <sf::Event>& event)
   if (event->is <sf::Event::KeyPressed> ()) {
     const auto key = event->getIf <sf::Event::KeyPressed> ();
     if (key) {
-      mInputState.keyIsPressed = true;
       mInputState.code = key->code;
+      mInputState.keyIsPressed = true;
     }
   }
 }
@@ -1059,7 +1059,7 @@ void Gui::inputText (
 
 /////////////////////////////////////////////////
 void Gui::drawTextCursor (
-  sf::Vector2f& position,
+  sf::Vector2f position,
   const std::string& inputTextId,
   const std::string& text,
   const TextOptions& options)

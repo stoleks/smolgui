@@ -460,13 +460,15 @@ private:
   ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition = false, const Tooltip& tooltip = {}, const bool forceActive = false);
   // handle all edge cases and special keys
   void handleKeyInput (std::string& text, size_t& textCursorIndex);
-  void drawTextCursor (sf::Vector2f& position, const std::string& inputTextId, const std::string& text, const TextOptions& options);
+  void drawTextCursor (sf::Vector2f position, const std::string& inputTextId, const std::string& text, const TextOptions& options);
   size_t utf8Length (const std::string& text) const;
   // handle key for inputNumber
   template <typename Type>
-  void handleNumberKeyInput (Type& number, const bool focused, const Type min, const Type max);
+  void handleNumberKeyInput (Type& number, size_t& cursorIndex, const bool focused, const Type min, const Type max);
   template <typename Type>
-  Type convertKeyIntoNumber (std::string& key, const Type min, const Type max);
+  Type convertKeyIntoNumber (std::string& key, const Type min, const Type max) const;
+  template <typename Type>
+  std::string formatNumberToString (const Type& number) const;
   // format text to fit in a box
   std::vector<std::string> formatText (const std::string& text, const sf::Vector2f& boxSize, const TextType type = TextType::Normal) const;
   // get font size
@@ -516,7 +518,7 @@ private:
   sf::Vector2f mLastSpacing = {};
   sf::Vector2f mWindowSize;
   sf::Vector2f mPlotBound;
-  std::string mActiveInputNumber;
+  std::string mActiveInputNumberStr;
   // to play sound
   bool mSoundIsOn = false;
   std::string mPreviousWidgetSoundId = "";

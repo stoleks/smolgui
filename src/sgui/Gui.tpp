@@ -73,17 +73,19 @@ void Gui::inputNumber (
   const bool fixedWidth)
 {
   // Initialize widget name and position
+  auto numStr = formatNumberToString (number);
   const auto name = initializeActivable ("InputNumber");
   const auto position = computeRelativePosition (options.displacement);
+  if (!mTextCursorPositions.has (name)) {
+    mTextCursorPositions.emplace (name, numStr.length ());
+    mTextHasCursor.emplace (name, 1u);
+  }
 
   // compute text box dimension
   auto width = textSize (label + "10000").x;
   if (!fixedWidth) {
-    if constexpr (std::is_floating_point_v <Type>) {
-      width = std::max (width, textSize (label + fmt::format ("{:7.2}", number)).x);
-    } else {
-      width = std::max (width, textSize (label + fmt::format ("{}", number)).x);
-    }
+    const auto numStr = formatNumberToString (number);
+    width = std::max (width, textSize (label + numStr).x);
   }
   const auto boxSize = sf::Vector2f (width + 4.f*mPadding.x, textHeight ());
 
@@ -93,36 +95,36 @@ void Gui::inputNumber (
   // take keyboard focus if active
   if (mGuiState.activeItem == name) {
     if (mGuiState.keyboardFocus != name) {
-      mActiveInputNumber = "";
+      mActiveInputNumberStr = formatNumberToString (number);
+      mTextCursorPositions.get (name) = mActiveInputNumberStr.length ();
+      spdlog::info ("{}", mActiveInputNumberStr);
     }
     mGuiState.keyboardFocus = name;
   }
 
   // if this widget has keyboard focus update its number
+  auto& cursorIndex = mTextCursorPositions.get (name);
   const auto focused = mGuiState.keyboardFocus == name;
-  handleNumberKeyInput (number, focused, min, max);
+  handleNumberKeyInput (number, cursorIndex, focused, min, max);
 
   // draw text box
   if (focused) {
     state = ItemState::Active;
+    numStr = mActiveInputNumberStr;
+  } else {
+    numStr = formatNumberToString (number);
   }
   mRender.draw (box, {Widget::TextBox, Slices::Three, state});
 
   // draw label and number
-  auto numberStr = std::string ("");
-  if constexpr (std::is_floating_point_v <Type>) {
-    if (number < 1000.f) {
-      numberStr = fmt::format ("{:7.2f}", number);
-    } else {
-      numberStr = fmt::format ("{:7.2}", number);
-    }
-  } else {
-    numberStr = fmt::format ("{}", number);
-  }
-  const auto inputStr = label + numberStr;
-  const auto numWidth = textSize (inputStr).x;
+  const auto inputStr = label + numStr;
+  const auto numWidth = textSize (numStr).x;
   const auto shiftToCenter = sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
   handleTextDrawing (position + shiftToCenter, inputStr);
+  if (focused) {
+    const auto labelShift = sf::Vector2f (textSize (label).x, 0.f);
+    drawTextCursor (position + shiftToCenter + labelShift, name, numStr, {});
+  }
 
   // draw description
   const auto descrPos = position + sf::Vector2f (boxSize.x + mPadding.x, 0);
@@ -179,24 +181,28 @@ void Gui::inputVector3 (
 template <typename Type>
 void Gui::handleNumberKeyInput (
   Type& number,
+  size_t& cursorIndex,
   const bool focused,
   const Type min,
   const Type max)
 {
-  if (focused && mInputState.keyIsPressed) {
+  if (focused && (mInputState.textIsEntered || mInputState.keyIsPressed)) {
+    spdlog::warn ("'{}', key is '{}'", mActiveInputNumberStr, mInputState.keyPressed);
     // if a key is pressed and is a digit handle if
     const auto key = mInputState.keyPressed;
-    const auto digit = std::isdigit (static_cast<unsigned char> (key));
-    if (digit || key == '.' || key == L'\b') {
+    const auto isDigit = std::isdigit (static_cast<unsigned char> (key));
+    const auto validPoint = key == '.' && mActiveInputNumberStr.find (".") == std::string::npos;
+    if (isDigit || validPoint || key == L'\b') {
       // handle key and convert it into number
-      size_t u = 0;
-      handleKeyInput (mActiveInputNumber, u);
-      number = convertKeyIntoNumber <Type> (mActiveInputNumber, min, max);
+      handleKeyInput (mActiveInputNumberStr, cursorIndex);
+      number = convertKeyIntoNumber <Type> (mActiveInputNumberStr, min, max);
+      cursorIndex = clamp (size_t (0), mActiveInputNumberStr.length (), cursorIndex);
     }
     // if enter is pressed we lost focus
     if (key == L'\n') {
       mGuiState.keyboardFocus = NullID;
     }
+    spdlog::warn ("after modification '{}'", mActiveInputNumberStr);
   }
 }
 
@@ -205,29 +211,45 @@ template <typename Type>
 Type Gui::convertKeyIntoNumber (
   std::string& key,
   const Type min,
-  const Type max)
+  const Type max) const
 {
   // convert string into number
   auto number = Type (0);
-  if (key != "") {
+  const auto numPos = key.find_last_of (' ');
+  const auto numStr = key.substr (std::min (numPos + 1, key.length ()));
+  spdlog::info ("key: '{}', numStr: '{}'", key, numStr);
+  if (numStr != "" && key != "." && key != "0") {
     // manage type
     if constexpr (std::is_same_v <Type, int>) {
-      number = std::stoi (mActiveInputNumber);
+      number = std::stoi (key);
     } else if constexpr (std::is_same_v <Type, float>) {
-      number = std::stof (mActiveInputNumber);
+      number = std::stof (key);
     } else if constexpr (std::is_same_v <Type, double>) {
-      number = std::stod (mActiveInputNumber);
+      number = std::stod (key);
     } else {
-      number = std::stoul (mActiveInputNumber);
+      number = std::stoul (key);
     }
     // clamp value if min and max are furnished and valid
     if (max > min) {
       number = sgui::clamp (min, max, number);
-      mActiveInputNumber = fmt::format ("{}", number);
+      key = formatNumberToString (number);
     } 
   }
   // return computed number
   return number;
+}
+
+/////////////////////////////////////////////////
+template <typename Type>
+std::string Gui::formatNumberToString (const Type& number) const
+{
+  if constexpr (std::is_floating_point_v <Type>) {
+    if (number < 1000.f) {
+      return fmt::format ("{:7.2f}", number);
+    }
+    return fmt::format ("{:7.2}", number);
+  }
+  return fmt::format ("{}", number);
 }
 
 } // namespace sgui
