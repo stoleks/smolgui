@@ -1,0 +1,27 @@
+<map id="/github/workspace/src/sgui/Serialization/LoadLookupTable.h" name="/github/workspace/src/sgui/Serialization/LoadLookupTable.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="140,5,340,61"/>
+<area shape="rect" id="Node000002" href="$_load_json_8h.html" title=" " alt="" coords="108,109,228,150"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="221,63,194,98,190,95,217,60"/>
+<area shape="rect" id="Node000006" href="$_serialize_core_8h.html" title=" " alt="" coords="272,109,392,150"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="268,60,304,96,301,100,265,63"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,198,72,223"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="137,152,73,192,70,187,134,148"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="95,198,160,223"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="160,151,143,185,138,182,156,149"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="184,198,314,223"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="190,148,228,185,224,188,186,152"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="313,152,275,188,271,185,310,148"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="278,271,388,297"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="335,150,336,256,330,256,329,150"/>
+<area shape="rect" id="Node000008" href="$_object_pool_8h.html" title=" " alt="" coords="427,198,581,223"/>
+<area shape="poly" id="edge8_Node000006_Node000008" title=" " alt="" coords="376,148,465,188,462,193,374,153"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="476,226,377,267,375,263,474,221"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="412,271,470,297"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="495,225,464,261,460,258,491,222"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="494,271,551,297"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="509,223,518,256,513,257,504,224"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="575,271,678,297"/>
+<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="526,222,594,261,592,266,523,226"/>
+<area shape="rect" id="Node000012" href="$_object_pool_8tpp.html" title=" " alt="" coords="701,271,866,297"/>
+<area shape="poly" id="edge13_Node000008_Node000012" title=" " alt="" coords="552,221,722,264,721,270,551,226"/>
+</map>

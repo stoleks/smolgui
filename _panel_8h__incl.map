@@ -1,0 +1,21 @@
+<map id="/github/workspace/src/sgui/Widgets/Panel.h" name="/github/workspace/src/sgui/Widgets/Panel.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="123,5,272,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,59,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="157,49,72,89,70,85,155,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="83,94,160,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="180,48,146,84,142,81,177,45"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="159,241,337,267"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="204,46,245,225,239,227,199,47"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="234,94,403,120"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="229,44,289,83,286,88,226,49"/>
+<area shape="rect" id="Node000006" href="$_options_8h.html" title=" " alt="" coords="426,94,582,120"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="273,44,443,87,441,92,272,49"/>
+<area shape="poly" id="edge6_Node000006_Node000004" title=" " alt="" coords="427,122,337,142,299,155,275,170,266,182,259,196,252,226,247,225,254,194,261,179,272,166,297,150,335,137,425,117"/>
+<area shape="rect" id="Node000007" href="$_constraints_8h.html" title=" " alt="" coords="285,168,462,193"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="483,123,410,162,407,158,481,118"/>
+<area shape="rect" id="Node000008" href="$_widgets_8h.html" title=" " alt="" coords="485,168,643,193"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="516,118,546,154,542,157,512,122"/>
+<area shape="rect" id="Node000009" href="$_item_states_8h.html" title=" " alt="" coords="666,168,840,193"/>
+<area shape="poly" id="edge10_Node000006_Node000009" title=" " alt="" coords="547,118,697,160,696,166,546,123"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="353,196,284,236,281,231,351,192"/>
+</map>

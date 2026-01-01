@@ -1,0 +1,16 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="20,55,112,80"/>
+<area shape="rect" id="Node000001" href="$classsgui_1_1_gui.html" title="implement gui following the immediate gui principles, like dear&#45;imgui, but with more control over the..." alt="" coords="229,104,300,130"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="128,80,229,105,228,111,127,85"/>
+<area shape="rect" id="Node000003" href="$classsgui_1_1_gui_render.html" title="Handle rendering for the gui." alt="" coords="209,153,321,179"/>
+<area shape="poly" id="edge2_Node000000_Node000003" title=" " alt="" coords="122,86,128,89,143,103,152,116,161,128,176,140,209,154,207,159,173,144,158,132,148,119,139,106,125,94,120,90"/>
+<area shape="rect" id="Node000004" href="$classsgui_1_1_plotter.html" title="plot function in a given range and level of sampling." alt="" coords="220,5,310,31"/>
+<area shape="poly" id="edge3_Node000000_Node000004" title=" " alt="" coords="127,50,219,27,220,32,128,55"/>
+<area shape="rect" id="Node000005" href="$classsgui_1_1_primitive_shape_render.html" title="render primitive shapes using vertex array." alt="" coords="175,55,355,80"/>
+<area shape="poly" id="edge4_Node000000_Node000005" title=" " alt="" coords="128,65,174,65,174,70,128,70"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,104,127,130"/>
+<area shape="poly" id="edge5_Node000002_Node000001" title=" " alt="" coords="143,114,229,114,229,120,143,120"/>
+<area shape="poly" id="edge6_Node000002_Node000003" title=" " alt="" coords="136,131,211,150,209,155,135,137"/>
+<area shape="poly" id="edge7_Node000002_Node000004" title=" " alt="" coords="120,94,125,91,139,78,148,65,158,52,173,40,196,29,219,22,220,28,198,34,176,44,161,56,152,68,143,82,128,95,122,99"/>
+<area shape="poly" id="edge8_Node000002_Node000005" title=" " alt="" coords="135,97,209,78,211,84,136,102"/>
+</map>

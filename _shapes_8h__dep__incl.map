@@ -1,0 +1,26 @@
+<map id="/github/workspace/src/sgui/Core/Shapes.h" name="/github/workspace/src/sgui/Core/Shapes.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="165,5,314,46"/>
+<area shape="rect" id="Node000002" href="$_polygon_8h.html" title=" " alt="" coords="270,94,419,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="276,54,322,91,319,96,273,58"/>
+<area shape="rect" id="Node000010" href="$_gui_render_8h.html" title=" " alt="" coords="51,94,220,135"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="206,58,160,96,157,92,203,54"/>
+<area shape="rect" id="Node000003" href="$_primitive_shape_render_8h.html" title=" " alt="" coords="251,183,438,238"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="347,150,347,182,342,182,342,150"/>
+<area shape="rect" id="Node000007" href="$sgui_8h.html" title=" " alt="" coords="366,479,515,519"/>
+<area shape="poly" id="edge10_Node000002_Node000007" title=" " alt="" coords="410,141,433,158,452,181,469,220,479,262,482,305,480,348,466,424,450,479,445,477,461,423,474,347,476,305,474,263,464,222,448,184,430,162,407,145"/>
+<area shape="rect" id="Node000004" href="$_plotter_8h.html" title=" " alt="" coords="254,294,403,334"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="341,254,334,294,329,293,335,253"/>
+<area shape="poly" id="edge9_Node000003_Node000007" title=" " alt="" coords="391,248,418,285,435,338,444,392,446,441,445,479,440,478,441,441,438,393,430,339,413,288,387,251"/>
+<area shape="rect" id="Node000009" href="$_primitive_shape_render_8cpp.html" title=" " alt="" coords="43,286,230,342"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="276,248,194,288,191,283,274,243"/>
+<area shape="rect" id="Node000005" href="$_gui_8h.html" title=" " alt="" coords="70,390,219,431"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="278,344,184,392,182,387,275,340"/>
+<area shape="rect" id="Node000008" href="$_plotter_8cpp.html" title=" " alt="" coords="243,390,403,431"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="329,350,327,390,322,389,324,350"/>
+<area shape="rect" id="Node000006" href="$_gui_8cpp.html" title=" " alt="" coords="70,479,219,519"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="147,446,147,478,142,478,142,446"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="227,433,374,476,373,481,226,438"/>
+<area shape="poly" id="edge12_Node000010_Node000005" title=" " alt="" coords="74,145,51,162,34,184,15,226,8,263,14,299,34,341,58,368,89,387,86,392,54,372,29,343,9,301,3,263,9,224,29,181,47,158,70,140"/>
+<area shape="rect" id="Node000011" href="$_gui_render_8cpp.html" title=" " alt="" coords="44,190,227,231"/>
+<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="138,150,138,190,133,190,133,150"/>
+</map>

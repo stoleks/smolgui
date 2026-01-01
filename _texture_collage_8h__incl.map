@@ -1,0 +1,18 @@
+<map id="/github/workspace/src/sgui/Resources/TextureCollage.h" name="/github/workspace/src/sgui/Resources/TextureCollage.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,221,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="45,168,98,193"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="67,49,38,68,15,95,12,111,17,127,28,142,43,156,39,160,24,146,13,129,7,111,11,93,34,64,64,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="24,94,202,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="116,46,116,78,110,78,110,46"/>
+<area shape="rect" id="Node000004" href="$_texture_atlas_8h.html" title=" " alt="" coords="226,94,424,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="167,44,279,86,277,91,165,49"/>
+<area shape="poly" id="edge4_Node000004_Node000002" title=" " alt="" coords="283,123,114,170,113,165,281,118"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="151,168,211,193"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="302,123,220,163,218,158,299,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="236,168,302,193"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="318,122,290,157,286,154,314,118"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="326,168,436,193"/>
+<area shape="poly" id="edge7_Node000004_Node000007" title=" " alt="" coords="336,118,364,154,360,157,332,122"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="461,168,629,193"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="363,118,494,160,493,165,362,123"/>
+</map>

@@ -1,0 +1,24 @@
+<map id="/github/workspace/src/sgui/Resources/TextureCollage.cpp" name="/github/workspace/src/sgui/Resources/TextureCollage.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="32,5,261,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,85,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,49,74,86,71,82,120,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="109,94,184,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="149,46,149,78,144,78,144,46"/>
+<area shape="rect" id="Node000004" href="$_texture_collage_8h.html" title=" " alt="" coords="207,94,419,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="189,44,275,85,273,89,187,49"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="245,241,298,267"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="276,123,242,141,227,154,215,169,212,185,217,201,229,216,243,230,240,234,225,220,212,203,206,185,211,167,223,150,239,136,273,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="224,168,402,193"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="316,120,316,152,310,152,310,120"/>
+<area shape="rect" id="Node000007" href="$_texture_atlas_8h.html" title=" " alt="" coords="426,168,624,193"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="350,118,476,160,474,165,348,123"/>
+<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="483,196,314,244,313,239,481,191"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="351,241,411,267"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="502,196,420,236,418,232,499,191"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="436,241,502,267"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="518,195,490,231,486,227,514,192"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="526,241,636,267"/>
+<area shape="poly" id="edge10_Node000007_Node000010" title=" " alt="" coords="536,192,564,227,560,231,532,195"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="661,241,829,267"/>
+<area shape="poly" id="edge11_Node000007_Node000011" title=" " alt="" coords="563,191,694,234,693,239,562,196"/>
+</map>

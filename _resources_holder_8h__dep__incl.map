@@ -1,0 +1,14 @@
+<map id="/github/workspace/src/sgui/Resources/ResourcesHolder.h" name="/github/workspace/src/sgui/Resources/ResourcesHolder.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="77,5,307,46"/>
+<area shape="rect" id="Node000002" href="$_sound_player_8h.html" title=" " alt="" coords="91,94,293,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,62,195,94,189,94,189,62"/>
+<area shape="rect" id="Node000003" href="$_gui_8cpp.html" title=" " alt="" coords="5,271,155,312"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="146,146,125,163,108,184,97,206,90,229,83,271,78,271,84,228,92,204,103,181,121,160,142,142"/>
+<area shape="rect" id="Node000004" href="$_gui_8h.html" title=" " alt="" coords="117,183,267,223"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="195,150,195,182,189,182,189,150"/>
+<area shape="rect" id="Node000006" href="$_sound_player_8cpp.html" title=" " alt="" coords="290,183,507,223"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="254,139,353,180,351,185,252,143"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="156,235,107,273,104,269,153,231"/>
+<area shape="rect" id="Node000005" href="$sgui_8h.html" title=" " alt="" coords="179,271,328,312"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="217,235,242,269,237,272,213,238"/>
+</map>

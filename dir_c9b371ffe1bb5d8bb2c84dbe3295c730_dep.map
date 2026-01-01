@@ -1,0 +1,16 @@
+<map id="/github/workspace/src/sgui/Render" name="/github/workspace/src/sgui/Render">
+<area shape="rect" id="node1" href="dir_0f7010bffa885d45b6abbb18e1a85448.html" title="Widgets" alt="" coords="27,126,96,152"/>
+<area shape="rect" id="node2" href="dir_192f27c06696059490b8ed376012eed2.html" title="Core" alt="" coords="120,126,168,152"/>
+<area shape="rect" id="node3" href="dir_438b27afc7c9416aca39677d6327d4e6.html" title="Serialization" alt="" coords="192,126,283,152"/>
+<area shape="rect" id="node4" href="dir_668b4af8e996aac2de436b71d9910aa6.html" title="Resources" alt="" coords="308,126,391,152"/>
+<area shape="rect" id="node5" href="dir_c9b371ffe1bb5d8bb2c84dbe3295c730.html" title="Render" alt="" coords="160,52,222,78"/>
+<area shape="poly" id="edge1" href="dir_000001_000006.html" alt="" coords="170,81,98,120,95,116,167,76"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000001_000006.html" title="2" alt="" coords="100,117,107,132"/>
+<area shape="poly" id="edge2" href="dir_000001_000000.html" alt="" coords="185,80,162,114,158,111,181,77"/>
+<area shape="rect" id="edge2-headlabel" href="dir_000001_000000.html" title="4" alt="" coords="165,108,172,123"/>
+<area shape="poly" id="edge3" href="dir_000001_000003.html" alt="" coords="201,77,223,111,219,114,196,80"/>
+<area shape="rect" id="edge3-headlabel" href="dir_000001_000003.html" title="1" alt="" coords="223,98,230,113"/>
+<area shape="poly" id="edge4" href="dir_000001_000002.html" alt="" coords="219,76,310,117,308,122,216,81"/>
+<area shape="rect" id="edge4-headlabel" href="dir_000001_000002.html" title="2" alt="" coords="306,103,313,118"/>
+<area shape="rect" id="clust1" href="dir_802669d86a09d692f423ad15444f4210.html" title="sgui" alt="" coords="16,16,401,162"/>
+</map>

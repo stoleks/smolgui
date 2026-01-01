@@ -1,0 +1,13 @@
+<map id="/github/workspace/src/sgui/Resources/TextureAtlas.h" name="/github/workspace/src/sgui/Resources/TextureAtlas.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="100,5,302,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,59,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="160,49,73,90,70,85,158,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="83,94,144,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,48,140,85,137,81,178,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="168,94,234,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="204,46,204,78,199,78,199,46"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="258,94,368,120"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="231,44,285,82,282,87,227,49"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="393,94,562,120"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="271,44,421,87,419,92,270,49"/>
+</map>

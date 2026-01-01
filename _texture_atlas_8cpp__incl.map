@@ -1,0 +1,32 @@
+<map id="/github/workspace/src/sgui/Resources/TextureAtlas.cpp" name="/github/workspace/src/sgui/Resources/TextureAtlas.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="366,5,582,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="325,102,436,127"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="455,48,406,93,403,89,451,45"/>
+<area shape="rect" id="Node000003" href="$_texture_atlas_8h.html" title=" " alt="" coords="242,190,440,216"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="477,47,471,90,463,114,451,136,422,165,388,185,386,181,419,161,447,133,458,112,466,89,471,46"/>
+<area shape="rect" id="Node000009" href="$_load_texture_atlas_8h.html" title=" " alt="" coords="610,94,747,135"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="521,44,619,85,617,90,519,49"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="314,279,368,304"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="344,216,344,263,338,263,338,216"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,279,66,304"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="282,219,186,242,79,274,75,275,73,270,77,269,185,237,281,214"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="90,279,157,304"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="310,219,170,274,167,275,165,270,168,269,308,214"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="180,279,291,304"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="328,218,264,271,260,267,325,214"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="391,279,560,304"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="361,214,445,268,442,272,358,219"/>
+<area shape="poly" id="edge10_Node000009_Node000003" title=" " alt="" coords="610,136,403,188,402,183,608,131"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1124,279,1254,304"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="736,133,1140,271,1138,276,734,138"/>
+<area shape="rect" id="Node000011" href="$_serialize_s_f_m_l_8h.html" title=" " alt="" coords="667,183,788,223"/>
+<area shape="poly" id="edge11_Node000009_Node000011" title=" " alt="" coords="692,134,711,168,706,170,687,137"/>
+<area shape="poly" id="edge13_Node000011_Node000008" title=" " alt="" coords="671,226,526,276,525,271,669,221"/>
+<area shape="poly" id="edge12_Node000011_Node000010" title=" " alt="" coords="789,211,937,235,1113,269,1129,272,1128,277,1112,274,936,240,788,216"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="727,279,898,304"/>
+<area shape="poly" id="edge14_Node000011_Node000012" title=" " alt="" coords="749,222,792,266,788,270,745,226"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="922,279,1101,304"/>
+<area shape="poly" id="edge15_Node000011_Node000013" title=" " alt="" coords="789,220,958,271,957,276,787,225"/>
+<area shape="rect" id="Node000014" href="$_macro_8h.html" title=" " alt="" coords="584,271,703,312"/>
+<area shape="poly" id="edge16_Node000011_Node000014" title=" " alt="" coords="710,226,675,262,671,258,707,222"/>
+</map>

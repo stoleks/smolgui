@@ -1,0 +1,16 @@
+<map id="/github/workspace/src/sgui/Render/PrimitiveShapeRender.h" name="/github/workspace/src/sgui/Render/PrimitiveShapeRender.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="283,5,469,61"/>
+<area shape="rect" id="Node000002" href="$_plotter_8h.html" title=" " alt="" coords="184,116,333,157"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="335,73,283,118,280,114,332,69"/>
+<area shape="rect" id="Node000005" href="$sgui_8h.html" title=" " alt="" coords="240,301,389,342"/>
+<area shape="poly" id="edge7_Node000001_Node000005" title=" " alt="" coords="378,77,372,160,365,207,353,254,330,302,325,300,348,252,360,206,367,159,373,76"/>
+<area shape="rect" id="Node000007" href="$_primitive_shape_render_8cpp.html" title=" " alt="" coords="414,109,600,165"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="425,69,473,106,470,110,421,73"/>
+<area shape="rect" id="Node000003" href="$_gui_8h.html" title=" " alt="" coords="5,213,155,253"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="209,167,119,214,116,210,206,162"/>
+<area shape="rect" id="Node000006" href="$_plotter_8cpp.html" title=" " alt="" coords="178,213,339,253"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="261,173,261,212,256,212,256,173"/>
+<area shape="rect" id="Node000004" href="$_gui_8cpp.html" title=" " alt="" coords="5,301,155,342"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="83,269,83,301,77,301,77,269"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="148,256,262,298,260,303,146,261"/>
+</map>

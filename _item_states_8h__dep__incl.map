@@ -1,0 +1,33 @@
+<map id="/github/workspace/src/sgui/Widgets/ItemStates.h" name="/github/workspace/src/sgui/Widgets/ItemStates.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="286,5,465,46"/>
+<area shape="rect" id="Node000002" href="$_draw_options_8h.html" title=" " alt="" coords="187,94,370,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="344,58,302,96,299,92,341,54"/>
+<area shape="rect" id="Node000008" href="$_options_8h.html" title=" " alt="" coords="395,94,554,135"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="411,54,454,92,450,96,408,58"/>
+<area shape="rect" id="Node000003" href="$_gui_render_8h.html" title=" " alt="" coords="194,183,363,223"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="281,150,281,182,276,182,276,150"/>
+<area shape="rect" id="Node000004" href="$_gui_8h.html" title=" " alt="" coords="213,271,362,312"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="285,239,288,271,283,271,279,239"/>
+<area shape="rect" id="Node000007" href="$_gui_render_8cpp.html" title=" " alt="" coords="5,271,189,312"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="225,233,139,273,137,268,222,228"/>
+<area shape="rect" id="Node000005" href="$_gui_8cpp.html" title=" " alt="" coords="40,368,189,408"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="239,322,152,369,149,365,237,318"/>
+<area shape="rect" id="Node000006" href="$sgui_8h.html" title=" " alt="" coords="213,368,362,408"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="290,328,290,367,285,367,285,328"/>
+<area shape="rect" id="Node000009" href="$_panel_8h.html" title=" " alt="" coords="400,183,549,223"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="477,150,477,182,472,182,472,150"/>
+<area shape="poly" id="edge9_Node000009_Node000004" title=" " alt="" coords="419,233,331,273,329,268,417,228"/>
+<area shape="rect" id="Node000010" href="$_layout_8h.html" title=" " alt="" coords="390,271,558,312"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="477,239,477,271,472,271,472,239"/>
+<area shape="rect" id="Node000012" href="$_serialize_g_u_i_8h.html" title=" " alt="" coords="593,360,769,416"/>
+<area shape="poly" id="edge17_Node000009_Node000012" title=" " alt="" coords="520,230,572,269,620,315,660,358,656,361,616,319,569,273,517,234"/>
+<area shape="poly" id="edge11_Node000010_Node000005" title=" " alt="" coords="376,319,202,363,177,370,176,364,200,357,374,313"/>
+<area shape="poly" id="edge16_Node000010_Node000006" title=" " alt="" coords="423,322,328,369,326,365,420,317"/>
+<area shape="rect" id="Node000011" href="$_layout_8cpp.html" title=" " alt="" coords="386,368,568,408"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="478,328,479,367,474,367,473,328"/>
+<area shape="poly" id="edge13_Node000010_Node000012" title=" " alt="" coords="532,316,622,357,620,362,530,321"/>
+<area shape="rect" id="Node000013" href="$_load_layout_8cpp.html" title=" " alt="" coords="454,471,673,512"/>
+<area shape="poly" id="edge14_Node000012_Node000013" title=" " alt="" coords="640,428,588,473,585,469,637,424"/>
+<area shape="rect" id="Node000014" href="$_load_texture_atlas_8cpp.html" title=" " alt="" coords="697,464,897,519"/>
+<area shape="poly" id="edge15_Node000012_Node000014" title=" " alt="" coords="725,424,768,461,764,465,722,428"/>
+</map>

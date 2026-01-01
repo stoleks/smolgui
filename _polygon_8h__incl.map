@@ -1,0 +1,17 @@
+<map id="/github/workspace/src/sgui/Core/Polygon.h" name="/github/workspace/src/sgui/Core/Polygon.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="103,5,253,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="29,94,87,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,49,90,88,87,83,147,44"/>
+<area shape="rect" id="Node000003" href="$_shapes_8h.html" title=" " alt="" coords="111,94,245,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="181,46,181,78,175,78,175,46"/>
+<area shape="rect" id="Node000008" href="$_polygon_8tpp.html" title=" " alt="" coords="270,94,417,120"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="220,44,305,85,303,89,218,49"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,168,55,193"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="154,123,70,163,68,158,152,118"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="79,168,136,193"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="168,122,132,158,128,155,164,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="160,168,338,193"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="192,118,228,155,224,158,188,122"/>
+<area shape="rect" id="Node000007" href="$_shapes_8tpp.html" title=" " alt="" coords="361,168,507,193"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="222,118,377,160,375,166,221,123"/>
+</map>

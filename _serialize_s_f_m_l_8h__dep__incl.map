@@ -1,0 +1,18 @@
+<map id="/github/workspace/src/sgui/Serialization/SerializeSFML.h" name="/github/workspace/src/sgui/Serialization/SerializeSFML.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="215,5,391,61"/>
+<area shape="rect" id="Node000002" href="$_load_layout_8cpp.html" title=" " alt="" coords="5,220,225,261"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="202,66,169,85,142,111,128,137,120,167,116,220,111,220,114,166,123,135,138,107,166,81,199,61"/>
+<area shape="rect" id="Node000003" href="$_load_texture_atlas_8cpp.html" title=" " alt="" coords="249,213,448,268"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="329,74,343,108,351,163,352,212,347,212,346,164,338,110,324,76"/>
+<area shape="rect" id="Node000004" href="$_load_texture_atlas_8h.html" title=" " alt="" coords="434,109,633,165"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="380,65,473,106,471,111,378,70"/>
+<area shape="rect" id="Node000007" href="$_serialize_g_u_i_8h.html" title=" " alt="" coords="152,109,328,165"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="280,76,259,110,255,107,276,73"/>
+<area shape="poly" id="edge6_Node000004_Node000003" title=" " alt="" coords="472,175,399,214,397,210,470,170"/>
+<area shape="rect" id="Node000005" href="$_gui_render_8cpp.html" title=" " alt="" coords="473,220,656,261"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="549,179,561,219,556,221,544,181"/>
+<area shape="rect" id="Node000006" href="$_texture_atlas_8cpp.html" title=" " alt="" coords="680,220,896,261"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="617,168,740,217,738,222,615,173"/>
+<area shape="poly" id="edge8_Node000007_Node000002" title=" " alt="" coords="197,177,141,222,137,218,194,172"/>
+<area shape="poly" id="edge9_Node000007_Node000003" title=" " alt="" coords="282,174,321,210,317,214,278,177"/>
+</map>

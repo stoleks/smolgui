@@ -1,0 +1,56 @@
+<map id="/github/workspace/src/sgui/Render/Plotter.cpp" name="/github/workspace/src/sgui/Render/Plotter.cpp">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1320,5,1480,46"/>
+<area shape="rect" id="Node000002" href="$_plotter_8h.html" title=" " alt="" coords="1129,94,1271,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1351,49,1246,90,1244,85,1349,44"/>
+<area shape="rect" id="Node000023" href="$_interpolation_8h.html" title=" " alt="" coords="1520,256,1681,282"/>
+<area shape="poly" id="edge23_Node000001_Node000023" title=" " alt="" coords="1438,44,1509,93,1546,127,1577,166,1593,204,1601,240,1595,241,1588,205,1573,169,1542,131,1506,98,1435,49"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="990,175,1067,201"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1175,123,1070,171,1067,166,1173,118"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="1091,175,1310,201"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1203,120,1203,159,1198,159,1198,120"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="1334,175,1562,201"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1239,118,1396,167,1395,173,1238,123"/>
+<area shape="rect" id="Node000006" href="$_primitive_shape_render_8h.html" title=" " alt="" coords="784,168,966,208"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1151,123,971,166,970,161,1149,118"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="820,256,1015,282"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="888,207,906,241,901,244,883,210"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="1039,256,1247,282"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="943,206,1088,249,1086,254,941,211"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1271,256,1495,282"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="967,204,978,206,1279,251,1278,256,977,211,966,209"/>
+<area shape="rect" id="Node000010" href="$_clipping_layers_8h.html" title=" " alt="" coords="211,256,400,282"/>
+<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="784,205,409,256,408,251,783,199"/>
+<area shape="rect" id="Node000015" href="$_polygon_8h.html" title=" " alt="" coords="464,256,600,282"/>
+<area shape="poly" id="edge14_Node000006_Node000015" title=" " alt="" coords="790,212,601,255,599,250,789,206"/>
+<area shape="rect" id="Node000022" href="$_primitive_shape_render_8tpp.html" title=" " alt="" coords="624,256,795,282"/>
+<area shape="poly" id="edge22_Node000006_Node000022" title=" " alt="" coords="835,211,750,252,747,247,832,207"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="229,404,286,429"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="211,280,152,287,95,298,47,313,30,322,18,332,8,353,9,362,14,369,34,383,64,394,140,407,214,412,213,417,139,412,62,399,31,388,10,373,4,363,3,352,14,328,27,317,45,308,94,293,152,282,210,275"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="415,330,476,356"/>
+<area shape="poly" id="edge11_Node000010_Node000012" title=" " alt="" coords="331,280,409,320,407,325,328,285"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="28,330,196,356"/>
+<area shape="poly" id="edge12_Node000010_Node000013" title=" " alt="" coords="274,285,160,327,159,322,272,280"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="220,330,391,356"/>
+<area shape="poly" id="edge13_Node000010_Node000014" title=" " alt="" coords="308,282,308,314,303,314,303,282"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1116,330,1173,356"/>
+<area shape="poly" id="edge15_Node000015_Node000016" title=" " alt="" coords="601,278,613,279,890,312,1101,334,1100,340,890,317,612,285,600,283"/>
+<area shape="rect" id="Node000017" href="$_shapes_8h.html" title=" " alt="" coords="672,330,806,356"/>
+<area shape="poly" id="edge16_Node000015_Node000017" title=" " alt="" coords="568,280,690,322,689,327,566,285"/>
+<area shape="rect" id="Node000021" href="$_polygon_8tpp.html" title=" " alt="" coords="500,330,647,356"/>
+<area shape="poly" id="edge21_Node000015_Node000021" title=" " alt="" coords="541,281,561,315,557,318,537,284"/>
+<area shape="poly" id="edge18_Node000017_Node000011" title=" " alt="" coords="672,357,302,411,301,406,671,351"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="577,404,626,429"/>
+<area shape="poly" id="edge17_Node000017_Node000018" title=" " alt="" coords="717,359,640,398,637,394,714,354"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="650,404,828,429"/>
+<area shape="poly" id="edge19_Node000017_Node000019" title=" " alt="" coords="742,356,742,388,736,388,736,356"/>
+<area shape="rect" id="Node000020" href="$_shapes_8tpp.html" title=" " alt="" coords="852,404,997,429"/>
+<area shape="poly" id="edge20_Node000017_Node000020" title=" " alt="" coords="771,354,879,395,878,400,769,359"/>
+<area shape="poly" id="edge26_Node000023_Node000012" title=" " alt="" coords="1520,284,1507,285,1353,295,1223,299,999,297,891,297,776,302,645,312,491,333,491,327,644,307,776,296,891,292,999,292,1223,293,1353,289,1507,279,1519,278"/>
+<area shape="poly" id="edge24_Node000023_Node000016" title=" " alt="" coords="1523,285,1188,337,1188,332,1522,280"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="1482,330,1535,356"/>
+<area shape="poly" id="edge25_Node000023_Node000024" title=" " alt="" coords="1586,285,1537,323,1534,318,1583,280"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="1560,330,1641,356"/>
+<area shape="poly" id="edge27_Node000023_Node000025" title=" " alt="" coords="1603,282,1603,314,1598,314,1598,282"/>
+<area shape="rect" id="Node000026" href="$_interpolation_8tpp.html" title=" " alt="" coords="1665,330,1837,356"/>
+<area shape="poly" id="edge28_Node000023_Node000026" title=" " alt="" coords="1627,280,1713,321,1710,325,1625,285"/>
+</map>

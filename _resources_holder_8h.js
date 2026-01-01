@@ -1,6 +1,6 @@
 var _resources_holder_8h =
 [
-    [ "sgui::ResourcesHolder&lt; Resource, Identifier &gt;", "classsgui_1_1_resources_holder.html", "classsgui_1_1_resources_holder" ],
+    [ "sgui::ResourcesHolder< Resource, Identifier >", "classsgui_1_1_resources_holder.html", "classsgui_1_1_resources_holder" ],
     [ "sgui::AtlasHolder", "namespacesgui.html#aa3172e24126e0e69a93889927e23c89d", null ],
     [ "sgui::FontHolder", "namespacesgui.html#a406501f902b54b27d45c57ab3ab4f5f0", null ],
     [ "sgui::LayoutHolder", "namespacesgui.html#ad9789d2d53304f422b89eb712af24609", null ],

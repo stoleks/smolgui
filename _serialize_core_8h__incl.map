@@ -1,0 +1,18 @@
+<map id="/github/workspace/src/sgui/Serialization/SerializeCore.h" name="/github/workspace/src/sgui/Serialization/SerializeCore.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="36,5,213,61"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,183,116,208"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="88,63,67,85,51,110,47,139,53,168,47,169,42,139,46,108,63,81,84,60"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="60,109,189,135"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="127,61,127,93,122,93,122,61"/>
+<area shape="rect" id="Node000004" href="$_object_pool_8h.html" title=" " alt="" coords="213,109,367,135"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="178,59,255,99,252,104,175,64"/>
+<area shape="poly" id="edge7_Node000004_Node000002" title=" " alt="" coords="252,138,115,180,113,175,250,133"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="160,183,217,208"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="274,137,220,175,217,171,271,133"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="242,183,298,208"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="289,136,280,168,275,167,284,134"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="323,183,425,208"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="306,133,350,170,346,174,302,137"/>
+<area shape="rect" id="Node000008" href="$_object_pool_8tpp.html" title=" " alt="" coords="448,183,614,208"/>
+<area shape="poly" id="edge8_Node000004_Node000008" title=" " alt="" coords="332,133,476,175,475,180,330,138"/>
+</map>
