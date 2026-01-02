@@ -512,6 +512,7 @@ private:
   // counters to keep track of gui objects
   Impl::Counters mCounters = {};
   Impl::GroupChecker mChecker = {};
+  std::string mWidgetChain = "";
   // alignement data
   sf::Vector2f mCursorPosition = {};
   sf::Vector2f mPadding = {6.f, 1.5f};

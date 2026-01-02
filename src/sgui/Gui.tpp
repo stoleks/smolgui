@@ -74,7 +74,7 @@ void Gui::inputNumber (
 {
   // Initialize widget name and position
   auto numStr = formatNumberToString (number);
-  const auto name = initializeActivable ("InputNumber");
+  const auto name = initializeActivable ("NumberInput");
   const auto position = computeRelativePosition (options.displacement);
   if (!mTextCursorPositions.has (name)) {
     mTextCursorPositions.emplace (name, numStr.length ());
@@ -118,7 +118,7 @@ void Gui::inputNumber (
   // draw label and number
   const auto inputStr = label + numStr;
   const auto numWidth = textSize (numStr).x;
-  const auto shiftToCenter = sf::Vector2f ((boxSize.x - numWidth - mPadding.x) / 2.f, mPadding.y);
+  const auto shiftToCenter = sf::Vector2f ((boxSize.x - numWidth) / 2.f - mPadding.x, mPadding.y);
   handleTextDrawing (position + shiftToCenter, inputStr);
   if (focused) {
     const auto labelShift = sf::Vector2f (textSize (label).x, 0.f);

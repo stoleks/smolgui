@@ -14,7 +14,7 @@ struct GroupData
   bool isActive = false;
   bool horizontal = false;
   bool hasMenuBar = false;
-  uint32_t groupId = 0u;
+  size_t groupId = 0u;
   uint32_t clippingLayer = 0u;
   uint32_t plotterLayer = 0u;
   uint32_t menuItemCount = 0u;

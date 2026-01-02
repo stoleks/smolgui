@@ -280,6 +280,7 @@ void Gui::endFrame (const float tooltipDelay)
   }
 
   // reset widget count and scroll data
+  mWidgetChain = "";
   mCounters.reset ();
   mChecker.reset ();
 
@@ -975,7 +976,7 @@ void Gui::inputText (
   const WidgetOptions& options)
 {
   // initialize widget name and position
-  const auto name = initializeActivable ("InputText");
+  const auto name = initializeActivable ("TextInput");
   const auto basePosition = computeRelativePosition (options.displacement);
   if (!mTextCursorPositions.has (name)) {
     mTextCursorPositions.emplace (name, text.length ());
@@ -1098,7 +1099,7 @@ void Gui::inputKey (
   const WidgetOptions& options)
 {
   // initialize widget name and position
-  const auto name = initializeActivable ("InputKey");
+  const auto name = initializeActivable ("KeyInput");
   auto position = computeRelativePosition (options.displacement);
 
   // draw description before the box
@@ -1627,7 +1628,7 @@ void Gui::beginGroup (
   newGroup.clippingLayer = 0u;
   newGroup.plotterLayer = 0u;
   newGroup.menuBarSize = sf::Vector2f (0, 0);
-  newGroup.groupId = mCounters.group;
+  newGroup.groupId = std::hash <std::string> {} (mWidgetChain);
   mCounters.group++;
 
   // add it to the stack
@@ -1995,8 +1996,12 @@ std::vector<std::string> Gui::formatText (
 std::string Gui::initializeActivable (const std::string& key)
 {
   mCounters.widget++;
+  mWidgetChain += key.front ();
   mActiveWidgetSoundId = key;
-  return key + std::to_string (mCounters.widget - 1);
+  const auto name = key + mWidgetChain + std::to_string (mCounters.widget);
+  // use hash every where instead of string ? Not sure it is worth it...
+  // const auto hash = std::hash <std::string> {} (name);
+  return name;
 }
 
 /////////////////////////////////////////////////
