@@ -291,6 +291,12 @@ public:
       const std::string& text,
       const TextOptions& textOptions = {},
       const WidgetOptions& options = {});
+  /**
+   * @brief display a fontawesome icon
+   */
+  void fontawesome (
+      const std::string& iconName,
+      const TextType type = TextType::Normal);
 
   ///////////////////////////////////////////////
   /**

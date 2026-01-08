@@ -850,6 +850,10 @@ bool Gui::clickable (
   const auto slices = isValid (options.slices) ? options.slices : Slices::One;
   mRender.draw (box, {widget, slices, state});
   updateSpacing (size);
+  // draw its description
+  const auto descrPos = position + sf::Vector2f (size.x, 0.f);
+  const auto descrSize = widgetDescription (descrPos, options.description);
+  updateSpacing (size + sf::Vector2f {descrSize.x, 0.f});
 
   // it has been clicked if state is active
   return state == ItemState::Active;
@@ -885,9 +889,6 @@ bool Gui::icon (
   // draw an icon with fontawesome over it and description next to it
   const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
   fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);
-  const auto descrPos = position + sf::Vector2f (size.x, 0.f);
-  const auto descrSize = widgetDescription (descrPos, options.description);
-  updateSpacing ({descrSize.x, 0.f});
   return clicked;
 }
 
@@ -936,6 +937,8 @@ void Gui::text (
 {
   // compute text position
   auto position = computeRelativePosition (options.displacement);
+  // for alignement with other widgets
+  position += sf::Vector2f (0.f, 1.5f*mPadding.y);
   
   // format the text to fit in the box if one is furnished
   const auto parent = getParentGroup ();
@@ -959,11 +962,24 @@ void Gui::text (
     }
     handleTextDrawing (position, line, textOptions.type);
     const auto lineSize = textSize (line);
+    const auto lineSpacing = mFont->getLineSpacing (getFontSize (textOptions.type)); 
     totalTextSize.x = std::max (totalTextSize.x, lineSize.x);
-    totalTextSize.y += lineSize.y;
-    position.y += lineSize.y;
+    totalTextSize.y += lineSpacing;
+    position.y += lineSpacing;
   }
   updateSpacing (totalTextSize + mPadding);
+}
+
+/////////////////////////////////////////////////
+void Gui::fontawesome (
+  const std::string& iconName,
+  const TextType type)
+{
+  const auto position = computeRelativePosition ({});
+  const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
+  const auto fontSize = getFontSize (type) + 2u;
+  fontawesomeIcon (position + shift, iconName, fontSize);
+  updateSpacing (mRender.textSize (iconName, mFontawesome, fontSize));
 }
 
 
@@ -1368,6 +1384,10 @@ std::string Gui::comboBox (
 
   // get selected text of the combo box
   auto& text = mComboBoxActiveItem.get (comboBoxId);
+  // handle edge cases where a comboBox "takes" id of another
+  if (std::find (list.begin (), list.end (), text) == list.end ()) {
+    text = list.front ();
+  }
 
   // compute each drop list item if combo box is active and not clipped
   auto icon = ICON_FA_SQUARE_CARET_DOWN;
@@ -2120,7 +2140,7 @@ sf::Vector2f Gui::widgetDescription (
 {
   if (description != "") {
     handleTextDrawing (position + 1.5f*mPadding, description);
-    return textSize (description);
+    return textSize (description) + 1.5f*mPadding;
   }
   return {};
 }

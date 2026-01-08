@@ -1,7 +1,7 @@
 {
   "mainWindow":     "Fenêtre principale de la démo",
   "closableWindow": "Fenêtre fermable",
-  "textMultiLine":  "Vous pouvez modifier où vous voulez ce texte !",
+  "textMultiLine":  "Vous pouvez modifier ce texte où vous voulez et il peut s'étendre sur plusieurs lignes !",
   "textOneLine":    "Un autre texte éditable.",
   "textDescription":"Texte modifiable :",
   "centeredText":   "Texte centré qui peut s'étendre sur plusieurs lignes sans aucun problème ! Là je brode pour que vous puissiez voir le retour à la ligne et que la seconde ligne est aussi centrée..."
