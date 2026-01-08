@@ -167,7 +167,7 @@ $(function(){initNavTree('_gui_8tpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>  const auto size = textHeight () * dimVector;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>  const auto box = sf::FloatRect (position, size);</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>  auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.tooltip);</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  mRender.draw (box, {Widget::Slider, Slices::Three, state, !options.horizontal});</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  mRender.draw (box, drawOptions ({Widget::Slider, Slices::Three, state}, options.aspect, !options.horizontal));</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  // if active, update value depending on bar position</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>  if (mGuiState.activeItem == name) {</div>
@@ -257,7 +257,7 @@ $(function(){initNavTree('_gui_8tpp_source.html',''); initResizable(true); });
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>  } else {</div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    numStr = formatNumberToString (number);</div>
 <div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>  }</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  mRender.draw (box, {Widget::TextBox, Slices::Three, state});</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  mRender.draw (box, drawOptions ({Widget::TextBox, Slices::Three, state}, options.aspect));</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
 <div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>  // draw label and number</div>
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>  const auto inputStr = label + numStr;</div>

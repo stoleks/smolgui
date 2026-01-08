@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"_icons_font_awesome7_8h.html#a56ba5867dcc4f775f5fa71ae514f350f":[2,0,0,0,2,0,463],
+"_icons_font_awesome7_8h.html#a56bacb9a27ecf3d50181bbc4af93a958":[2,0,0,0,2,0,756],
 "_icons_font_awesome7_8h.html#a56c24203136731c7f7ca0a139d227210":[2,0,0,0,2,0,1289],
 "_icons_font_awesome7_8h.html#a56dd4e3509739433eee7a813e64316e3":[2,0,0,0,2,0,1219],
 "_icons_font_awesome7_8h.html#a56e84aac56584178a8ed837db7205419":[2,0,0,0,2,0,529],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "_icons_font_awesome7_8h.html#a8253a60356558079fbb25f2af9ee45e2":[2,0,0,0,2,0,457],
 "_icons_font_awesome7_8h.html#a827e4c58c0380883a8bf350dd0b0e1c5":[2,0,0,0,2,0,224],
 "_icons_font_awesome7_8h.html#a82b8df87f25deb294c2b1774a7fe63e0":[2,0,0,0,2,0,1235],
-"_icons_font_awesome7_8h.html#a83464d2660c5ae680d930a5e738b384b":[2,0,0,0,2,0,805],
-"_icons_font_awesome7_8h.html#a83c4ebb5712ff94f16f05e9917dcb988":[2,0,0,0,2,0,679],
-"_icons_font_awesome7_8h.html#a83e5acfdecee5f1a73bba60e441de39a":[2,0,0,0,2,0,381]
+"_icons_font_awesome7_8h.html#a83464d2660c5ae680d930a5e738b384b":[2,0,0,0,2,0,805]
 };

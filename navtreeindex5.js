@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"_icons_font_awesome7_8h.html#adf529befb74435e398ef7dbd77973d4d":[2,0,0,0,2,0,137],
+"_icons_font_awesome7_8h.html#adf998925e0e62b0b49569bcbcfbbd49c":[2,0,0,0,2,0,272],
 "_icons_font_awesome7_8h.html#adfb4eef20ca7d5b47aa1d1a3bb2197c1":[2,0,0,0,2,0,517],
 "_icons_font_awesome7_8h.html#adfc598ade88db8c142c0f66975e6dde9":[2,0,0,0,2,0,556],
 "_icons_font_awesome7_8h.html#adff9af881cc50e2a11267bb1b0d74544":[2,0,0,0,2,0,2],
@@ -185,8 +187,8 @@ var NAVTREEINDEX5 =
 "_interpolation_8h_source.html":[2,0,0,0,0,0],
 "_interpolation_8tpp.html":[2,0,0,0,0,1],
 "_interpolation_8tpp_source.html":[2,0,0,0,0,1],
-"_item_states_8h.html":[2,0,0,0,4,1],
-"_item_states_8h_source.html":[2,0,0,0,4,1],
+"_item_states_8h.html":[2,0,0,0,4,2],
+"_item_states_8h_source.html":[2,0,0,0,4,2],
 "_layout_8cpp.html":[2,0,0,0,2,1],
 "_layout_8h.html":[2,0,0,0,2,2],
 "_layout_8h_source.html":[2,0,0,0,2,2],
@@ -215,10 +217,10 @@ var NAVTREEINDEX5 =
 "_object_pool_8h_source.html":[2,0,0,0,0,2],
 "_object_pool_8tpp.html":[2,0,0,0,0,3],
 "_object_pool_8tpp_source.html":[2,0,0,0,0,3],
-"_options_8h.html":[2,0,0,0,4,2],
-"_options_8h_source.html":[2,0,0,0,4,2],
-"_panel_8h.html":[2,0,0,0,4,3],
-"_panel_8h_source.html":[2,0,0,0,4,3],
+"_options_8h.html":[2,0,0,0,4,3],
+"_options_8h_source.html":[2,0,0,0,4,3],
+"_panel_8h.html":[2,0,0,0,4,4],
+"_panel_8h_source.html":[2,0,0,0,4,4],
 "_plotter_8cpp.html":[2,0,0,0,1,7],
 "_plotter_8h.html":[2,0,0,0,1,8],
 "_plotter_8h_source.html":[2,0,0,0,1,8],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "_shapes_8tpp_source.html":[2,0,0,0,0,7],
 "_sound_player_8cpp.html":[2,0,0,0,2,6],
 "_sound_player_8h.html":[2,0,0,0,2,7],
-"_sound_player_8h_source.html":[2,0,0,0,2,7],
-"_style_8h.html":[2,0,0,0,4,4],
-"_style_8h_source.html":[2,0,0,0,4,4]
+"_sound_player_8h_source.html":[2,0,0,0,2,7]
 };

@@ -32,6 +32,7 @@ var annotated_dup =
       [ "TextureCollage", "classsgui_1_1_texture_collage.html", "classsgui_1_1_texture_collage" ],
       [ "TextureMeshes", "classsgui_1_1_texture_meshes.html", "classsgui_1_1_texture_meshes" ],
       [ "Tooltip", "structsgui_1_1_tooltip.html", "structsgui_1_1_tooltip" ],
+      [ "WidgetAspect", "structsgui_1_1_widget_aspect.html", "structsgui_1_1_widget_aspect" ],
       [ "WidgetDrawOptions", "structsgui_1_1_widget_draw_options.html", "structsgui_1_1_widget_draw_options" ],
       [ "WidgetOptions", "structsgui_1_1_widget_options.html", "structsgui_1_1_widget_options" ],
       [ "Window", "structsgui_1_1_window.html", "structsgui_1_1_window" ]

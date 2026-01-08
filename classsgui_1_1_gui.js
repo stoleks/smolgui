@@ -22,6 +22,7 @@ var classsgui_1_1_gui =
     [ "endMenu", "classsgui_1_1_gui.html#a2b9da1298172cff91d7728f89cf876c7", null ],
     [ "endPanel", "classsgui_1_1_gui.html#adf914ed0512a59d2802ec6333b2f0226", null ],
     [ "endWindow", "classsgui_1_1_gui.html#a5b286d9694d387e011fb6310681de3bf", null ],
+    [ "fontawesome", "classsgui_1_1_gui.html#ab7615501367d49df2da4fa7bed3b7497", null ],
     [ "forcePlotUpdate", "classsgui_1_1_gui.html#acdec5c691ee0f7c4073d41e0d438a308", null ],
     [ "icon", "classsgui_1_1_gui.html#a9ee24b9c28e512cb7ff436717eebc42d", null ],
     [ "image", "classsgui_1_1_gui.html#aefef5669e98de77a7bce2b1f6c2ad593", null ],

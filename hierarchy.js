@@ -38,6 +38,7 @@ var hierarchy =
     ] ],
     [ "sf::Vector2< T >", "classsf_1_1_vector2.html", null ],
     [ "sf::Vector3< T >", "classsf_1_1_vector3.html", null ],
+    [ "sgui::WidgetAspect", "structsgui_1_1_widget_aspect.html", null ],
     [ "sgui::WidgetDrawOptions", "structsgui_1_1_widget_draw_options.html", null ],
     [ "sgui::WidgetOptions", "structsgui_1_1_widget_options.html", null ],
     [ "sgui::Window", "structsgui_1_1_window.html", null ]

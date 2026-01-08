@@ -58,16 +58,16 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_clipping_layers_8cpp.html",
-"_icons_font_awesome7_8h.html#a297e0dc2d21279e9355c3be9840b274f",
-"_icons_font_awesome7_8h.html#a56c24203136731c7f7ca0a139d227210",
-"_icons_font_awesome7_8h.html#a84765ea0bd5009051d249e1e4df527f8",
-"_icons_font_awesome7_8h.html#ab1b28758a88b8adc3c0c8cee2710e51a",
-"_icons_font_awesome7_8h.html#adfb4eef20ca7d5b47aa1d1a3bb2197c1",
-"_text_container_8cpp.html",
-"classsgui_1_1_object_pool.html#afa180814b65d110b123a39d51eb243ec",
-"namespacesgui.html#a007107b4fefde84b6b0c3b633325c44c",
-"structsgui_1_1_text_options.html"
+"_aspect_8h.html",
+"_icons_font_awesome7_8h.html#a29435ab727f9d7762ee74685cfd01e73",
+"_icons_font_awesome7_8h.html#a56ba5867dcc4f775f5fa71ae514f350f",
+"_icons_font_awesome7_8h.html#a83c4ebb5712ff94f16f05e9917dcb988",
+"_icons_font_awesome7_8h.html#ab174a7db0947c08a86825bace488e3b2",
+"_icons_font_awesome7_8h.html#adf529befb74435e398ef7dbd77973d4d",
+"_style_8h.html",
+"classsgui_1_1_object_pool.html#aef9f2d92c8639dfc8e9f38ba1a7fa448",
+"namespacesf.html#ab9af79216c8745b403a729a9e5d73808",
+"structsgui_1_1_text_draw_options.html#aa403cd096e8a37b53022b79ebaef099b"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';
