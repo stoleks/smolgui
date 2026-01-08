@@ -103,16 +103,16 @@ void GuiRender::draw (
   const sf::FloatRect& box,
   const WidgetDrawOptions& options)
 {
-  const auto widgetCode = toString (options.widget);
-  const auto stateCode = toString (options.state);
-  if (options.slices == Slices::One) {
-    auto newWidget = mTexturesUV.texture (widgetCode + options.image + stateCode);
+  const auto widgetCode = toString (options.aspect.widget);
+  const auto stateCode = toString (options.aspect.state);
+  if (options.aspect.slices == Slices::One) {
+    auto newWidget = mTexturesUV.texture (widgetCode + options.aspect.image + stateCode);
     appendMesh (std::move (newWidget), box);
   }
-  if (options.slices == Slices::Three) {
+  if (options.aspect.slices == Slices::Three) {
     addThreeSlices (box, widgetCode + stateCode, options.horizontal, options.progress);
   }
-  if (options.slices == Slices::Nine) {
+  if (options.aspect.slices == Slices::Nine) {
     addNineSlices (box, widgetCode + stateCode);
   }
 }

@@ -57,6 +57,16 @@ int main()
   auto oneLine = texts.get ("textOneLine");
   auto vector = sf::Vector2f ();
   auto vector3 = sf::Vector3f ();
+  // for customisation examples
+  std::vector <std::string> widgetsName {
+    "button", "title box", "separation", "slider", "item box", "progress bar"
+  };
+  std::unordered_map <std::string, sgui::Widget> widgetsType {
+    {"button", sgui::Widget::Button}, {"title box", sgui::Widget::TitleBox},
+    {"separation", sgui::Widget::Separation}, {"slider", sgui::Widget::Slider},
+    {"item box", sgui::Widget::ItemBox}, {"progress bar", sgui::Widget::ProgressBar}
+  };
+  auto choosedWidget = std::string ("");
 
   /**
    * Main App loop
@@ -124,7 +134,13 @@ int main()
         gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
         gui.progressBar (sliderValue / phaseMax, {fmt::format ("{} %", sliderValue / phaseMax * 100.f)});
         // display it
-        gui.checkBox (displayFunction, {"Display a function"});
+        const auto list = std::vector <std::string> {"", "title_button", "check_box", "icon_button", "slider_bar"};
+        const auto checkTexture = gui.comboBox (list);
+        gui.sameLine ();
+        gui.text ("Choose checkbox texture, \"\" means default one");
+        auto checkOptions = sgui::WidgetOptions ({checkTexture, sgui::Slices::One});
+        checkOptions.description = "Display a function";
+        gui.checkBox (displayFunction, checkOptions);
         if (displayFunction) {
           auto func = [time, sliderValue] (float x) {
             const auto t = time.getElapsedTime ().asSeconds ();
@@ -175,25 +191,31 @@ int main()
         if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
         }
+        gui.sameLine ();
         if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
         }
         gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("textDescription")});
         gui.inputText (oneLine, {}, {texts.get ("textDescription")});
-        // input number and color 
         gui.separation ();
-        const auto shorterList = std::vector <std::string> {"One", "Two", "Three"};
-        gui.comboBox (shorterList);
+        // input number and color 
         gui.inputNumber (inputValue, {"input number with text"});
         gui.inputVector2 (vector, {"input vector2"});
         gui.sameLine ();
-        const auto list = std::vector <std::string> {"1", "2", "3", "4", "5", "6", "7", "8"};
-        gui.comboBox (list);
         gui.inputVector3 (vector3, {"input vector3"});
         gui.inputColor (style.fontColor, {"font color"});
+        gui.separation ();
+        // save layout
         gui.checkBox (compactLayout, {"Compact layout"});
-        if (gui.button ("Save layout")) {
-          layout.saveInFile (compactLayout);
+        choosedWidget = gui.comboBox (widgetsName);
+        gui.sameLine ();
+        gui.text ("Change following button aspect");
+        gui.sameLine ();
+        gui.fontawesome (ICON_FA_ARROW_TURN_DOWN);
+        if (widgetsType.find (choosedWidget) != widgetsType.end ()) {
+          if (gui.button ("Save layout", {{widgetsType.at (choosedWidget), sgui::Slices::Three}})) {
+            layout.saveInFile (compactLayout);
+          }
         }
         // top panel
         constraint.vertical = sgui::VerticalAlignment::Top;

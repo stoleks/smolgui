@@ -2,8 +2,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include "sgui/Widgets/Constraints.h"
-#include "sgui/Widgets/Widgets.h"
-#include "sgui/Widgets/ItemStates.h"
+#include "sgui/Widgets/Aspect.h"
 
 namespace sgui
 {
@@ -56,19 +55,17 @@ struct WidgetOptions
    */
   WidgetOptions (const sf::Vector2f disp) : displacement (disp) {}
   /**
-   * @brief To control panel appearance
+   * @brief To control widget appearance
    */
-  WidgetOptions (const Widget w, const Slices s = Slices::One, const ItemState is = ItemState::None)
-    : widget (w), slices (s), state (is) {}
+  WidgetOptions (const WidgetAspect& a)
+    : aspect (a) {}
   // data
   bool horizontal = false;           ///< Is widget horizontal or vertical ?
   sf::Vector2f size = { 6.f, 1.f };  ///< For slider and progress bar
   sf::Vector2f displacement = {};    ///< To override automatic position
   std::string description = "";      ///< Widget description
-  Tooltip tooltip = {};              ///< Tooltip
-  Widget widget = Widget::None;      ///< Widget type
-  Slices slices = Slices::Default;   ///< Change default widget slicing
-  ItemState state = ItemState::None; ///< To force a specific state for a widget
+  Tooltip tooltip = {};              ///< Tooltip specification
+  WidgetAspect aspect = {};          ///< To control widget aspect
 };
 
 /**

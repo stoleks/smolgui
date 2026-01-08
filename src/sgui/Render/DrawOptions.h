@@ -1,8 +1,8 @@
 #pragma once
 
-#include <SFML/Graphics/Text.hpp>
-#include "sgui/Widgets/Widgets.h"
+#include <SFML/Graphics/Color.hpp>
 #include "sgui/Widgets/ItemStates.h"
+#include "sgui/Widgets/Aspect.h"
 
 namespace sgui
 {
@@ -11,24 +11,9 @@ namespace sgui
  * @brief Store options for drawing widgets
  */
 struct WidgetDrawOptions {
-  WidgetDrawOptions () = default;
-  /**
-   * @brief Constructor for most widgets
-   */
-  WidgetDrawOptions (const Widget w, const Slices s = Slices::One, const ItemState is = ItemState::Neutral, const bool h = true)
-    : horizontal (h), widget (w), slices (s), state (is) {}
-  /**
-   * @brief Constructor for image
-   */
-  WidgetDrawOptions (const std::string& n, const Slices s = Slices::One, const ItemState is = ItemState::None)
-    : image (n), slices (s), state (is) {}
-  // data
-  bool horizontal = true;               ///< Specify if a widget is horizontal or vertical
-  float progress = 1.f;                 ///< Percent to draw for a widget
-  std::string image = "";               ///< Texture key for an image
-  Widget widget = Widget::Image;        ///< Specify widget type
-  Slices slices = Slices::One;          ///< Specify if widget is composed of 1/3/9 slices
-  ItemState state = ItemState::Neutral; ///< Specify widget state
+  bool horizontal = true;   ///< Specify if a widget is horizontal or vertical
+  float progress = 1.f;     ///< Percent to draw for a widget
+  WidgetAspect aspect = {}; ///< To control widget aspect
 };
 
 /**

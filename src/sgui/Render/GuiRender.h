@@ -3,6 +3,7 @@
 #include <vector>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Transformable.hpp>

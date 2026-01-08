@@ -487,9 +487,11 @@ private:
   std::string initializeActivable (const std::string& key);
   sf::Vector2f computeRelativePosition (const sf::Vector2f& displacement = {}) const;
   // to handle appearance options
+  WidgetDrawOptions drawOptions (const WidgetAspect& standard, const WidgetAspect& custom = {}, const bool horizontal = true, const float progress = 1.f) const;
   bool isValid (const Widget widget) const;
   bool isValid (const Slices slices) const;
   bool isValid (const ItemState state) const;
+  bool isValid (const std::string& image) const;
   // to draw text description of widgets
   sf::Vector2f widgetDescription (const sf::Vector2f& position, const std::string& description);
   // to compute widget spacing and scrolling

@@ -458,7 +458,7 @@ bool Gui::beginWindow (
     const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.tooltip);
 
     // draw title box and window name
-    mRender.draw (drawBox, {Widget::TitleBox, Slices::Three, state});
+    mRender.draw (drawBox, drawOptions ({Widget::TitleBox, Slices::Three, state}));
     const auto textWidth = textSize (settings.title, TextType::Title).x;
     const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
     const auto titlePos = sf::Vector2f {mCursorPosition.x + shiftX, mCursorPosition.y};
@@ -521,7 +521,7 @@ bool Gui::beginWindow (
 
   // draw window box and handle hovering of the window
   const auto windowStatus = itemStatus (windowBox, name);
-  mRender.draw (windowBox, {Widget::Window, Slices::Nine});
+  mRender.draw (windowBox, drawOptions ({Widget::Window, Slices::Nine, windowStatus}, options.aspect));
   mCursorPosition += sf::Vector2f (mPadding.x, 2.5f*mPadding.y);
 
   // scroll through window if requested
@@ -591,10 +591,7 @@ void Gui::beginPanel (
   // draw panel box if requested
   auto state = interactWithMouse (settings, panelBox, name, options.tooltip);
   if (settings.visible) {
-    const auto widget = isValid (options.widget) ? options.widget : Widget::Panel;
-    const auto slices = isValid (options.slices) ? options.slices : Slices::Nine;
-    state = isValid (options.state) ? options.state : state;
-    mRender.draw (panelBox, {widget, slices, state});
+    mRender.draw (panelBox, drawOptions ({Widget::Panel, Slices::Nine, state}, options.aspect));
   }
 
   // update cursor position
@@ -669,7 +666,7 @@ void Gui::beginMenu ()
 
   // get menu bar status, draws it and go back to the previous clipping layer
   const auto box = sf::FloatRect (menuPos, menuSize);
-  mRender.draw (box, {Widget::MenuBox, Slices::Three});
+  mRender.draw (box, drawOptions ({Widget::MenuBox, Slices::Three, ItemState::Neutral}));
   mRender.clipping.moveToLayer (layerId);
 }
 
@@ -730,7 +727,7 @@ bool Gui::menuItem (
       id = itemId;
     }
   }
-  mRender.draw (box, {Widget::MenuItemBox, Slices::Three, state});
+  mRender.draw (box, drawOptions ({Widget::MenuItemBox, Slices::Three, state}, options.aspect));
   parentMenu.isActive = clicked;
 
   // draw a description over it and go back to previous clipping layer
@@ -807,7 +804,7 @@ void Gui::separation (const float thick)
   const auto position = computeRelativePosition ();
   const auto box = sf::FloatRect (position, size);
   // render line
-  mRender.draw (box, {Widget::Separation, Slices::Three});
+  mRender.draw (box, drawOptions ({Widget::Separation, Slices::Three, ItemState::Neutral}));
   updateSpacing (size);
 }
 
@@ -825,8 +822,7 @@ void Gui::image (
   }
   // draw texture
   const auto box = sf::FloatRect (position, textureSize);
-  const auto slices = isValid (options.slices) ? options.slices : Slices::One;
-  mRender.draw (box, {textureId, slices, ItemState::None});
+  mRender.draw (box, drawOptions ({textureId, Slices::One}, {}));
   updateSpacing (textureSize);
 }
 
@@ -846,10 +842,8 @@ bool Gui::clickable (
   // draw widget in its state and update cursor position
   const auto box = sf::FloatRect (position, size);
   const auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
-  const auto widget = isValid (options.widget) ? options.widget : Widget::IconButton;
-  const auto slices = isValid (options.slices) ? options.slices : Slices::One;
-  mRender.draw (box, {widget, slices, state});
-  updateSpacing (size);
+  mRender.draw (box, drawOptions ({Widget::IconButton, Slices::One, state}, options.aspect));
+
   // draw its description
   const auto descrPos = position + sf::Vector2f (size.x, 0.f);
   const auto descrSize = widgetDescription (descrPos, options.description);
@@ -868,10 +862,10 @@ bool Gui::button (
   const auto position = computeRelativePosition (options.displacement) + 1.5f*mPadding;
   const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
-  auto clickableOptions = options;
-  clickableOptions.widget = Widget::Button;
-  clickableOptions.slices = Slices::Three;
-  const auto clicked = clickable (size, clickableOptions);
+  auto clickOptions = options;
+  if (!isValid (clickOptions.aspect.widget)) clickOptions.aspect.widget = Widget::Button;
+  if (!isValid (clickOptions.aspect.slices)) clickOptions.aspect.slices = Slices::Three;
+  const auto clicked = clickable (size, clickOptions);
   // draw a text over it
   handleTextDrawing (position, text);
   return clicked;
@@ -886,7 +880,7 @@ bool Gui::icon (
   const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
   const auto position = computeRelativePosition (options.displacement);
   const auto clicked = clickable (size, options);
-  // draw an icon with fontawesome over it and description next to it
+  // draw an icon with fontawesome over it
   const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
   fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);
   return clicked;
@@ -916,7 +910,7 @@ bool Gui::checkBox (
   if (checked) {
     state = ItemState::Active;
   }
-  mRender.draw (box, {Widget::CheckBox, Slices::One, state});
+  mRender.draw (box, drawOptions ({Widget::CheckBox, Slices::One, state}, options.aspect));
 
   // draw text next to the checkbox
   const auto descrPos = position + sf::Vector2f (size.x, 0.f);
@@ -1053,7 +1047,7 @@ void Gui::inputText (
   // take care of size normalization
   textPanel.size = normalizeSize (textPanel.size);
   mCursorPosition = box.position;
-  beginPanel (textPanel, {}, {Widget::TextBox, Slices::Nine, state});
+  beginPanel (textPanel, {}, WidgetAspect {Widget::TextBox, Slices::Nine, state});
   // remove scroller size if needed
   if (textPanel.isScrolled) {
     finalOptions.boxSize.x -= textHeight ();
@@ -1141,7 +1135,7 @@ void Gui::inputKey (
 
   // draw char and box
   const auto text = std::string (1, key);
-  mRender.draw (box, {Widget::TextBox, Slices::Three, state});
+  mRender.draw (box, drawOptions ({Widget::TextBox, Slices::Three, state}, options.aspect));
   handleTextDrawing (position + mPadding, text);
 
   // update cursor position
@@ -1189,9 +1183,10 @@ void Gui::progressBar (
   const auto size = options.size * textHeight ();
   const auto box = sf::FloatRect (position, size);
   itemStatus (box, name, false, options.tooltip);
-  mRender.draw (box, {Widget::ProgressBar, Slices::Three});
+  mRender.draw (box, drawOptions ({Widget::ProgressBar, Slices::Three}, options.aspect));
   // draw progress bar filling
-  auto drawOptions = WidgetDrawOptions (Widget::ProgressFill, Slices::Three);
+  auto drawOptions = WidgetDrawOptions ();
+  drawOptions.aspect = {Widget::ProgressFill, Slices::Three};
   drawOptions.progress = sgui::clamp (0.f, 1.f, progress);
   mRender.draw (box, drawOptions);
   
@@ -1414,7 +1409,7 @@ std::string Gui::comboBox (
   }
 
   // draw combo box selected text
-  mRender.draw (box, {Widget::ItemBox, Slices::Three, state});
+  mRender.draw (box, drawOptions ({Widget::ItemBox, Slices::Three, state}, options.aspect));
   handleTextDrawing (box.position + mPadding, text);
   const auto iconPos = box.position + sf::Vector2f (5.f*defaultSize + 2.f*mPadding.x, 0.5f*mPadding.y);
   fontawesomeIcon (iconPos, icon, getFontSize (TextType::Normal) + 2u); 
@@ -1435,7 +1430,7 @@ bool Gui::dropListItem (
 
   // get item status
   const auto box = sf::FloatRect (mCursorPosition, itemSize);
-  const auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  auto state = itemStatus (box, name, mInputState.mouseLeftDown);
   const auto status = (state == ItemState::Active) || (mGuiState.activeItem == name);
   if (state == ItemState::Hovered) {
     clock = std::min (clock, 0.f);
@@ -1443,10 +1438,9 @@ bool Gui::dropListItem (
 
   // draw item
   if (selectedName == itemName) {
-    mRender.draw (box, {Widget::ItemBox, Slices::Three, ItemState::Active});
-  } else {
-    mRender.draw (box, {Widget::ItemBox, Slices::Three, state});
+    state = ItemState::Active;
   }
+  mRender.draw (box, drawOptions ({Widget::ItemBox, Slices::Three, state}));
   handleTextDrawing (box.position + mPadding, itemName);
   mCursorPosition.y += itemSize.y;
   updateScrolling ();
@@ -1533,7 +1527,7 @@ sf::Vector2f Gui::scroller (
   // get scroller status, we always steal active state over the previous widget
   const auto box = sf::FloatRect (pos, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, Tooltip (), true);
-  mRender.draw (box, {Widget::Scroller, Slices::Three, state, horizontal});
+  mRender.draw (box, drawOptions ({Widget::Scroller, Slices::Three, state}, {}, horizontal));
 
   // if active, compute current scrolling
   if (mGuiState.activeItem == name) {
@@ -1585,7 +1579,7 @@ float Gui::sliderBar (
     barBox.position.y += shift;
     barBox.size.y = barBox.size.x;
   }
-  mRender.draw (barBox, {Widget::SliderBar, Slices::One, state});
+  mRender.draw (barBox, drawOptions ({Widget::SliderBar, Slices::One, state}, {}, horizontal));
 
   // return shift for further uses
   return shift;
@@ -1623,7 +1617,7 @@ float Gui::scrollerBar (
       barBox.position.y = std::min (barBox.position.y + barShift, maxPosY - barBox.size.y);
     }
   }
-  mRender.draw (barBox, {Widget::ScrollerBar, Slices::Three, state, horizontal});
+  mRender.draw (barBox, drawOptions ({Widget::ScrollerBar, Slices::Three, state}, {}, horizontal));
 
   // return shift for further uses
   return shift;
@@ -1988,7 +1982,8 @@ std::vector<std::string> Gui::formatText (
   auto formattedText = std::vector <std::string> ();
   // if input is contrained by a box
   if (boxSize.lengthSquared () > 0.01f) {
-    // read the string word by word
+    // read the string word by word 
+    // TODO Improves this with a less error prone code that cut the sentence char per char
     auto in = std::istringstream (input);
     auto word = std::string ("");
     auto line = std::string ("");
@@ -2116,6 +2111,28 @@ sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement) con
 }
 
 /////////////////////////////////////////////////
+WidgetDrawOptions Gui::drawOptions (
+  const WidgetAspect& standard,
+  const WidgetAspect& custom,
+  const bool horizontal,
+  const float progress) const
+{
+  auto options = WidgetDrawOptions ();
+  options.aspect.slices = isValid (custom.slices) ? custom.slices : standard.slices;
+  options.aspect.state = isValid (custom.state) ? custom.state : standard.state;
+  if (isValid (custom.image)) {
+    options.aspect.image = custom.image;
+    options.aspect.widget = Widget::Image;
+  } else {
+    options.aspect.image = standard.image;
+    options.aspect.widget = isValid (custom.widget) ? custom.widget : standard.widget;
+  }
+  options.horizontal = horizontal;
+  options.progress = progress;
+  return options;
+}
+
+/////////////////////////////////////////////////
 bool Gui::isValid (const Widget widget) const
 {
   return widget != Widget::None;
@@ -2131,6 +2148,12 @@ bool Gui::isValid (const Slices slices) const
 bool Gui::isValid (const ItemState state) const
 {
   return state != ItemState::None;
+}
+
+/////////////////////////////////////////////////
+bool Gui::isValid (const std::string& image) const
+{
+  return image != "";
 }
 
 /////////////////////////////////////////////////
