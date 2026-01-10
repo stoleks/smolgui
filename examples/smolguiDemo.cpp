@@ -201,7 +201,6 @@ int main()
         // input number and color 
         gui.inputNumber (inputValue, {"input number with text"});
         gui.inputVector2 (vector, {"input vector2"});
-        gui.sameLine ();
         gui.inputVector3 (vector3, {"input vector3"});
         gui.inputColor (style.fontColor, {"font color"});
         gui.separation ();
@@ -212,6 +211,8 @@ int main()
         gui.text ("Change following button aspect");
         gui.sameLine ();
         gui.fontawesome (ICON_FA_ARROW_TURN_DOWN);
+        gui.sameLine ();
+        gui.text (":");
         if (widgetsType.find (choosedWidget) != widgetsType.end ()) {
           if (gui.button ("Save layout", {{widgetsType.at (choosedWidget), sgui::Slices::Three}})) {
             layout.saveInFile (compactLayout);

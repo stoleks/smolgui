@@ -970,10 +970,10 @@ void Gui::fontawesome (
   const TextType type)
 {
   const auto position = computeRelativePosition ({});
-  const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
+  const auto shift = sf::Vector2f (0.f, 1.5f*mPadding.y);
   const auto fontSize = getFontSize (type) + 2u;
   fontawesomeIcon (position + shift, iconName, fontSize);
-  updateSpacing (mRender.textSize (iconName, mFontawesome, fontSize));
+  updateSpacing (mRender.textSize (iconName, mFontawesome, fontSize) + shift);
 }
 
 
@@ -994,8 +994,9 @@ void Gui::inputText (
   }
 
   // draw description before the box
-  const auto descriptionSize = widgetDescription (basePosition - 1.5f*mPadding, options.description);
-  auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x + mPadding.x, -2.f*mPadding.y);
+  const auto descriptionPos = basePosition + sf::Vector2f (-1.5f*mPadding.x, mPadding.y);
+  const auto descriptionSize = widgetDescription (descriptionPos, options.description);
+  auto boxPosition = basePosition + sf::Vector2f (descriptionSize.x, mPadding.y);
 
   // set-up a panel for the text
   if (!mInputTextPanels.has (name)) {
@@ -1053,8 +1054,8 @@ void Gui::inputText (
     finalOptions.boxSize.x -= textHeight ();
   }
   // draw formatted text
-  auto cursorPosition = computeRelativePosition ({});
-  Gui::text (text, finalOptions);
+  auto cursorPosition = computeRelativePosition ({1.5f*mPadding});
+  Gui::text (text, finalOptions, {1.5f*mPadding});
   // draw blinking cursor in the text
   if (focused) {
     drawTextCursor (cursorPosition, name, text, finalOptions);
@@ -1929,18 +1930,24 @@ void Gui::handleTextDrawing (
   if (firstMarkerPos != std::string::npos) {
     const auto secondMarkerPos = text.find ("|", firstMarkerPos + 1);
     if (secondMarkerPos != std::string::npos) {
+      // draw first part
       auto firstPart = std::string ("");
+      auto firstPartWidth = sf::Vector2f ();
       if (firstMarkerPos > 0) {
-        firstPart = text.substr (0, firstMarkerPos - 1);
+        firstPart = text.substr (0, firstMarkerPos);
+        firstPartWidth.x = textSize (firstPart, type).x;
+        mRender.draw (firstPart, *mFont, {sgui::round (position), mStyle.fontColor, fontSize});
       }
-      // draw text without icon
-      const auto textWithoutIcon = firstPart + "    " + text.substr (secondMarkerPos + 1);
-      mRender.draw (textWithoutIcon, *mFont, {sgui::round (position), mStyle.fontColor, fontSize});
       // draw fontawesome icon at the right place
-      const auto firstPartSize = textSize (firstPart, type);
-      const auto iconPos = position + sf::Vector2f (firstPartSize.x + mPadding.x, 0.f);
+      const auto iconPos = position + firstPartWidth;
       const auto faIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
       fontawesomeIcon (iconPos, faIcon, fontSize);
+      const auto iconWidth = sf::Vector2f (mRender.textSize (faIcon, mFontawesome, fontSize).x, 0.f);
+      // draw second part
+      const auto secondPart = text.substr (secondMarkerPos + 1);
+      if (secondPart != "") {
+        mRender.draw (secondPart, *mFont, {sgui::round (iconPos + iconWidth), mStyle.fontColor, fontSize});
+      }
       return;
     }
   }

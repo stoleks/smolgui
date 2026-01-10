@@ -20,7 +20,7 @@ int main()
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
   auto mainPanel = sgui::Panel ({{}, { 1.f, 1.f }});
-  mainPanel.title = fmt::format ("Main window with fontawesome |{}|", ICON_FA_FONT_AWESOME);
+  mainPanel.title = fmt::format ("Main window with fontawesome |{}| !", ICON_FA_FONT_AWESOME);
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
   auto style = sgui::Style ();
   while (window.isOpen ())
