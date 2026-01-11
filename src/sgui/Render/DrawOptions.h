@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics/Color.hpp>
-#include "sgui/Widgets/ItemStates.h"
 #include "sgui/Widgets/Aspect.h"
 
 namespace sgui

@@ -1,8 +1,6 @@
 #include "sgui/Serialization/LoadTextureAtlas.h"
-#include "sgui/Resources/TextureAtlas.h"
 #include "sgui/Serialization/LoadJson.h"
 #include "sgui/Serialization/SerializeGUI.h"
-#include "sgui/Serialization/SerializeSFML.h"
 
 namespace sgui
 {

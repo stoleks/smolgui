@@ -4,9 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include "sgui/Gui.h"
-#include "sgui/Core/Interpolation.h"
 #include "sgui/Resources/Layout.h"
-#include "sgui/Resources/SoundPlayer.h"
 #include "sgui/Resources/TextContainer.h"
 #include "sgui/Resources/IconsFontAwesome7.h"
 

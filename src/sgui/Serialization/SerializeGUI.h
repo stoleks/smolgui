@@ -1,14 +1,9 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
-
-#include "sgui/Widgets/Panel.h"
 #include "sgui/Resources/Layout.h"
 #include "sgui/Resources/TextureAtlas.h"
 #include "sgui/Serialization/SerializeSFML.h"
-
-// for readability
-using json = nlohmann::json;
 
 namespace sgui
 {

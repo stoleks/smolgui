@@ -2,9 +2,7 @@
 
 #include <string>
 #include <functional>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Rect.hpp>
-
 #include "sgui/Widgets/Options.h"
 
 namespace sgui

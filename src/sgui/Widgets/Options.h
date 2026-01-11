@@ -1,6 +1,5 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
 #include "sgui/Widgets/Constraints.h"
 #include "sgui/Widgets/Aspect.h"
 

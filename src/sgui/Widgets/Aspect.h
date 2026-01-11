@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "sgui/Widgets/Widgets.h"
 #include "sgui/Widgets/ItemStates.h"
 
