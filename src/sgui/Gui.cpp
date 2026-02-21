@@ -74,8 +74,14 @@ void Gui::setStyle (
   // define default style
   if (defaultPadding) {
     mStyle.itemSpacing = mStyle.fontSize.normal / 3.f;
-    mPadding = 0.25f * mStyle.fontSize.normal * sf::Vector2f (2.f, 0.5f);
+    setPadding ();
   }
+}
+
+/////////////////////////////////////////////////
+void Gui::setPadding (const sf::Vector2f& padding)
+{
+  mPadding = static_cast <float> (mStyle.fontSize.normal) * padding;
 }
 
 /////////////////////////////////////////////////
@@ -144,9 +150,14 @@ sf::Vector2f Gui::denormalizeSize (const sf::Vector2f& panelSize) const
 }
 
 
-
 /////////////////////////////////////////////////
 // function to manage cursor position
+/////////////////////////////////////////////////
+sf::Vector2f Gui::lastSpacing () const
+{
+  return mLastSpacing;
+}
+
 /////////////////////////////////////////////////
 void Gui::addSpacing (const sf::Vector2f& amount)
 {
@@ -219,7 +230,6 @@ sf::Vector2f Gui::cursorPosition () const
 }
 
 
-
 /////////////////////////////////////////////////
 // To know if gui is hovered
 /////////////////////////////////////////////////
@@ -244,7 +254,6 @@ sf::Vector2f Gui::textureSize (const std::string& texture) const
 {
   return mRender.textureSize (texture);
 }
-
 
 
 /////////////////////////////////////////////////
@@ -421,7 +430,6 @@ void Gui::draw (
   // return to normal target view
   target.setView (targetView);
 }
-
 
 
 /////////////////////////////////////////////////
@@ -629,7 +637,6 @@ void Gui::endPanel ()
 }
 
 
-
 /////////////////////////////////////////////////
 // Menu related widget
 /////////////////////////////////////////////////
@@ -780,7 +787,6 @@ bool Gui::tooltipNeedReset ()
 }
 
 
-
 /////////////////////////////////////////////////
 // Decoration
 /////////////////////////////////////////////////
@@ -825,7 +831,6 @@ void Gui::image (
 }
 
 
-
 /////////////////////////////////////////////////
 // Button related widget
 /////////////////////////////////////////////////
@@ -858,7 +863,7 @@ bool Gui::button (
 {
   // compute text position and construct a button adapted to the text
   const auto position = computeRelativePosition (options.displacement) + 1.5f*mPadding;
-  const auto width = std::max (textSize (text).x + 5.f*mPadding.x, 6.f*textHeight ());
+  const auto width = std::max (textSize (text).x + 5.f*mPadding.x, options.size.x*textHeight ());
   const auto size = sf::Vector2f (width, textHeight ());
   auto clickOptions = options;
   if (!isValid (clickOptions.aspect.widget)) clickOptions.aspect.widget = Widget::Button;
