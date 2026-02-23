@@ -488,6 +488,8 @@ private:
   std::vector<std::string> formatText (const std::string& text, const sf::Vector2f& boxSize, const TextType type = TextType::Normal) const;
   // get font size
   uint32_t getFontSize (const TextType type) const;
+  // fit text in a constrained line
+  std::string truncateText (const std::string& text, const float width) const;
   // format text for fontawesome use
   void handleTextDrawing (const sf::Vector2f& position, const std::string& text, const TextType fontSize = TextType::Normal);
   // draw a fontawesome icon

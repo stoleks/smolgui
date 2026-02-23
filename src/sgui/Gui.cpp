@@ -719,28 +719,26 @@ bool Gui::menuItem (
   mRender.clipping.moveToLayer (parentMenu.clippingLayer);
 
   // compute item status
-  auto state = itemStatus (box, name, mInputState.mouseLeftReleased || mInputState.mouseLeftDown);
+  auto state = itemStatus (box, name, mInputState.mouseLeftReleased);
   const auto clicked = (state == ItemState::Active);
 
   // update overall group status
   if (mGroupsActiveItem.has (parentMenu.groupId)) {
     auto& id = mGroupsActiveItem.get (parentMenu.groupId);
-    if (id == itemId) {
-      state = ItemState::Active;
-    }
     if (clicked) {
       id = itemId;
+    } else if (id == itemId) {
+      state = ItemState::Active;
     }
   }
   mRender.draw (box, drawOptions ({Widget::MenuItemBox, Slices::Three, state}, options.aspect));
-  parentMenu.isActive = clicked;
 
   // draw a description over it and go back to previous clipping layer
   handleTextDrawing (itemPos + 1.5f*mPadding, text);
   mRender.clipping.moveToLayer (layerId);
 
   // update cursor position and return item status
-  return state == ItemState::Active && !clicked;
+  return state == ItemState::Active;
 }
 
 /////////////////////////////////////////////////
@@ -1354,10 +1352,7 @@ std::string Gui::comboBox (
 
   // compute combo box width
   const auto defaultSize = textHeight ();
-  auto maxWidth = 5.f*defaultSize;
-  for (const auto& text : list) {
-    maxWidth = std::max (maxWidth, textSize (text).x);
-  }
+  const auto maxWidth = (options.size.x - 1.f) * defaultSize;
   const auto itemWidth = maxWidth + defaultSize + 2.f*mPadding.x;
   const auto itemSize = sf::Vector2f (itemWidth, defaultSize);
   
@@ -1414,9 +1409,9 @@ std::string Gui::comboBox (
 
   // draw combo box selected text
   mRender.draw (box, drawOptions ({Widget::ItemBox, Slices::Three, state}, options.aspect));
-  handleTextDrawing (box.position + mPadding, text);
-  const auto iconPos = box.position + sf::Vector2f (5.f*defaultSize + 2.f*mPadding.x, 0.5f*mPadding.y);
-  fontawesomeIcon (iconPos, icon, getFontSize (TextType::Normal) + 2u); 
+  handleTextDrawing (box.position + mPadding, truncateText (text, maxWidth));
+  const auto iconShift = sf::Vector2f (maxWidth + 2.f*mPadding.x, 0.5f*mPadding.y);
+  fontawesomeIcon (box.position + iconShift, icon, getFontSize (TextType::Normal) + 2u);
 
   // return selected item and update cursor position
   updateSpacing (itemSize);
@@ -1445,7 +1440,7 @@ bool Gui::dropListItem (
     state = ItemState::Active;
   }
   mRender.draw (box, drawOptions ({Widget::ItemBox, Slices::Three, state}));
-  handleTextDrawing (box.position + mPadding, itemName);
+  handleTextDrawing (box.position + mPadding, truncateText (itemName, itemSize.x - 2.f*mPadding.x));
   mCursorPosition.y += itemSize.y;
   updateScrolling ();
 
@@ -1646,8 +1641,9 @@ void Gui::beginGroup (
   newGroup.clippingLayer = 0u;
   newGroup.plotterLayer = 0u;
   newGroup.menuBarSize = sf::Vector2f (0, 0);
-  newGroup.groupId = std::hash <std::string> {} (mWidgetChain);
   mCounters.group++;
+  newGroup.groupId = mCounters.group;
+  // std::hash <std::string> {} (mWidgetChain);
 
   // add it to the stack
   mGroups.emplace (std::move (newGroup));
@@ -1919,6 +1915,27 @@ size_t Gui::utf8Length (const std::string& text) const
     else { return size; }
   }
   return size;
+}
+
+/////////////////////////////////////////////////
+std::string Gui::truncateText (
+  const std::string& text,
+  const float width) const
+{
+  auto modified = false;
+  auto truncatedText = text;
+  while (textSize (truncatedText + "...").x > width) {
+    if (textSize (truncatedText + "...").x > 2.f * width) {
+      truncatedText = truncatedText.substr (0, truncatedText.size () / 2);
+    } else {
+      truncatedText = truncatedText.substr (0, truncatedText.size () - 1);
+    }
+    modified = true;
+  }
+  if (modified) {
+    return truncatedText + "...";
+  }
+  return text;
 }
 
 /////////////////////////////////////////////////
