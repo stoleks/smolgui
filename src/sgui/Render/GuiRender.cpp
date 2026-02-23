@@ -141,6 +141,7 @@ std::string GuiRender::toString (const Widget widget) const
 {
   if      (widget == Widget::Panel)        { return "panel"; }
   else if (widget == Widget::Window)       { return "window"; }
+  else if (widget == Widget::WindowWithCap){ return "window_with_cap"; }
   else if (widget == Widget::TextBox)      { return "text_box"; }
   else if (widget == Widget::ItemBox)      { return "item_box"; }
   else if (widget == Widget::MenuBox)      { return "menu_box"; }

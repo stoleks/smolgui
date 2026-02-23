@@ -11,6 +11,7 @@ enum class Widget
 {
   Panel,
   Window,
+  WindowWithCap,
   TextBox,
   ItemBox,
   MenuBox,

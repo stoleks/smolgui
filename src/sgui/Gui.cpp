@@ -446,7 +446,7 @@ bool Gui::beginWindow (
   const auto name = initializeActivable ("Window");
 
   // compute position and create a new global group
-  const auto windowSize = settings.size.componentWiseMul (parentGroupSize ());
+  auto windowSize = settings.size.componentWiseMul (parentGroupSize ());
   const auto position = computePosition (settings, constraints);
 
   // handle window header
@@ -454,6 +454,7 @@ bool Gui::beginWindow (
   if (settings.hasHeader) {
     // handle mouse interaction
     const auto titleBoxSize = sf::Vector2f (windowSize.x, textHeight (TextType::Title));
+    windowSize.y -= titleBoxSize.y;
     auto reduceCloseButtonWidth = sf::Vector2f ();
     if (settings.closable) {
       reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
@@ -514,6 +515,7 @@ bool Gui::beginWindow (
   if (settings.hasMenu) {
     const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, textHeight ());
     const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, textHeight () + 2.f*mPadding.y});
+    windowSize.y -= menuBox.size.y;
     mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
     thisWindow.menuBarPosition = menuPosition;
     thisWindow.menuBarSize = menuBox.size;
@@ -527,7 +529,11 @@ bool Gui::beginWindow (
 
   // draw window box and handle hovering of the window
   const auto windowStatus = itemStatus (windowBox, name);
-  mRender.draw (windowBox, drawOptions ({Widget::Window, Slices::Nine, windowStatus}, options.aspect));
+  if (settings.hasMenu || settings.hasHeader) {
+    mRender.draw (windowBox, drawOptions ({Widget::WindowWithCap, Slices::Nine, windowStatus}, options.aspect));
+  } else {
+    mRender.draw (windowBox, drawOptions ({Widget::Window, Slices::Nine, windowStatus}, options.aspect));
+  }
   mCursorPosition += sf::Vector2f (mPadding.x, 2.5f*mPadding.y);
 
   // scroll through window if requested
