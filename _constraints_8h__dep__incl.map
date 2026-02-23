@@ -1,24 +1,23 @@
 <map id="/github/workspace/src/sgui/Widgets/Constraints.h" name="/github/workspace/src/sgui/Widgets/Constraints.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="348,5,529,46"/>
-<area shape="rect" id="Node000002" href="$_options_8h.html" title=" " alt="" coords="359,94,518,135"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="441,62,441,94,436,94,436,62"/>
-<area shape="rect" id="Node000003" href="$_panel_8h.html" title=" " alt="" coords="364,183,513,223"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="441,150,441,182,436,182,436,150"/>
-<area shape="rect" id="Node000004" href="$_gui_8h.html" title=" " alt="" coords="179,271,328,312"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="384,233,296,273,294,268,382,228"/>
-<area shape="rect" id="Node000007" href="$_layout_8h.html" title=" " alt="" coords="354,271,523,312"/>
-<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="441,239,441,271,436,271,436,239"/>
-<area shape="rect" id="Node000009" href="$_serialize_g_u_i_8h.html" title=" " alt="" coords="558,360,735,416"/>
-<area shape="poly" id="edge13_Node000003_Node000009" title=" " alt="" coords="484,230,536,269,585,315,625,358,621,361,581,319,533,273,480,234"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="167,5,348,46"/>
+<area shape="rect" id="Node000002" href="$_options_8h.html" title=" " alt="" coords="178,94,337,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="260,62,260,94,255,94,255,62"/>
+<area shape="rect" id="Node000003" href="$_panel_8h.html" title=" " alt="" coords="183,183,332,223"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="260,150,260,182,255,182,255,150"/>
+<area shape="rect" id="Node000004" href="$_gui_8h.html" title=" " alt="" coords="92,271,241,312"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="228,236,189,273,185,269,224,232"/>
+<area shape="rect" id="Node000007" href="$_layout_8h.html" title=" " alt="" coords="265,271,434,312"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="291,232,330,269,327,273,287,236"/>
 <area shape="rect" id="Node000005" href="$_gui_8cpp.html" title=" " alt="" coords="5,368,155,408"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="205,322,118,369,115,365,202,318"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="141,325,100,369,96,365,137,321"/>
 <area shape="rect" id="Node000006" href="$sgui_8h.html" title=" " alt="" coords="179,368,328,408"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="256,328,256,367,251,367,251,328"/>
-<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="340,319,167,363,144,369,142,364,166,357,339,313"/>
-<area shape="poly" id="edge12_Node000007_Node000006" title=" " alt="" coords="387,322,293,369,291,365,385,317"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="197,321,237,365,233,369,193,325"/>
+<area shape="poly" id="edge7_Node000007_Node000005" title=" " alt="" coords="280,320,137,369,136,364,278,315"/>
+<area shape="poly" id="edge12_Node000007_Node000006" title=" " alt="" coords="321,325,275,369,271,365,317,321"/>
 <area shape="rect" id="Node000008" href="$_layout_8cpp.html" title=" " alt="" coords="352,368,534,408"/>
-<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="443,328,445,367,439,367,437,328"/>
-<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="497,316,588,357,585,362,495,321"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="381,321,425,365,421,369,377,325"/>
+<area shape="rect" id="Node000009" href="$_serialize_g_u_i_8h.html" title=" " alt="" coords="558,360,735,416"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="427,315,562,357,560,362,425,320"/>
 <area shape="rect" id="Node000010" href="$_load_layout_8cpp.html" title=" " alt="" coords="420,471,639,512"/>
 <area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="606,428,554,473,550,469,602,424"/>
 <area shape="rect" id="Node000011" href="$_load_texture_atlas_8cpp.html" title=" " alt="" coords="663,464,862,519"/>

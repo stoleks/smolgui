@@ -84,6 +84,7 @@ var namespacesgui =
     [ "Widget", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501", [
       [ "Panel", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501ab8da6df14bf06283cbf588df6998722e", null ],
       [ "Window", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501ac89686a387d2b12b3c729ce35a0bcb5b", null ],
+      [ "WindowWithCap", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a4b9813cc054fa2ba60b46cc1bffc88a3", null ],
       [ "TextBox", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501afbe16470e116e861d9fdf08f036ea22f", null ],
       [ "ItemBox", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a986a61b7e99767fd2d6bf7224be47c33", null ],
       [ "MenuBox", "namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a333f8e4c3ddda40afb03807a8771c12b", null ],

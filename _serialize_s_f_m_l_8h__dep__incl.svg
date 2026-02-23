@@ -5,27 +5,28 @@
  -->
 <!-- Title: /github/workspace/src/sgui/Serialization/SerializeSFML.h Pages: 1 -->
 <svg width="676pt" height="205pt"
- viewBox="0.00 0.00 676.38 205.25" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 676.00 205.25" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 201.25)">
 <title>/github/workspace/src/sgui/Serialization/SerializeSFML.h</title>
 <!-- Node1 -->
 <g id="Node000001" class="node">
 <title>Node1</title>
 <g id="a_Node000001"><a xlink:title=" ">
-<polygon fill="#999999" stroke="#666666" points="289.38,-197.25 157.12,-197.25 157.12,-155.5 289.38,-155.5 289.38,-197.25"/>
-<text text-anchor="start" x="165.12" y="-183.75" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="start" x="165.12" y="-172.5" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/Serialize</text>
-<text text-anchor="middle" x="223.25" y="-161.25" font-family="Helvetica,sans-Serif" font-size="10.00">SFML.h</text>
+<polygon fill="#999999" stroke="#666666" points="389.88,-197.25 257.62,-197.25 257.62,-155.5 389.88,-155.5 389.88,-197.25"/>
+<text text-anchor="start" x="265.62" y="-183.75" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="start" x="265.62" y="-172.5" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/Serialize</text>
+<text text-anchor="middle" x="323.75" y="-161.25" font-family="Helvetica,sans-Serif" font-size="10.00">SFML.h</text>
 </a>
 </g>
 </g>
 <!-- Node2 -->
 <g id="Node000002" class="node">
 <title>Node2</title>
-<g id="a_Node000002"><a xlink:href="_load_layout_8cpp.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="164.5,-36.12 0,-36.12 0,-5.62 164.5,-5.62 164.5,-36.12"/>
-<text text-anchor="start" x="8" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="middle" x="82.25" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadLayout.cpp</text>
+<g id="a_Node000002"><a xlink:href="_load_texture_atlas_8h.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="319.5,-119.5 170,-119.5 170,-77.75 319.5,-77.75 319.5,-119.5"/>
+<text text-anchor="start" x="178" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="start" x="178" y="-94.75" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadTexture</text>
+<text text-anchor="middle" x="244.75" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">Atlas.h</text>
 </a>
 </g>
 </g>
@@ -33,133 +34,114 @@
 <g id="edge1_Node000001_Node000002" class="edge">
 <title>Node1&#45;&gt;Node2</title>
 <g id="a_edge1_Node000001_Node000002"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M146.58,-153.56C129.45,-145.39 112.93,-134.34 101.25,-119.5 82.14,-95.21 80.46,-57.16 81.18,-36.47"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="144.75,-156.58 155.31,-157.42 147.59,-150.17 144.75,-156.58"/>
-</a>
-</g>
-</g>
-<!-- Node3 -->
-<g id="Node000003" class="node">
-<title>Node3</title>
-<g id="a_Node000003"><a xlink:href="_load_texture_atlas_8cpp.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="332,-41.75 182.5,-41.75 182.5,0 332,0 332,-41.75"/>
-<text text-anchor="start" x="190.5" y="-28.25" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="start" x="190.5" y="-17" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadTexture</text>
-<text text-anchor="middle" x="257.25" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">Atlas.cpp</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node3 -->
-<g id="edge2_Node000001_Node000003" class="edge">
-<title>Node1&#45;&gt;Node3</title>
-<g id="a_edge2_Node000001_Node000003"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M241.16,-145.15C245.17,-137.07 248.92,-128.17 251.25,-119.5 258.27,-93.43 258.88,-62.08 258.34,-42.07"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="238.13,-143.39 236.55,-153.87 244.32,-146.67 238.13,-143.39"/>
-</a>
-</g>
-</g>
-<!-- Node4 -->
-<g id="Node000004" class="node">
-<title>Node4</title>
-<g id="a_Node000004"><a xlink:href="_load_texture_atlas_8h.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="471,-119.5 321.5,-119.5 321.5,-77.75 471,-77.75 471,-119.5"/>
-<text text-anchor="start" x="329.5" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="start" x="329.5" y="-94.75" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadTexture</text>
-<text text-anchor="middle" x="396.25" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">Atlas.h</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node4 -->
-<g id="edge3_Node000001_Node000004" class="edge">
-<title>Node1&#45;&gt;Node4</title>
-<g id="a_edge3_Node000001_Node000004"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M280.08,-150.49C302.66,-140.6 328.32,-129.37 349.76,-119.98"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="278.75,-147.25 271,-154.47 281.56,-153.66 278.75,-147.25"/>
-</a>
-</g>
-</g>
-<!-- Node7 -->
-<g id="Node000007" class="node">
-<title>Node7</title>
-<g id="a_Node000007"><a xlink:href="_serialize_g_u_i_8h.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="242.38,-119.5 110.12,-119.5 110.12,-77.75 242.38,-77.75 242.38,-119.5"/>
-<text text-anchor="start" x="118.12" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="start" x="118.12" y="-94.75" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/Serialize</text>
-<text text-anchor="middle" x="176.25" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">GUI.h</text>
-</a>
-</g>
-</g>
-<!-- Node1&#45;&gt;Node7 -->
-<g id="edge7_Node000001_Node000007" class="edge">
-<title>Node1&#45;&gt;Node7</title>
-<g id="a_edge7_Node000001_Node000007"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M204.67,-145.43C199.37,-136.89 193.73,-127.8 188.88,-119.98"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="201.61,-147.14 209.86,-153.79 207.56,-143.45 201.61,-147.14"/>
-</a>
-</g>
-</g>
-<!-- Node4&#45;&gt;Node3 -->
-<g id="edge6_Node000004_Node000003" class="edge">
-<title>Node4&#45;&gt;Node3</title>
-<g id="a_edge6_Node000004_Node000003"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M349.35,-72.07C331.51,-62.35 311.44,-51.41 294.6,-42.23"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="347.22,-74.89 357.67,-76.6 350.57,-68.74 347.22,-74.89"/>
-</a>
-</g>
-</g>
-<!-- Node5 -->
-<g id="Node000005" class="node">
-<title>Node5</title>
-<g id="a_Node000005"><a xlink:href="_gui_render_8cpp.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="488,-36.12 350.5,-36.12 350.5,-5.62 488,-5.62 488,-36.12"/>
-<text text-anchor="start" x="358.5" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="middle" x="419.25" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Render/GuiRender.cpp</text>
-</a>
-</g>
-</g>
-<!-- Node4&#45;&gt;Node5 -->
-<g id="edge4_Node000004_Node000005" class="edge">
-<title>Node4&#45;&gt;Node5</title>
-<g id="a_edge4_Node000004_Node000005"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M405.73,-66.4C408.91,-55.93 412.3,-44.76 414.89,-36.23"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="402.41,-65.29 402.85,-75.88 409.11,-67.33 402.41,-65.29"/>
+<path fill="none" stroke="#63b8ff" d="M294.54,-147.36C285.07,-138.28 274.75,-128.39 265.98,-119.98"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="291.85,-149.63 301.49,-154.03 296.69,-144.58 291.85,-149.63"/>
 </a>
 </g>
 </g>
 <!-- Node6 -->
 <g id="Node000006" class="node">
 <title>Node6</title>
-<g id="a_Node000006"><a xlink:href="_texture_atlas_8cpp.html" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="668.38,-36.12 506.12,-36.12 506.12,-5.62 668.38,-5.62 668.38,-36.12"/>
-<text text-anchor="start" x="514.12" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
-<text text-anchor="middle" x="587.25" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Resources/TextureAtlas.cpp</text>
+<g id="a_Node000006"><a xlink:href="_serialize_g_u_i_8h.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="476.88,-119.5 344.62,-119.5 344.62,-77.75 476.88,-77.75 476.88,-119.5"/>
+<text text-anchor="start" x="352.62" y="-106" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="start" x="352.62" y="-94.75" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/Serialize</text>
+<text text-anchor="middle" x="410.75" y="-83.5" font-family="Helvetica,sans-Serif" font-size="10.00">GUI.h</text>
 </a>
 </g>
 </g>
-<!-- Node4&#45;&gt;Node6 -->
-<g id="edge5_Node000004_Node000006" class="edge">
-<title>Node4&#45;&gt;Node6</title>
-<g id="a_edge5_Node000004_Node000006"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M457.95,-73.16C488.35,-61.1 524,-46.96 550.16,-36.58"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="456.85,-69.83 448.84,-76.77 459.43,-76.33 456.85,-69.83"/>
+<!-- Node1&#45;&gt;Node6 -->
+<g id="edge5_Node000001_Node000006" class="edge">
+<title>Node1&#45;&gt;Node6</title>
+<g id="a_edge5_Node000001_Node000006"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M355.61,-147.64C366.12,-138.48 377.61,-128.48 387.37,-119.98"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="353.45,-144.88 348.21,-154.08 358.05,-150.15 353.45,-144.88"/>
 </a>
 </g>
 </g>
-<!-- Node7&#45;&gt;Node2 -->
-<g id="edge8_Node000007_Node000002" class="edge">
-<title>Node7&#45;&gt;Node2</title>
-<g id="a_edge8_Node000007_Node000002"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M142.48,-70.41C128.26,-58.95 112.28,-46.08 100.36,-36.46"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="139.9,-72.83 149.88,-76.38 144.29,-67.38 139.9,-72.83"/>
+<!-- Node3 -->
+<g id="Node000003" class="node">
+<title>Node3</title>
+<g id="a_Node000003"><a xlink:href="_gui_render_8cpp.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="137.5,-36.12 0,-36.12 0,-5.62 137.5,-5.62 137.5,-36.12"/>
+<text text-anchor="start" x="8" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="middle" x="68.75" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Render/GuiRender.cpp</text>
 </a>
 </g>
 </g>
-<!-- Node7&#45;&gt;Node3 -->
-<g id="edge9_Node000007_Node000003" class="edge">
-<title>Node7&#45;&gt;Node3</title>
-<g id="a_edge9_Node000007_Node000003"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M206.2,-69.61C215.91,-60.53 226.49,-50.64 235.48,-42.23"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="203.98,-66.9 199.06,-76.29 208.76,-72.02 203.98,-66.9"/>
+<!-- Node2&#45;&gt;Node3 -->
+<g id="edge2_Node000002_Node000003" class="edge">
+<title>Node2&#45;&gt;Node3</title>
+<g id="a_edge2_Node000002_Node000003"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M187.16,-72.84C159.31,-60.85 126.82,-46.87 102.92,-36.58"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="185.63,-75.99 196.19,-76.73 188.39,-69.56 185.63,-75.99"/>
+</a>
+</g>
+</g>
+<!-- Node4 -->
+<g id="Node000004" class="node">
+<title>Node4</title>
+<g id="a_Node000004"><a xlink:href="_texture_atlas_8cpp.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="317.88,-36.12 155.62,-36.12 155.62,-5.62 317.88,-5.62 317.88,-36.12"/>
+<text text-anchor="start" x="163.62" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="middle" x="236.75" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Resources/TextureAtlas.cpp</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node4 -->
+<g id="edge3_Node000002_Node000004" class="edge">
+<title>Node2&#45;&gt;Node4</title>
+<g id="a_edge3_Node000002_Node000004"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M241.42,-66.06C240.32,-55.69 239.16,-44.67 238.27,-36.23"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="237.92,-66.24 242.45,-75.82 244.88,-65.51 237.92,-66.24"/>
+</a>
+</g>
+</g>
+<!-- Node5 -->
+<g id="Node000005" class="node">
+<title>Node5</title>
+<g id="a_Node000005"><a xlink:href="_load_texture_atlas_8cpp.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="485.5,-41.75 336,-41.75 336,0 485.5,0 485.5,-41.75"/>
+<text text-anchor="start" x="344" y="-28.25" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="start" x="344" y="-17" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadTexture</text>
+<text text-anchor="middle" x="410.75" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">Atlas.cpp</text>
+</a>
+</g>
+</g>
+<!-- Node2&#45;&gt;Node5 -->
+<g id="edge4_Node000002_Node000005" class="edge">
+<title>Node2&#45;&gt;Node5</title>
+<g id="a_edge4_Node000002_Node000005"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M299.58,-72.61C321.17,-62.75 345.66,-51.58 366.14,-42.23"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="298.26,-69.36 290.61,-76.7 301.16,-75.73 298.26,-69.36"/>
+</a>
+</g>
+</g>
+<!-- Node6&#45;&gt;Node5 -->
+<g id="edge7_Node000006_Node000005" class="edge">
+<title>Node6&#45;&gt;Node5</title>
+<g id="a_edge7_Node000006_Node000005"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M410.75,-66C410.75,-57.96 410.75,-49.54 410.75,-42.23"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="407.25,-65.81 410.75,-75.81 414.25,-65.81 407.25,-65.81"/>
+</a>
+</g>
+</g>
+<!-- Node7 -->
+<g id="Node000007" class="node">
+<title>Node7</title>
+<g id="a_Node000007"><a xlink:href="_load_layout_8cpp.html" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="668,-36.12 503.5,-36.12 503.5,-5.62 668,-5.62 668,-36.12"/>
+<text text-anchor="start" x="511.5" y="-22.62" font-family="Helvetica,sans-Serif" font-size="10.00">/github/workspace/src</text>
+<text text-anchor="middle" x="585.75" y="-11.38" font-family="Helvetica,sans-Serif" font-size="10.00">/sgui/Serialization/LoadLayout.cpp</text>
+</a>
+</g>
+</g>
+<!-- Node6&#45;&gt;Node7 -->
+<g id="edge6_Node000006_Node000007" class="edge">
+<title>Node6&#45;&gt;Node7</title>
+<g id="a_edge6_Node000006_Node000007"><a xlink:title=" ">
+<path fill="none" stroke="#63b8ff" d="M468.01,-72.84C495.71,-60.85 528.01,-46.87 551.77,-36.58"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="466.82,-69.54 459.04,-76.72 469.6,-75.96 466.82,-69.54"/>
 </a>
 </g>
 </g>
