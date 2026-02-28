@@ -451,21 +451,22 @@ bool Gui::beginWindow (
 
   // handle window header
   mCursorPosition = position;
+  const auto headerHeight = textHeight (TextType::Title) + mPadding.y; 
   if (settings.hasHeader) {
     // handle mouse interaction
-    const auto titleBoxSize = sf::Vector2f (windowSize.x, textHeight (TextType::Title));
-    windowSize.y -= titleBoxSize.y;
+    windowSize.y -= headerHeight;
+    const auto titleBoxSize = sf::Vector2f (windowSize.x, headerHeight);
     auto reduceCloseButtonWidth = sf::Vector2f ();
     if (settings.closable) {
       reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
     }
     const auto titleBoxWithoutButtons = sf::FloatRect (mCursorPosition, titleBoxSize - reduceCloseButtonWidth);
-    const auto drawBox = sf::FloatRect (mCursorPosition, titleBoxSize);
-    mRender.setCurrentClippingLayer (drawBox);
+    const auto titleBox = sf::FloatRect (mCursorPosition, titleBoxSize);
+    mRender.setCurrentClippingLayer (titleBox);
     const auto state = interactWithMouse (settings, titleBoxWithoutButtons, name, options.tooltip);
 
     // draw title box and window name
-    mRender.draw (drawBox, drawOptions ({Widget::TitleBox, Slices::Three, state}));
+    mRender.draw (titleBox, drawOptions ({Widget::TitleBox, Slices::Three, state}));
     const auto textWidth = textSize (settings.title, TextType::Title).x;
     const auto shiftX = (titleBoxWithoutButtons.size.x - textWidth) / 2.f;
     const auto titlePos = sf::Vector2f {mCursorPosition.x + shiftX, mCursorPosition.y};
@@ -500,7 +501,8 @@ bool Gui::beginWindow (
 
   // we need to check if window has a menu to compute correct position
   if (settings.hasMenu) {
-    mCursorPosition += sf::Vector2f (0.f, textHeight ());
+    mCursorPosition += sf::Vector2f (0.f, headerHeight);
+    windowSize.y -= headerHeight;
   }
   beginGroup (options.horizontal, mCursorPosition, windowSize);
   auto& thisWindow = mGroups.top ();
@@ -513,9 +515,8 @@ bool Gui::beginWindow (
 
   // update cursor position and draw menu bar if needed
   if (settings.hasMenu) {
-    const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, textHeight ());
-    const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, textHeight () + 2.f*mPadding.y});
-    windowSize.y -= menuBox.size.y;
+    const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, headerHeight);
+    const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, headerHeight});
     mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
     thisWindow.menuBarPosition = menuPosition;
     thisWindow.menuBarSize = menuBox.size;
@@ -659,9 +660,7 @@ void Gui::beginMenu ()
 
   // construct a menu bar according to the parent size
   const auto& parent = mGroups.top ();
-  const auto& menuPos = parent.menuBarPosition;
-  const auto& menuSize = parent.menuBarSize;
-  beginGroup (true, menuPos, menuSize);
+  beginGroup (true, parent.menuBarPosition, parent.menuBarSize);
 
   // initialize active item of the menu if needed and clipping layer
   auto& thisMenu = mGroups.top ();
@@ -676,7 +675,7 @@ void Gui::beginMenu ()
   mRender.clipping.moveToLayer (thisMenu.clippingLayer);
 
   // get menu bar status, draws it and go back to the previous clipping layer
-  const auto box = sf::FloatRect (menuPos, menuSize);
+  const auto box = sf::FloatRect (parent.menuBarPosition, parent.menuBarSize);
   mRender.draw (box, drawOptions ({Widget::MenuBox, Slices::Three, ItemState::Neutral}));
   mRender.clipping.moveToLayer (layerId);
 }
@@ -715,8 +714,8 @@ bool Gui::menuItem (
   const auto itemPos = parentMenu.lastItemPosition;
 
   // construct menu item box
-  const auto width = 3.f*mPadding.x + textSize (text).x;
-  const auto height = textHeight ();
+  const auto width = 3.f*mPadding.x + textSize (text, TextType::Title).x;
+  const auto height = textHeight (TextType::Title);
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
   parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
 
@@ -740,7 +739,7 @@ bool Gui::menuItem (
   mRender.draw (box, drawOptions ({Widget::MenuItemBox, Slices::Three, state}, options.aspect));
 
   // draw a description over it and go back to previous clipping layer
-  handleTextDrawing (itemPos + 1.5f*mPadding, text);
+  handleTextDrawing (itemPos + 1.5f*mPadding, text, TextType::Title);
   mRender.clipping.moveToLayer (layerId);
 
   // update cursor position and return item status
@@ -1311,29 +1310,16 @@ void Gui::cachePlotData (const std::function<sf::Vector2f (float)>& slope)
 /////////////////////////////////////////////////
 void Gui::handlePlotBound ()
 {
-  // set plot bound, in a group we enforce a 16:9 ratio
+  // set plot bound, we enforce a 16:9 ratio without a size set
   if (mPlotIsBounded) {
-    if (!mGroups.empty ()) {
-      auto width = mGroups.top ().size.x - 2.f*mPadding.x;
-      if (mPlotBound.x > 0.f) {
-        width = sgui::clamp (0.f, mPlotBound.x, width);
-      }
-      const auto bound = sf::Vector2f (width, width * 0.5625f);
-      mPlotter.setBound (bound);
-      updateSpacing (bound);
-    } else {
-      mPlotter.setBound (mPlotBound);
-      updateSpacing (mPlotBound);
-    }
+    mPlotter.setBound (mPlotBound);
+    updateSpacing (mPlotBound);
   } else {
-    if (!mGroups.empty ()) {
-      const auto width = mGroups.top ().size.x - 2.f*mPadding.x;
-      const auto bound = sf::Vector2f (width, width * 0.5625f);
-      mPlotter.setBound (bound);
-      updateSpacing (bound);
-    } else {
-      mPlotter.unsetBound ();
-    }
+    const auto width = std::min (parentGroupSize ().x, 10.f * textHeight ()) - 2.f*mPadding.x;
+    const auto height = width * 0.5625f;
+    const auto bound = sf::Vector2f (width, height);
+    mPlotter.setBound (bound);
+    updateSpacing (bound);
   }
 }
 
@@ -1359,8 +1345,7 @@ std::string Gui::comboBox (
   // compute combo box width
   const auto defaultSize = textHeight ();
   const auto maxWidth = (options.size.x - 1.f) * defaultSize;
-  const auto itemWidth = maxWidth + defaultSize + 2.f*mPadding.x;
-  const auto itemSize = sf::Vector2f (itemWidth, defaultSize);
+  const auto itemSize = sf::Vector2f (maxWidth + defaultSize + 2.f*mPadding.x, defaultSize);
   
   // compute if combo box is open
   const auto box = sf::FloatRect (mainBoxPosition, itemSize);
@@ -1403,7 +1388,7 @@ std::string Gui::comboBox (
     const auto scrollerWidth = (list.size () > 6) ? defaultSize : 0.f;
     for (const auto& itemName : list) {
       // get item status and update selected value
-      if (dropListItem (clock, text, itemName, {itemWidth - scrollerWidth, itemSize.y})) {
+      if (dropListItem (clock, text, itemName, {itemSize.x - scrollerWidth, itemSize.y})) {
         clock = 1.f;
         text = itemName;
       }

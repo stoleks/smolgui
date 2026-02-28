@@ -67,7 +67,7 @@ int main()
     gui.endFrame ();
 
     // Drawing
-    window.clear ();
+    window.clear (sf::Color::White);
     window.draw (gui);
     window.display ();
   }

@@ -134,13 +134,6 @@ int main()
         gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
         gui.progressBar (sliderValue / phaseMax, {fmt::format ("{} %", sliderValue / phaseMax * 100.f)});
         // display it
-        const auto list = std::vector <std::string> {"", "title_button", "check_box", "icon_button", "slider_bar"};
-        const auto checkTexture = gui.comboBox (list);
-        gui.sameLine ();
-        gui.text ("Choose checkbox texture, \"\" means default one");
-        auto checkOptions = sgui::WidgetOptions ({checkTexture, sgui::Slices::One});
-        checkOptions.description = "Display a function";
-        gui.checkBox (displayFunction, checkOptions);
         if (displayFunction) {
           auto func = [time, sliderValue] (float x) {
             const auto t = time.getElapsedTime ().asSeconds ();
@@ -152,6 +145,14 @@ int main()
           gui.plot (func, 2.f);
           gui.forcePlotUpdate ();
         }
+        // change checkbox texture
+        const auto list = std::vector <std::string> {"", "title_button", "check_box", "icon_button", "slider_bar", "window", "window_with_cap"};
+        const auto checkTexture = gui.comboBox (list);
+        gui.sameLine ();
+        gui.text ("Choose checkbox texture, \"\" means default one");
+        auto checkOptions = sgui::WidgetOptions ({checkTexture, sgui::Slices::One});
+        checkOptions.description = "Display a function";
+        gui.checkBox (displayFunction, checkOptions);
         // Change window size
         gui.separation ();
         gui.slider (mainPanel.size.y, 0.05f, 0.7f, {"Slider from 0.05 to 0.7, value is : " + std::to_string (mainPanel.size.y)});
@@ -222,7 +223,7 @@ int main()
         constraint.vertical = sgui::VerticalAlignment::Top;
         constraint.horizontal = sgui::HorizontalAlignment::None;
        	const auto outSize = constrainedPanel.size;
-        constrainedPanel.size = gui.normalizeSize ({180.f, 40.f});
+        constrainedPanel.size = gui.normalizeSize ({210.f, 40.f});
         gui.beginPanel (constrainedPanel, constraint);
         gui.text ("Top panel in group");
         gui.endPanel ();
