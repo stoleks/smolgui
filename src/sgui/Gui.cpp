@@ -203,22 +203,40 @@ void Gui::sameLine ()
 }
 
 /////////////////////////////////////////////////
-void Gui::setAnchor ()
+void Gui::setAnchor (const std::string& key)
 {
-  // store cursor position
-  mAnchors.push (mCursorPosition);
+  // store cursor position, in map with key, in stack otherwise
+  if (key != "") {
+    mAnchorsWithKeys.insert ({key, mCursorPosition});
+  } else {
+    mAnchors.push (mCursorPosition);
+  }
 }
 
 /////////////////////////////////////////////////
-void Gui::backToAnchor ()
+void Gui::backToAnchor (const std::string& key)
 {
+  // look for anchors with key
+  if (key != "") {
+    const auto found = mAnchorsWithKeys.find (key);
+    // get back to anchored position with the key
+    if (found != mAnchorsWithKeys.end ()) {
+      mCursorPosition = found->second;
+      mAnchorsWithKeys.erase (found);
+    } else {
+      spdlog::warn ("There is no anchor corresponding to the key {}", key);
+    }
+    // quit if there are no anchors with the key used
+    return;
+  }
+  
   // quit if there are no anchors set
   if (mAnchors.empty ()) {
     spdlog::warn ("There are no anchors set !");
     return;
   }
 
-  // get back to anchored position
+  // get back to anchored position on the stack
   mCursorPosition = mAnchors.top ();
   mAnchors.pop ();
 }

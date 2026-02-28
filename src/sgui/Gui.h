@@ -161,11 +161,11 @@ public:
   /**
    * @brief register a position at which you can go back with backToAnchor.
    */
-  void setAnchor ();
+  void setAnchor (const std::string& key = "");
   /**
    * @brief go back to the _last_ setAnchor position set. 
    */
-  void backToAnchor ();
+  void backToAnchor (const std::string& key = "");
   /**
    * @brief get current cursor position of the gui
    */
@@ -556,6 +556,7 @@ private:
   Impl::InternalItemState mGuiState;
   // gui internal data
   std::stack <sf::Vector2f> mAnchors;
+  std::unordered_map <std::string, sf::Vector2f> mAnchorsWithKeys;
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <uint32_t> mGroupsActiveItem;
