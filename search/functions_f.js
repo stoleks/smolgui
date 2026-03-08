@@ -3,7 +3,7 @@ var searchData=
   ['sameline_0',['sameLine',['../classsgui_1_1_gui.html#a55df39e85c3dcd59a6f15dfe67ab13b6',1,'sgui::Gui']]],
   ['saveinfile_1',['saveInFile',['../classsgui_1_1_layout.html#aa7b4f8e01dce8c5310c06988c6aeb8ec',1,'sgui::Layout::saveInFile()'],['../classsgui_1_1_text_container.html#acf647a2761c2070fbeb52f573339c254',1,'sgui::TextContainer::saveInFile()'],['../namespacesgui.html#a454684d964a278617d08fb7030e16c8e',1,'sgui::saveInFile(const json &amp;out, const std::string &amp;file, const bool compact=false)'],['../namespacesgui.html#aa297fcf1b7ec4b234dda695341db0543',1,'sgui::saveInFile(const Layout &amp;layout, const std::string &amp;file, const bool compact)'],['../namespacesgui.html#a545f0230777a6f3c680c9d96131b2c30',1,'sgui::saveInFile(const std::unordered_map&lt; Key, Type &gt; &amp;table, const std::string &amp;file, const bool compact=false)'],['../namespacesgui.html#a312b3609e3aadc59cc8ef06e18d64cf4',1,'sgui::saveInFile(const TextureAtlas &amp;atlas, const std::string &amp;file, const bool compact)']]],
   ['separation_2',['separation',['../classsgui_1_1_gui.html#ad001ec17ce41410165cb1547a501aad6',1,'sgui::Gui']]],
-  ['setanchor_3',['setAnchor',['../classsgui_1_1_gui.html#aa44945a212b9e32227fc560902565177',1,'sgui::Gui']]],
+  ['setanchor_3',['setAnchor',['../classsgui_1_1_gui.html#aa2f2fda9b1b4118f994b4a283e15d5de',1,'sgui::Gui']]],
   ['setbordercolor_4',['setBorderColor',['../classsgui_1_1_plotter.html#a689e511f508b7b0ac252af1881024770',1,'sgui::Plotter']]],
   ['setbordertick_5',['setBorderTick',['../classsgui_1_1_plotter.html#a1eb4d1e16d528faa4520e7d3ff1331c0',1,'sgui::Plotter']]],
   ['setborderwidth_6',['setBorderWidth',['../classsgui_1_1_plotter.html#af4ea6f17a73c4530324d8b5c60bfe82a',1,'sgui::Plotter']]],

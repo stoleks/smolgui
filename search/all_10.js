@@ -10,7 +10,7 @@ var searchData=
   ['serializecore_2eh_7',['SerializeCore.h',['../_serialize_core_8h.html',1,'']]],
   ['serializegui_2eh_8',['SerializeGUI.h',['../_serialize_g_u_i_8h.html',1,'']]],
   ['serializesfml_2eh_9',['SerializeSFML.h',['../_serialize_s_f_m_l_8h.html',1,'']]],
-  ['setanchor_10',['setAnchor',['../classsgui_1_1_gui.html#aa44945a212b9e32227fc560902565177',1,'sgui::Gui']]],
+  ['setanchor_10',['setAnchor',['../classsgui_1_1_gui.html#aa2f2fda9b1b4118f994b4a283e15d5de',1,'sgui::Gui']]],
   ['setbordercolor_11',['setBorderColor',['../classsgui_1_1_plotter.html#a689e511f508b7b0ac252af1881024770',1,'sgui::Plotter']]],
   ['setbordertick_12',['setBorderTick',['../classsgui_1_1_plotter.html#a1eb4d1e16d528faa4520e7d3ff1331c0',1,'sgui::Plotter']]],
   ['setborderwidth_13',['setBorderWidth',['../classsgui_1_1_plotter.html#af4ea6f17a73c4530324d8b5c60bfe82a',1,'sgui::Plotter']]],
