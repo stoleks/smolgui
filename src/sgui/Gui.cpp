@@ -547,7 +547,7 @@ bool Gui::beginWindow (
   thisWindow.plotterLayer = mPlotter.render.setCurrentClippingLayer (windowBox);
 
   // draw window box and handle hovering of the window
-  const auto windowStatus = itemStatus (windowBox, name);
+  const auto windowStatus = itemStatus (windowBox, name, false);
   if (settings.hasMenu || settings.hasHeader) {
     mRender.draw (windowBox, drawOptions ({Widget::WindowWithCap, Slices::Nine, windowStatus}, options.aspect));
   } else {
@@ -583,8 +583,8 @@ void Gui::endWindow ()
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     updateScrolling ();
-    if (mGroupsScrollerData.has (active.groupId)) {
-      mGroupsScrollerData.get (active.groupId).endLoop ();
+    if (mGroupsScrollerData.has (active.identifier)) {
+      mGroupsScrollerData.get (active.identifier).endLoop ();
     }
     endGroup ();
     mCursorPosition = active.position;
@@ -647,8 +647,8 @@ void Gui::endPanel ()
     // end group and update cursor position and spacing
     const auto active = mGroups.top ();
     updateScrolling ();
-    if (mGroupsScrollerData.has (active.groupId)) {
-      mGroupsScrollerData.get (active.groupId).endLoop ();
+    if (mGroupsScrollerData.has (active.identifier)) {
+      mGroupsScrollerData.get (active.identifier).endLoop ();
     }
     endGroup ();
     mCursorPosition = active.position;
@@ -682,8 +682,8 @@ void Gui::beginMenu ()
 
   // initialize active item of the menu if needed and clipping layer
   auto& thisMenu = mGroups.top ();
-  if (!mGroupsActiveItem.has (thisMenu.groupId)) {
-    mGroupsActiveItem.emplace (thisMenu.groupId, 0u);
+  if (!mGroupsActiveItem.has (thisMenu.identifier)) {
+    mGroupsActiveItem.emplace (thisMenu.identifier, 0u);
   }
 
   // ensure that we are on the right clipping layer
@@ -728,15 +728,15 @@ bool Gui::menuItem (
   const auto itemId = parentMenu.menuItemCount;
   parentMenu.menuItemCount++;
   const auto name = initializeActivable ("MenuItem");
+
   // compute item position
   const auto itemPos = parentMenu.lastItemPosition;
-
   // construct menu item box
   const auto width = 3.f*mPadding.x + textSize (text, TextType::Title).x;
   const auto height = textHeight (TextType::Title);
   const auto box = sf::FloatRect (itemPos, sf::Vector2f (width, height));
   parentMenu.lastItemPosition = itemPos + sf::Vector2f (width + mPadding.x, 0.f);
-
+  
   // ensure that we are on the right clipping layer
   const auto layerId = mRender.clipping.activeLayer ();
   mRender.clipping.moveToLayer (parentMenu.clippingLayer);
@@ -746,8 +746,8 @@ bool Gui::menuItem (
   const auto clicked = (state == ItemState::Active);
 
   // update overall group status
-  if (mGroupsActiveItem.has (parentMenu.groupId)) {
-    auto& id = mGroupsActiveItem.get (parentMenu.groupId);
+  if (mGroupsActiveItem.has (parentMenu.identifier)) {
+    auto& id = mGroupsActiveItem.get (parentMenu.identifier);
     if (clicked) {
       id = itemId;
     } else if (id == itemId) {
@@ -761,7 +761,7 @@ bool Gui::menuItem (
   mRender.clipping.moveToLayer (layerId);
 
   // update cursor position and return item status
-  return state == ItemState::Active;
+  return clicked;
 }
 
 /////////////////////////////////////////////////
@@ -1469,8 +1469,8 @@ bool Gui::scrollThroughPanel (
 {
   if (isPanelScrollable (panel)) {
     // scroll through panel
-    if (mGroupsScrollerData.has (panel.groupId)) {
-      auto& scrollData = mGroupsScrollerData.get (panel.groupId);
+    if (mGroupsScrollerData.has (panel.identifier)) {
+      auto& scrollData = mGroupsScrollerData.get (panel.identifier);
       const auto size = scrollData.size ();
       const auto amount = scroller (scrollData.percent, panelBox, size,panelState, horizontal);
       scrollData.update (panelBox.position - amount);
@@ -1491,8 +1491,8 @@ bool Gui::scrollThroughPanel (
 bool Gui::isPanelScrollable (const Impl::GroupData& panel)
 {
   // panel is scrollable if it possess a scroller
-  if (mGroupsScrollerData.has (panel.groupId)) {
-    auto& scrollData = mGroupsScrollerData.get (panel.groupId);
+  if (mGroupsScrollerData.has (panel.identifier)) {
+    auto& scrollData = mGroupsScrollerData.get (panel.identifier);
     // and if its scroller size is greater than the group size
     scrollData.isScrolled = (panel.horizontal && scrollData.size ().x > panel.size.x)
       || scrollData.size ().y > panel.size.y;
@@ -1502,8 +1502,8 @@ bool Gui::isPanelScrollable (const Impl::GroupData& panel)
     return scrollData.isScrolled;
   }
   // if panel does not possess a scroller, add one
-  mGroupsScrollerData.emplace (panel.groupId);
-  mGroupsScrollerData.get (panel.groupId).update (panel.position);
+  mGroupsScrollerData.emplace (panel.identifier);
+  mGroupsScrollerData.get (panel.identifier).update (panel.position);
   return false;
 }
 
@@ -1641,21 +1641,27 @@ void Gui::beginGroup (
   const sf::Vector2f& size)
 {
   // construct a new group
-  auto newGroup = Impl::GroupData ();
-  newGroup.horizontal = horizontal;
-  newGroup.position = position;
-  newGroup.size = size;
-  newGroup.lastItemPosition = position + 1.5f*mPadding;
-  newGroup.menuItemCount = 0u;
-  newGroup.clippingLayer = 0u;
-  newGroup.plotterLayer = 0u;
-  newGroup.menuBarSize = sf::Vector2f (0, 0);
+  auto group = Impl::GroupData ();
+  group.horizontal = horizontal;
+  group.position = position;
+  group.size = size;
+  group.lastItemPosition = position + 1.5f*mPadding;
+  // compute its id
   mCounters.group++;
-  newGroup.groupId = mCounters.group;
-  // std::hash <std::string> {} (mWidgetChain);
-
+  group.identifier = mCounters.group;
+  // store its bounding box
+  if (!mGroupsHoverBoxes.has (group.identifier)) {
+    auto hoverBox = Impl::GroupHoverBox ();
+    hoverBox.identifier = group.identifier;
+    hoverBox.box = sf::FloatRect (group.position, group.size);
+    mGroupsHoverBoxes.emplace (group.identifier, std::move (hoverBox));
+  } else {
+    auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
+    hoverBox.box.position = group.position;
+    hoverBox.box.size = group.size;
+  }
   // add it to the stack
-  mGroups.emplace (std::move (newGroup));
+  mGroups.emplace (std::move (group));
 }
 
 /////////////////////////////////////////////////
@@ -1810,33 +1816,46 @@ ItemState Gui::itemStatus (
   const Tooltip& tooltip,
   bool forceActive)
 {
-  auto state = ItemState::Neutral;
+  // if mouse does not collide with the boundingBox we are neutral
+  if (!boundingBox.contains (mInputState.mousePosition)
+  || mRender.clipping.isClipped (mInputState.mousePosition)) {
+    return ItemState::Neutral;
+  }
+  
+  // else we are at least hovered and we can update tooltip
+  mGuiState.hoveredItem = item;
+  if (tooltip.active) {
+    mGuiState.hoveredItemBox = boundingBox;
+    mGuiState.tooltip = tooltip;
+    mGuiState.tooltip.parent = item;
+  }
 
-  // if mouse collide with the boundingBox
-  if (boundingBox.contains (mInputState.mousePosition)
-  && !mRender.clipping.isClipped (mInputState.mousePosition)) {
-    // enter hovered state
-    state = ItemState::Hovered;
-    mGuiState.hoveredItem = item;
+  // if condition of activation is not met, widget is just hovered
+  if (!condition) {
+    return ItemState::Hovered;
+  }
 
-    // if no widget is active, enter active state
-    if ((mGuiState.activeItem == NullID || forceActive) && condition) {
-      // we want to store item ID to move it, but we don't want infinite click
-      mGuiState.activeItem = item;
-      if (mInputState.updated) {
-        state = ItemState::Active;
-      }
-    }
-
-    // update tooltip info
-    if (tooltip.active) {
-      mGuiState.hoveredItemBox = boundingBox;
-      mGuiState.tooltip = tooltip;
-      mGuiState.tooltip.parent = item;
+  // look for all bounding box stored, if one is hovered with a higher id than the
+  // widget's group, it means that widget is drawn over and should not be activated
+  auto parentId = 0u;
+  if (!mGroups.empty ()) {
+    parentId = mGroups.top ().identifier;
+  }
+  for (const auto& group : mGroupsHoverBoxes) {
+    if (group.identifier > parentId && group.box.contains (mInputState.mousePosition)) {
+      return ItemState::Hovered;
     }
   }
-  playSound (state);
-  return state;
+
+  // if no widget is active, enter active state
+  if (mGuiState.activeItem == NullID || forceActive) {
+    // we want to store item ID to move it, but we don't want infinite click
+    mGuiState.activeItem = item;
+    if (mInputState.updated) {
+      playSound (ItemState::Active);
+    }
+  }
+  return ItemState::Active;
 }
 
 /////////////////////////////////////////////////
@@ -2097,7 +2116,7 @@ void Gui::updateScrolling ()
 {
   // update current group scrolling size
   if (!mGroups.empty ()) {
-    const auto groupId = mGroups.top ().groupId;
+    const auto groupId = mGroups.top ().identifier;
     if (mGroupsScrollerData.has (groupId)) {
       mGroupsScrollerData.get (groupId).computeScrollSize (mCursorPosition);
     }

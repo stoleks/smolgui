@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 namespace sgui::Impl
 {
@@ -14,7 +15,7 @@ struct GroupData
   bool isActive = false;
   bool horizontal = false;
   bool hasMenuBar = false;
-  size_t groupId = 0u;
+  size_t identifier = 0u;
   uint32_t clippingLayer = 0u;
   uint32_t plotterLayer = 0u;
   uint32_t menuItemCount = 0u;
@@ -23,6 +24,15 @@ struct GroupData
   sf::Vector2f menuBarSize = {};
   sf::Vector2f position = {};
   sf::Vector2f size = {};
+};
+
+/**
+ * @brief store group identifier and bounding box
+ */
+struct GroupHoverBox
+{
+  size_t identifier = 0u;
+  sf::FloatRect box = {};
 };
 
 } // namespace sgui::Impl

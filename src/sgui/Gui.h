@@ -472,7 +472,7 @@ private:
   // to manage each item in a dropList
   bool dropListItem (float& clock, const std::string& selectedName, const std::string& itemName, const sf::Vector2f& itemSize);
   // Utility function that return status of widget, it is not clickable by default
-  ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition = false, const Tooltip& tooltip = {}, const bool forceActive = false);
+  ItemState itemStatus (const sf::FloatRect& boundingbox, const std::string& item, const bool condition, const Tooltip& tooltip = {}, const bool forceActive = false);
   // handle all edge cases and special keys
   void handleKeyInput (std::string& text, size_t& textCursorIndex);
   void drawTextCursor (sf::Vector2f position, const std::string& inputTextId, const std::string& text, const TextOptions& options);
@@ -559,6 +559,7 @@ private:
   std::unordered_map <std::string, sf::Vector2f> mAnchorsWithKeys;
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
+  ObjectPool <Impl::GroupHoverBox> mGroupsHoverBoxes;
   ObjectPool <uint32_t> mGroupsActiveItem;
   ObjectPool <std::string> mComboBoxActiveItem;
   ObjectPool <size_t, std::string> mTextCursorPositions;
