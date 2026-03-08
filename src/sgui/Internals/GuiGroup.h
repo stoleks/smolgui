@@ -20,10 +20,8 @@ struct GroupData
   uint32_t plotterLayer = 0u;
   uint32_t menuItemCount = 0u;
   sf::Vector2f lastItemPosition = {};
-  sf::Vector2f menuBarPosition = {};
-  sf::Vector2f menuBarSize = {};
-  sf::Vector2f position = {};
-  sf::Vector2f size = {};
+  sf::FloatRect menuBox = {};
+  sf::FloatRect box = {};
 };
 
 /**

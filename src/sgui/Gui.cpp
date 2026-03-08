@@ -132,7 +132,7 @@ sf::Vector2f Gui::activePanelSize () const
 {
   if (!mGroups.empty ()) {
     const auto& parent = mGroups.top ();
-    return parent.size;
+    return parent.box.size;
   }
   return mWindowSize;
 }
@@ -264,7 +264,7 @@ sf::Vector2f Gui::parentGroupSize ()
   if (mGroups.empty ()) {
     return mWindowSize;
   }
-  return getParentGroup ().size;
+  return getParentGroup ().box.size;
 }
 
 /////////////////////////////////////////////////
@@ -522,7 +522,8 @@ bool Gui::beginWindow (
     mCursorPosition += sf::Vector2f (0.f, headerHeight);
     windowSize.y -= headerHeight;
   }
-  beginGroup (options.horizontal, mCursorPosition, windowSize);
+  const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
+  beginGroup (options.horizontal, windowBox);
   auto& thisWindow = mGroups.top ();
 
   // if window is reduced skip box drawing
@@ -536,13 +537,11 @@ bool Gui::beginWindow (
     const auto menuPosition = mCursorPosition - sf::Vector2f (0.f, headerHeight);
     const auto menuBox = sf::FloatRect (menuPosition, {windowSize.x, headerHeight});
     mMenuClippingLayer.push (mRender.setCurrentClippingLayer (menuBox));
-    thisWindow.menuBarPosition = menuPosition;
-    thisWindow.menuBarSize = menuBox.size;
-    thisWindow.hasMenuBar = settings.hasMenu;
+    thisWindow.menuBox = menuBox;
+    thisWindow.hasMenuBar = true;
   }
 
   // set clipping layer
-  const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
   thisWindow.clippingLayer = mRender.setCurrentClippingLayer (windowBox);
   thisWindow.plotterLayer = mPlotter.render.setCurrentClippingLayer (windowBox);
 
@@ -556,7 +555,9 @@ bool Gui::beginWindow (
   mCursorPosition += sf::Vector2f (mPadding.x, 2.5f*mPadding.y);
 
   // scroll through window if requested
-  settings.isScrolled = scrollThroughPanel (thisWindow, windowBox, windowStatus, options.horizontal);
+  auto scrollBox = windowBox;
+  scrollBox.size -= sf::Vector2f (0.f, mPadding.y);
+  settings.isScrolled = scrollThroughPanel (thisWindow, scrollBox, windowStatus, options.horizontal);
   return true;
 }
 
@@ -587,7 +588,7 @@ void Gui::endWindow ()
       mGroupsScrollerData.get (active.identifier).endLoop ();
     }
     endGroup ();
-    mCursorPosition = active.position;
+    mCursorPosition = active.box.position;
     // remove clipping and track window not closed
     removeClipping ();
     mChecker.end (Impl::GroupType::Window);
@@ -610,7 +611,7 @@ void Gui::beginPanel (
   const auto panelSize = settings.size.componentWiseMul (parentGroupSize ());
   const auto panelBox = sf::FloatRect (position, panelSize);
   const auto clipBox = handleParentClipBox (panelBox);
-  beginGroup (options.horizontal, position, panelSize);
+  beginGroup (options.horizontal, panelBox);
 
   // add clipping layer for the panel box
   auto& panel = mGroups.top ();
@@ -651,8 +652,8 @@ void Gui::endPanel ()
       mGroupsScrollerData.get (active.identifier).endLoop ();
     }
     endGroup ();
-    mCursorPosition = active.position;
-    updateSpacing (active.size);
+    mCursorPosition = active.box.position;
+    updateSpacing (active.box.size);
     // remove clipping layer and track panel not closed by user
     removeClipping ();
     mChecker.end (Impl::GroupType::Panel);
@@ -678,7 +679,7 @@ void Gui::beginMenu ()
 
   // construct a menu bar according to the parent size
   const auto& parent = mGroups.top ();
-  beginGroup (true, parent.menuBarPosition, parent.menuBarSize);
+  beginGroup (true, parent.menuBox);
 
   // initialize active item of the menu if needed and clipping layer
   auto& thisMenu = mGroups.top ();
@@ -693,8 +694,7 @@ void Gui::beginMenu ()
   mRender.clipping.moveToLayer (thisMenu.clippingLayer);
 
   // get menu bar status, draws it and go back to the previous clipping layer
-  const auto box = sf::FloatRect (parent.menuBarPosition, parent.menuBarSize);
-  mRender.draw (box, drawOptions ({Widget::MenuBox, Slices::Three, ItemState::Neutral}));
+  mRender.draw (parent.menuBox, drawOptions ({Widget::MenuBox, Slices::Three, ItemState::Neutral}));
   mRender.clipping.moveToLayer (layerId);
 }
 
@@ -704,7 +704,7 @@ void Gui::endMenu ()
   if (!mGroups.empty ()) {
     // update cursor position
     const auto& active = mGroups.top ();
-    const auto menuSpacing = active.size.y + mStyle.itemSpacing;
+    const auto menuSpacing = active.box.size.y + mStyle.itemSpacing;
 
     // update last spacing
     mLastSpacing.x = 0.f;
@@ -820,9 +820,9 @@ void Gui::separation (const float thick)
     const auto thickness = thick * textHeight ();
     if (parent.horizontal) {
       size.x = thickness;
-      size.y = parent.size.y - 3.f*mPadding.y;
+      size.y = parent.box.size.y - 3.f*mPadding.y;
     } else {
-      size.x = parent.size.x - 3.f*mPadding.x;
+      size.x = parent.box.size.x - 3.f*mPadding.x;
       size.y = thickness;
     }
   }
@@ -962,7 +962,7 @@ void Gui::text (
   const auto parent = getParentGroup ();
   auto boxSize = textOptions.boxSize;
   if (boxSize.lengthSquared () < 0.01f) {
-    boxSize = parent.size;
+    boxSize = parent.box.size;
   }
   const auto formatted = formatText (text, boxSize, textOptions.type);
   
@@ -971,12 +971,13 @@ void Gui::text (
   for (const auto& line : formatted) {
     // center text vertically if asked
     const auto normalTextSize = textSize (line);
+    const auto center = parent.box.position + 0.5f*(parent.box.size - normalTextSize);
     if (textOptions.vertical == VerticalAlignment::Center) {
-      position.y = parent.position.y + 0.5f*(parent.size.y - normalTextSize.y);
+      position.y = center.y;
     }
     // or horizontally
     if (textOptions.horizontal == HorizontalAlignment::Center) {
-      position.x = parent.position.x + 0.5f*(parent.size.x - normalTextSize.x);
+      position.x = center.x;
     }
     handleTextDrawing (position, line, textOptions.type);
     const auto lineSize = textSize (line);
@@ -1033,7 +1034,7 @@ void Gui::inputText (
   auto& textPanel = mInputTextPanels.get (name);
   const auto inputTextSize = textSize (text);
   if (!mGroups.empty ()) {
-    const auto parentWidth = mGroups.top ().size.x - 3.f*mPadding.x;
+    const auto parentWidth = mGroups.top ().box.size.x - 3.f*mPadding.x;
     auto width = parentWidth - descriptionSize.x;
     // if description takes 90% of parent width, go to line and take full line
     if (width < 0.1f * parentWidth) {
@@ -1207,11 +1208,11 @@ void Gui::progressBar (
   // draw progress bar and handle its state
   const auto size = options.size * textHeight ();
   const auto box = sf::FloatRect (position, size);
-  itemStatus (box, name, false, options.tooltip);
-  mRender.draw (box, drawOptions ({Widget::ProgressBar, Slices::Three}, options.aspect));
+  const auto state = itemStatus (box, name, false, options.tooltip);
+  mRender.draw (box, drawOptions ({Widget::ProgressBar, Slices::Three, state}, options.aspect));
   // draw progress bar filling
   auto drawOptions = WidgetDrawOptions ();
-  drawOptions.aspect = {Widget::ProgressFill, Slices::Three};
+  drawOptions.aspect = {Widget::ProgressFill, Slices::Three, state};
   drawOptions.progress = sgui::clamp (0.f, 1.f, progress);
   mRender.draw (box, drawOptions);
   
@@ -1478,9 +1479,9 @@ bool Gui::scrollThroughPanel (
     }
     // reduce group size to account for scroller bar
     if (horizontal) {
-      panel.size.y -= textHeight ();
+      panel.box.size.y -= textHeight ();
     } else {
-      panel.size.x -= textHeight ();
+      panel.box.size.x -= textHeight ();
     }
     return true;
   }
@@ -1494,8 +1495,10 @@ bool Gui::isPanelScrollable (const Impl::GroupData& panel)
   if (mGroupsScrollerData.has (panel.identifier)) {
     auto& scrollData = mGroupsScrollerData.get (panel.identifier);
     // and if its scroller size is greater than the group size
-    scrollData.isScrolled = (panel.horizontal && scrollData.size ().x > panel.size.x)
-      || scrollData.size ().y > panel.size.y;
+    const auto scrollSize = scrollData.size ();
+    scrollData.isScrolled = 
+      (panel.horizontal && scrollSize.x > panel.box.size.x)
+      || scrollSize.y > panel.box.size.y;
     if (!scrollData.isScrolled) {
       scrollData.percent = 0.f;
     }
@@ -1503,7 +1506,7 @@ bool Gui::isPanelScrollable (const Impl::GroupData& panel)
   }
   // if panel does not possess a scroller, add one
   mGroupsScrollerData.emplace (panel.identifier);
-  mGroupsScrollerData.get (panel.identifier).update (panel.position);
+  mGroupsScrollerData.get (panel.identifier).update (panel.box.position);
   return false;
 }
 
@@ -1637,15 +1640,13 @@ float Gui::scrollerBar (
 /////////////////////////////////////////////////
 void Gui::beginGroup (
   const bool horizontal,
-  const sf::Vector2f& position,
-  const sf::Vector2f& size)
+  const sf::FloatRect& box)
 {
   // construct a new group
   auto group = Impl::GroupData ();
   group.horizontal = horizontal;
-  group.position = position;
-  group.size = size;
-  group.lastItemPosition = position + 1.5f*mPadding;
+  group.lastItemPosition = box.position + 1.5f*mPadding;
+  group.box = box;
   // compute its id
   mCounters.group++;
   group.identifier = mCounters.group;
@@ -1653,12 +1654,11 @@ void Gui::beginGroup (
   if (!mGroupsHoverBoxes.has (group.identifier)) {
     auto hoverBox = Impl::GroupHoverBox ();
     hoverBox.identifier = group.identifier;
-    hoverBox.box = sf::FloatRect (group.position, group.size);
+    hoverBox.box = group.box;
     mGroupsHoverBoxes.emplace (group.identifier, std::move (hoverBox));
   } else {
     auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
-    hoverBox.box.position = group.position;
-    hoverBox.box.size = group.size;
+    hoverBox.box = group.box;
   }
   // add it to the stack
   mGroups.emplace (std::move (group));
@@ -1693,7 +1693,7 @@ sf::Vector2f Gui::computePosition (
   const auto center = windowSize / 2.f;
 
   // constrain horizontal position with alignment
-  auto parentShift = parent.position;
+  auto parentShift = parent.box.position;
   const auto isAlignedLaterally = constraint.horizontal != HorizontalAlignment::None;
   if (isAlignedLaterally) {
     if (constraint.horizontal == HorizontalAlignment::Center) {
@@ -1703,7 +1703,7 @@ sf::Vector2f Gui::computePosition (
       pos.x = windowSize.x * (1.f - panel.size.x);
     }
     if (constraint.horizontal == HorizontalAlignment::Left) {
-      pos.x = parent.position.x;
+      pos.x = parent.box.position.x;
     }
     parentShift.x = 0.f;
   // fix element relative to window size
@@ -1723,7 +1723,7 @@ sf::Vector2f Gui::computePosition (
       pos.y = windowSize.y * (1.f - panel.size.y);
     }
     if (constraint.vertical == VerticalAlignment::Top) {
-      pos.y = parent.position.y;
+      pos.y = parent.box.position.y;
     }
     parentShift.y = 0.f;
   // fix element relative to window size
@@ -1752,22 +1752,22 @@ sf::FloatRect Gui::handleParentClipBox (const sf::FloatRect& box)
   // If there are no intersection, return null size
   auto clipBox = box;
   const auto& parent = mGroups.top ();
-  if (box.findIntersection ({parent.position, parent.size}) == std::nullopt) {
+  if (box.findIntersection (parent.box) == std::nullopt) {
     clipBox.size = sf::Vector2f ();
     return clipBox;
   }
   // compute minimal clamped version of the child box
   // clamp size
   const auto bottomRight = box.position + box.size;
-  const auto parentBottomRight = parent.position + parent.size;
+  const auto parentBottomRight = parent.box.position + parent.box.size;
   const auto newBottomRight = sf::Vector2f (
     std::min (bottomRight.x, parentBottomRight.x),
     std::min (bottomRight.y, parentBottomRight.y)
   );
   // clamp position
   clipBox.position = sf::Vector2f (
-    std::max (box.position.x, parent.position.x),
-    std::max (box.position.y, parent.position.y)
+    std::max (box.position.x, parent.box.position.x),
+    std::max (box.position.y, parent.box.position.y)
   );
   clipBox.size = newBottomRight - clipBox.position;
   return clipBox;
@@ -2158,7 +2158,7 @@ sf::Vector2f Gui::computeRelativePosition (const sf::Vector2f& displacement) con
   // If there is an active group, displace relatively to the group position
   if (!mGroups.empty () && isNotNull) {
     const auto& parent = mGroups.top ();
-    return parent.position + displacement;
+    return parent.box.position + displacement;
   }
 
   // If there are no displacement, return initial position (that

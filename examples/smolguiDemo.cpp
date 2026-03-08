@@ -164,12 +164,12 @@ int main()
         auto tongue = "";
         // use menu to change tongue
         gui.beginMenu ();
-        if (gui.menuItem ("Switch to french")) {
-          tongue = "french";
-          texts.setTongue (tongue);
-        }
         if (gui.menuItem ("Switch to english")) {
           tongue = "english";
+          texts.setTongue (tongue);
+        }
+        if (gui.menuItem ("Switch to french")) {
+          tongue = "french";
           texts.setTongue (tongue);
         }
         if (tongue != currentTongue) {
