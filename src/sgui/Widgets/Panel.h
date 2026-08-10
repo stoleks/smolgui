@@ -10,27 +10,23 @@ namespace sgui
 
 /////////////////////////////////////////////////
 /**
- * @brief store panel posiiton, size and some parameters
+ * @brief store panel position, size and some parameters
  */
 struct Panel
 {
-  Panel () = default;
-  Panel (const sf::FloatRect& box, const bool vis = true, const bool header = true)
-    : visible (vis), hasHeader (header), position (box.position), size (box.size) {}
-  // data
-  bool clipped    = true;     ///< is contents clipped ?
-  bool closable   = false;    ///< is it closable ?
-  bool closed     = false;    ///< is it closed ?
-  bool visible    = true;     ///< is it rendered ?
-  bool hasHeader  = true;     ///< has it an header ?
-  bool hasMenu    = false;    ///< has it a menu ?
-  bool movable    = true;     ///< is it movable ?
-  bool reduced    = false;    ///< is it reduced (header only) ?
-  bool scrollable = true;     ///< is it scrollable ?
-  bool isScrolled = false;    ///< is it scrolled ?
+  std::string title = "";     ///< title of the panel
   sf::Vector2f position = {}; ///< position of the panel
   sf::Vector2f size = {};     ///< size of the panel
-  std::string title = "";     ///< title of the panel
+  bool hasHeader    = true;   ///< has it an header ?
+  bool hasMenu      = false;  ///< has it a menu ?
+  bool isVisible    = true;   ///< is it rendered ?
+  bool isClosable   = false;  ///< is it closable ?
+  bool isMovable    = true;   ///< is it movable ?
+  bool isScrollable = true;   ///< is it scrollable ?
+  bool isClosed     = false;  ///< is it closed ?
+  bool isReduced    = false;  ///< is it reduced (header only) ?
+  bool isClipped    = true;   ///< is contents clipped ?
+  bool isScrolled   = false;  ///< is it scrolled ?
 };
 
 /////////////////////////////////////////////////
@@ -39,8 +35,6 @@ struct Panel
  */
 struct Window
 {
-  Window () = default;
-  // data
   Panel panel = {};             ///< panel of the window
   Constraints constraints = {}; ///< position constraints 
   WidgetOptions options = {};   ///< options of the window

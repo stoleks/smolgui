@@ -11,16 +11,18 @@ int main()
   auto atlas = sgui::TextureAtlas (sgui::DefaultAtlas);
   auto texture = sf::Texture (sgui::DefaultTexture);
   // Window initialization
-  auto window = sf::RenderWindow (sf::VideoMode ({640u, 480u}), "Minimal Demo");
-  window.setFramerateLimit (60);
+  const auto windowSize = sf::Vector2u { 640u, 480u };
+  auto window = sf::RenderWindow (sf::VideoMode (windowSize), "Minimal Demo");
   // For demo render
-  sf::RenderTexture image ({640u, 480u});
+  sf::RenderTexture image (windowSize);
   auto exportSuccess = false;
   // Gui initialization
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
-  auto mainPanel = sgui::Panel ({{}, { 1.f, 1.f }});
-  mainPanel.title = fmt::format ("Main window with fontawesome |{}| !", ICON_FA_FONT_AWESOME);
+  auto mainPanel = sgui::Panel {
+    .title = fmt::format ("Main window with fontawesome |{}| !", ICON_FA_FONT_AWESOME),
+    .size = { 1.f, 1.f }
+  };
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
   auto style = sgui::Style ();
   while (window.isOpen ())

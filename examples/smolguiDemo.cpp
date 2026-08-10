@@ -108,7 +108,7 @@ int main()
         // Open or close
         gui.text ("A window");
         if (gui.button ("Open/Close")) {
-          mainPanel.closed = !mainPanel.closed;
+          mainPanel.isClosed = !mainPanel.isClosed;
         }
         gui.sameLine ();
         gui.text ("Open or close the general demo window");
@@ -117,14 +117,14 @@ int main()
           mainPanel.hasHeader = !mainPanel.hasHeader;
         }
         auto buttonTooltip = sgui::Tooltip ([&gui] () {
-          auto tooltipPanel = sgui::Panel ({{}, {60.f, 40.f}}, true, false);
+          auto tooltipPanel = sgui::Panel { .size = { 0.3f, 0.05f }, .hasHeader = false };
           if (gui.beginWindow (tooltipPanel)) {
             gui.text ("Add or remove title button of this window.");
             gui.endWindow ();
           }
         });
         if (gui.button ("Add/remove closable options", {buttonTooltip})) {
-          closablePanel.closable = !closablePanel.closable;
+          closablePanel.isClosable = !closablePanel.isClosable;
         }
         gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
         gui.separation ();

@@ -5,7 +5,7 @@ add_subdirectory (sgui)
 ####
 # Compilation option
 set (CONTENTS "${PROJECT_SOURCE_DIR}/contents")
-target_compile_features (${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_features (${PROJECT_NAME} PRIVATE cxx_std_20)
 target_compile_definitions (${PROJECT_NAME} PUBLIC SguiContentsDir="${CONTENTS}")
 
 ####

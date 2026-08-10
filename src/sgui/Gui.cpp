@@ -459,7 +459,7 @@ bool Gui::beginWindow (
   const WidgetOptions& options)
 {
   // if window is closed skip everything
-  if (settings.closed) return false;
+  if (settings.isClosed) return false;
   mChecker.begin (Impl::GroupType::Window);
   const auto name = initializeActivable ("Window");
 
@@ -475,7 +475,7 @@ bool Gui::beginWindow (
     windowSize.y -= headerHeight;
     const auto titleBoxSize = sf::Vector2f (windowSize.x, headerHeight);
     auto reduceCloseButtonWidth = sf::Vector2f ();
-    if (settings.closable) {
+    if (settings.isClosable) {
       reduceCloseButtonWidth = sf::Vector2f (2.f*(titleBoxSize.y + mPadding.x), 0.f);
     }
     const auto titleBoxWithoutButtons = sf::FloatRect (mCursorPosition, titleBoxSize - reduceCloseButtonWidth);
@@ -491,17 +491,17 @@ bool Gui::beginWindow (
     handleTextDrawing (titlePos, settings.title, TextType::Title);
 
     // reduce or close window
-    if (settings.closable) {
+    if (settings.isClosable) {
       // reduce
       const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
       const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
       const auto reducePos = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
       mCursorPosition = reducePos;
       if (clickable (buttonSize, {Widget::TitleButton})) {
-        settings.reduced = !(settings.reduced);
+        settings.isReduced = !(settings.isReduced);
       }
       auto iconDown = ICON_FA_CIRCLE_CHEVRON_DOWN;
-      if (settings.reduced) {
+      if (settings.isReduced) {
         iconDown = ICON_FA_CIRCLE_CHEVRON_UP;
       }
       fontawesomeIcon (reducePos + shift, iconDown, getFontSize (TextType::Title));
@@ -510,7 +510,7 @@ bool Gui::beginWindow (
       const auto closePos = reducePos + sf::Vector2f (buttonSize.x, 0.f);
       mCursorPosition = closePos;
       if (clickable (buttonSize, {Widget::TitleButton})) {
-        settings.closed = true;
+        settings.isClosed = true;
       }
       fontawesomeIcon (closePos + shift, ICON_FA_CIRCLE_XMARK, getFontSize (TextType::Title));
     }
@@ -527,7 +527,7 @@ bool Gui::beginWindow (
   auto& thisWindow = mGroups.top ();
 
   // if window is reduced skip box drawing
-  if (settings.reduced) {
+  if (settings.isReduced) {
     endWindow ();
     return false;
   }
@@ -615,14 +615,14 @@ void Gui::beginPanel (
 
   // add clipping layer for the panel box
   auto& panel = mGroups.top ();
-  if (settings.clipped) {
+  if (settings.isClipped) {
     panel.clippingLayer = mRender.setCurrentClippingLayer (clipBox);
     panel.plotterLayer = mPlotter.render.setCurrentClippingLayer (clipBox);
   }
 
   // draw panel box if requested
   auto state = interactWithMouse (settings, panelBox, name, options.tooltip);
-  if (settings.visible) {
+  if (settings.isVisible) {
     mRender.draw (panelBox, drawOptions ({Widget::Panel, Slices::Nine, state}, options.aspect));
   }
 
@@ -630,7 +630,7 @@ void Gui::beginPanel (
   mCursorPosition = position + mPadding + sf::Vector2f (0.f, 1.5f*mPadding.y);
 
   // scroll through panel if requested
-  if (settings.scrollable) {
+  if (settings.isScrollable) {
     settings.isScrolled = scrollThroughPanel (panel, panelBox, state, options.horizontal);
   }
 }
@@ -1399,7 +1399,7 @@ std::string Gui::comboBox (
   if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
     const auto itemCount = std::min (std::size_t (6), list.size ());
     const auto panelSize = normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y});
-    auto panel = Panel ({{}, panelSize}, true, false);
+    auto panel = Panel { .size = panelSize, .hasHeader = false };
     // open the window that will contains the combo box item
     mCursorPosition = initialPosition;
     beginWindow (panel);
@@ -1798,7 +1798,7 @@ ItemState Gui::interactWithMouse (
   const auto leftClick = mInputState.mouseLeftDown;
   const auto state = itemStatus (box, name, leftClick, tooltip);
   const auto isActive = mGuiState.activeItem == name;
-  if (isActive && settings.movable) {
+  if (isActive && settings.isMovable) {
     settings.position.x += mInputState.mouseDisplacement.x;
     settings.position.y += mInputState.mouseDisplacement.y;
   }
