@@ -116,23 +116,23 @@ int main()
         if (gui.button ("Add/remove header")) {
           mainPanel.hasHeader = !mainPanel.hasHeader;
         }
-        auto buttonTooltip = sgui::Tooltip ([&gui] () {
+        auto buttonTooltip = sgui::Tooltip {.display = [&gui] () {
           auto tooltipPanel = sgui::Panel { .size = { 0.3f, 0.05f }, .hasHeader = false };
           if (gui.beginWindow (tooltipPanel)) {
             gui.text ("Add or remove title button of this window.");
             gui.endWindow ();
           }
-        });
-        if (gui.button ("Add/remove closable options", {buttonTooltip})) {
+        }};
+        if (gui.button ("Add/remove closable options", {.tooltip = buttonTooltip})) {
           closablePanel.isClosable = !closablePanel.isClosable;
         }
-        gui.text (texts.get ("centeredText"), {sgui::HorizontalAlignment::Center});
+        gui.text (texts.get ("centeredText"), {.horizontal = sgui::HorizontalAlignment::Center});
         gui.separation ();
         // set function
         const auto phaseMax = 10.f;
-        const auto descrSlider = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue);
-        gui.slider (sliderValue, 0.f, phaseMax, {descrSlider});
-        gui.progressBar (sliderValue / phaseMax, {fmt::format ("{} %", sliderValue / phaseMax * 100.f)});
+        gui.slider (sliderValue, 0.f, phaseMax, {.description = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue)});
+        const auto descrProgress = fmt::format ("{} %", sliderValue / phaseMax * 100.f);
+        gui.progressBar (sliderValue / phaseMax, {.description = descrProgress});
         // display it
         if (displayFunction) {
           auto func = [time, sliderValue] (float x) {
@@ -150,12 +150,14 @@ int main()
         const auto checkTexture = gui.comboBox (list);
         gui.sameLine ();
         gui.text ("Choose checkbox texture, \"\" means default one");
-        auto checkOptions = sgui::WidgetOptions ({checkTexture, sgui::Slices::One});
-        checkOptions.description = "Display a function";
+        const auto checkOptions = sgui::WidgetOptions {
+          .description = "Display a function",
+          .aspect = {checkTexture, sgui::Slices::One}
+        };
         gui.checkBox (displayFunction, checkOptions);
         // Change window size
         gui.separation ();
-        gui.slider (mainPanel.size.y, 0.05f, 0.7f, {"Slider from 0.05 to 0.7, value is : " + std::to_string (mainPanel.size.y)});
+        gui.slider (mainPanel.size.y, 0.05f, 0.7f, {.description = fmt::format ("Slider from 0.05 to 0.7, value is :{} ", mainPanel.size.y)});
         gui.endWindow ();
       }
       // Main panel
@@ -187,26 +189,26 @@ int main()
         // text and text edit
         auto& fonts = style.fontSize;
         gui.text (fmt::format ("Select font size. Normal font size is {}", fonts.normal));
-        gui.slider (fonts.title, 12u, 26u, {fmt::format ("Title font size {}", fonts.title)});
-        gui.slider (fonts.subtitle, 10u, 22u, {fmt::format ("Subtitle font size {}", fonts.subtitle)});
-        if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
+        gui.slider (fonts.title, 12u, 26u, {.description = fmt::format ("Title font size {}", fonts.title)});
+        gui.slider (fonts.subtitle, 10u, 22u, {.description = fmt::format ("Subtitle font size {}", fonts.subtitle)});
+        if (gui.icon (ICON_FA_SQUARE_PLUS, {.description = "Increase normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal + 1);
         }
         gui.sameLine ();
-        if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
+        if (gui.icon (ICON_FA_SQUARE_MINUS, {.description = "Decrease normal font size"})) {
           fonts.normal = sgui::clamp (8u, 20u, fonts.normal - 1);
         }
-        gui.inputText (multiLine, {{256.f, 64.f}}, {texts.get ("textDescription")});
-        gui.inputText (oneLine, {}, {texts.get ("textDescription")});
+        gui.inputText (multiLine, {.boxSize = {256.f, 64.f}}, {.description = texts.get ("textDescription")});
+        gui.inputText (oneLine, {}, {.description = texts.get ("textDescription")});
         gui.separation ();
         // input number and color 
-        gui.inputNumber (inputValue, {"input number with text"});
-        gui.inputVector2 (vector, {"input vector2"});
-        gui.inputVector3 (vector3, {"input vector3"});
-        gui.inputColor (style.fontColor, {"font color"});
+        gui.inputNumber (inputValue,     {.description = "input number with text"});
+        gui.inputVector2 (vector,        {.description = "input vector2"});
+        gui.inputVector3 (vector3,       {.description = "input vector3"});
+        gui.inputColor (style.fontColor, {.description = "font color"});
         gui.separation ();
         // save layout
-        gui.checkBox (compactLayout, {"Compact layout"});
+        gui.checkBox (compactLayout, {.description = "Compact layout"});
         choosedWidget = gui.comboBox (widgetsName);
         gui.sameLine ();
         gui.text ("Change following button aspect");
@@ -215,7 +217,7 @@ int main()
         gui.sameLine ();
         gui.text (":");
         if (widgetsType.find (choosedWidget) != widgetsType.end ()) {
-          if (gui.button ("Save layout", {{widgetsType.at (choosedWidget), sgui::Slices::Three}})) {
+          if (gui.button ("Save layout", {.aspect = {widgetsType.at (choosedWidget), sgui::Slices::Three}})) {
             layout.saveInFile (compactLayout);
           }
         }

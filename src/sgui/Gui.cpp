@@ -497,7 +497,7 @@ bool Gui::beginWindow (
       const auto buttonSize = titleBoxSize.y * sf::Vector2f (1, 1);
       const auto reducePos = position + sf::Vector2f (titleBoxWithoutButtons.size.x, 0.f);
       mCursorPosition = reducePos;
-      if (clickable (buttonSize, {Widget::TitleButton})) {
+      if (clickable (buttonSize, { .aspect = {Widget::TitleButton} })) {
         settings.isReduced = !(settings.isReduced);
       }
       auto iconDown = ICON_FA_CIRCLE_CHEVRON_DOWN;
@@ -509,7 +509,7 @@ bool Gui::beginWindow (
       // close
       const auto closePos = reducePos + sf::Vector2f (buttonSize.x, 0.f);
       mCursorPosition = closePos;
-      if (clickable (buttonSize, {Widget::TitleButton})) {
+      if (clickable (buttonSize, { .aspect = {Widget::TitleButton} })) {
         settings.isClosed = true;
       }
       fontawesomeIcon (closePos + shift, ICON_FA_CIRCLE_XMARK, getFontSize (TextType::Title));
@@ -1073,14 +1073,14 @@ void Gui::inputText (
   // take care of size normalization
   textPanel.size = normalizeSize (textPanel.size);
   mCursorPosition = box.position;
-  beginPanel (textPanel, {}, WidgetAspect {Widget::TextBox, Slices::Nine, state});
+  beginPanel (textPanel, {}, { .aspect = {Widget::TextBox, Slices::Nine, state} });
   // remove scroller size if needed
   if (textPanel.isScrolled) {
     finalOptions.boxSize.x -= textHeight ();
   }
   // draw formatted text
   auto cursorPosition = computeRelativePosition ({1.5f*mPadding});
-  Gui::text (text, finalOptions, {1.5f*mPadding});
+  Gui::text (text, finalOptions, { .displacement = 1.5f*mPadding });
   // draw blinking cursor in the text
   if (focused) {
     drawTextCursor (cursorPosition, name, text, finalOptions);
@@ -1176,7 +1176,7 @@ void Gui::inputColor (
   // change color with four input number
   const auto min = std::uint8_t (0);
   const auto max = std::uint8_t (255);
-  inputNumber (color.r, {options.displacement}, min, max, "r: ", true);
+  inputNumber (color.r, {.displacement = options.displacement}, min, max, "r: ", true);
   sameLine ();
   inputNumber (color.g, {}, min, max, "g: ", true);
   sameLine ();

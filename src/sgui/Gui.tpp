@@ -140,7 +140,7 @@ void Gui::inputVector2 (
   const sf::Vector2<Type>& min,
   const sf::Vector2<Type>& max)
 {
-  inputNumber (vector.x, {options.displacement}, min.x, max.x, "x: ", true);
+  inputNumber (vector.x, {.displacement = options.displacement}, min.x, max.x, "x: ", true);
   sameLine ();
   inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
   
@@ -161,7 +161,7 @@ void Gui::inputVector3 (
   const sf::Vector3<Type>& min,
   const sf::Vector3<Type>& max)
 {
-  inputNumber (vector.x, {options.displacement}, min.x, max.x, "x: ", true);
+  inputNumber (vector.x, {.displacement = options.displacement}, min.x, max.x, "x: ", true);
   sameLine ();
   inputNumber (vector.y, {}, min.y, max.y, "y: ", true);
   sameLine ();

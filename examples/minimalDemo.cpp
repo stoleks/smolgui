@@ -45,16 +45,16 @@ int main()
       }
       gui.text ("Select font size");
       const auto descr = fmt::format ("Title font |{}| size is {}", ICON_FA_FONT, style.fontSize.title);
-      gui.slider (style.fontSize.title, 12u, 26u, {descr});
-      if (gui.icon (ICON_FA_SQUARE_PLUS, {"Increase normal font size"})) {
+      gui.slider (style.fontSize.title, 12u, 26u, {.description = descr});
+      if (gui.icon (ICON_FA_SQUARE_PLUS, {.description = "Increase normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal + 1);
       }
-      if (gui.icon (ICON_FA_SQUARE_MINUS, {"Decrease normal font size"})) {
+      if (gui.icon (ICON_FA_SQUARE_MINUS, {.description = "Decrease normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
       gui.text (fmt::format ("|{}| Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
       const auto selected = gui.comboBox (combo);
-      gui.inputColor (style.fontColor, {"font color"});
+      gui.inputColor (style.fontColor, {.description = "font color"});
       gui.text (selected);
       const auto pngFile = DemoDir"/minimalDemo.png";
       gui.text (fmt::format ("Saved to file assets/minimalDemo.png with success {}", exportSuccess));

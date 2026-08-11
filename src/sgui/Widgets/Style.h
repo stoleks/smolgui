@@ -12,8 +12,6 @@ namespace sgui
  */
 struct FontSize
 {
-  FontSize () = default;
-  // data
   uint32_t footnote = 10u;
   uint32_t subtitle = 14u;
   uint32_t normal   = 16u;
@@ -25,11 +23,8 @@ struct FontSize
  */
 struct Style
 {
-  Style () = default;
-  // font related
-  FontSize fontSize = {};
   sf::Color fontColor = sf::Color::White;
-  // widget related
+  FontSize fontSize = {};
   float itemSpacing = 5.f;
 };
 
