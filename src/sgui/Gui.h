@@ -440,7 +440,7 @@ private:
   void addLastVerticalSpacing (const float amount = 1.f);
   void addLastHorizontalSpacing (const float amount = 1.f);
   // begin/end a group (subjacent struct of window/box/etc.)
-  void beginGroup (const bool horizontal, const sf::FloatRect& box);
+  void beginGroup (const bool horizontal, const sf::FloatRect& box, const bool isTransparent = false);
   void endGroup ();
   // window or panel utility functions
   sf::Vector2f computePosition (const Panel& settings, const Constraints& constraint);

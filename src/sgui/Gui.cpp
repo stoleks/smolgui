@@ -611,7 +611,7 @@ void Gui::beginPanel (
   const auto panelSize = settings.size.componentWiseMul (parentGroupSize ());
   const auto panelBox = sf::FloatRect (position, panelSize);
   const auto clipBox = handleParentClipBox (panelBox);
-  beginGroup (options.horizontal, panelBox);
+  beginGroup (options.horizontal, panelBox, settings.isTransparent);
 
   // add clipping layer for the panel box
   auto& panel = mGroups.top ();
@@ -1025,9 +1025,10 @@ void Gui::inputText (
 
   // set-up a panel for the text
   if (!mInputTextPanels.has (name)) {
-    mInputTextPanels.emplace (name);
-    auto& textPanel = mInputTextPanels.get (name);
+    auto& textPanel = mInputTextPanels.emplace (name);
     textPanel.size = textOptions.boxSize;
+    textPanel.isMovable = false;
+    textPanel.isTransparent = true;
   }
 
   // fit text box into the parent box or in the requested box
@@ -1053,7 +1054,7 @@ void Gui::inputText (
 
   // get status of the widget and take keyboard focus if clicked
   const auto box = sf::FloatRect (boxPosition, textPanel.size);
-  auto state = itemStatus (box, name, mInputState.mouseLeftDown);
+  auto state = itemStatus (box, name, mInputState.mouseLeftReleased, options.tooltip);
   if (mGuiState.activeItem == name) {
     mGuiState.keyboardFocus = name;
   }
@@ -1079,8 +1080,8 @@ void Gui::inputText (
     finalOptions.boxSize.x -= textHeight ();
   }
   // draw formatted text
-  auto cursorPosition = computeRelativePosition ({1.5f*mPadding});
-  Gui::text (text, finalOptions, { .displacement = 1.5f*mPadding });
+  auto cursorPosition = computeRelativePosition ();
+  Gui::text (text, finalOptions);
   // draw blinking cursor in the text
   if (focused) {
     drawTextCursor (cursorPosition, name, text, finalOptions);
@@ -1640,7 +1641,8 @@ float Gui::scrollerBar (
 /////////////////////////////////////////////////
 void Gui::beginGroup (
   const bool horizontal,
-  const sf::FloatRect& box)
+  const sf::FloatRect& box,
+  bool isTransparent)
 {
   // construct a new group
   auto group = Impl::GroupData ();
@@ -1650,15 +1652,17 @@ void Gui::beginGroup (
   // compute its id
   mCounters.group++;
   group.identifier = mCounters.group;
-  // store its bounding box
-  if (!mGroupsHoverBoxes.has (group.identifier)) {
-    auto hoverBox = Impl::GroupHoverBox ();
-    hoverBox.identifier = group.identifier;
-    hoverBox.box = group.box;
-    mGroupsHoverBoxes.emplace (group.identifier, std::move (hoverBox));
-  } else {
-    auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
-    hoverBox.box = group.box;
+  // store its bounding box if its visible
+  if (!isTransparent) {
+    if (!mGroupsHoverBoxes.has (group.identifier)) {
+      auto hoverBox = Impl::GroupHoverBox ();
+      hoverBox.identifier = group.identifier;
+      hoverBox.box = group.box;
+      mGroupsHoverBoxes.emplace (group.identifier, std::move (hoverBox));
+    } else {
+      auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
+      hoverBox.box = group.box;
+    }
   }
   // add it to the stack
   mGroups.emplace (std::move (group));
@@ -1794,6 +1798,11 @@ ItemState Gui::interactWithMouse (
   const std::string& name,
   const Tooltip& tooltip)
 {
+  // if panel is not movable, quit
+  if (!settings.isMovable) {
+    return ItemState::Neutral;
+  }
+
   // move panel according to mouse displacement
   const auto leftClick = mInputState.mouseLeftDown;
   const auto state = itemStatus (box, name, leftClick, tooltip);
@@ -1848,7 +1857,7 @@ ItemState Gui::itemStatus (
   }
 
   // if no widget is active, enter active state
-  if (mGuiState.activeItem == NullID || forceActive) {
+  if (forceActive || mGuiState.activeItem == NullID) {
     // we want to store item ID to move it, but we don't want infinite click
     mGuiState.activeItem = item;
     if (mInputState.updated) {
