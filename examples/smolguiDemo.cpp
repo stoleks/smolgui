@@ -152,7 +152,7 @@ int main()
         gui.text ("Choose checkbox texture, \"\" means default one");
         const auto checkOptions = sgui::WidgetOptions {
           .description = "Display a function",
-          .aspect = {checkTexture, sgui::Slices::One}
+          .aspect = {.image = checkTexture, .slices = sgui::Slices::One}
         };
         gui.checkBox (displayFunction, checkOptions);
         // Change window size
@@ -216,8 +216,12 @@ int main()
         gui.fontawesome (ICON_FA_ARROW_TURN_DOWN);
         gui.sameLine ();
         gui.text (":");
-        if (widgetsType.find (choosedWidget) != widgetsType.end ()) {
-          if (gui.button ("Save layout", {.aspect = {widgetsType.at (choosedWidget), sgui::Slices::Three}})) {
+        if (widgetsType.contains (choosedWidget)) {
+          const auto buttonAspect = sgui::WidgetAspect {
+            .widget = widgetsType.at (choosedWidget),
+            .slices = sgui::Slices::Three
+          };
+          if (gui.button ("Save layout", {.aspect = buttonAspect})) {
             layout.saveInFile (compactLayout);
           }
         }

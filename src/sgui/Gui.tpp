@@ -23,7 +23,12 @@ void Gui::slider (
   const auto size = textHeight () * dimVector;
   const auto box = sf::FloatRect (position, size);
   auto state = itemStatus (box, name, mInputState.mouseLeftDown, options.tooltip);
-  mRender.draw (box, drawOptions ({Widget::Slider, Slices::Three, state}, options.aspect, !options.horizontal));
+  const auto defaultAspect = WidgetAspect {
+    .widget = Widget::Slider,
+    .slices = Slices::Three,
+    .state = state
+  };
+  mRender.draw (box, drawOptions (defaultAspect, options.aspect, !options.horizontal));
 
   // if active, update value depending on bar position
   if (mGuiState.activeItem == name) {
@@ -113,7 +118,12 @@ void Gui::inputNumber (
   } else {
     numStr = formatNumberToString (number);
   }
-  mRender.draw (box, drawOptions ({Widget::TextBox, Slices::Three, state}, options.aspect));
+  const auto defaultAspect = WidgetAspect {
+    .widget = Widget::TextBox,
+    .slices = Slices::Three,
+    .state = state
+  };
+  mRender.draw (box, drawOptions (defaultAspect, options.aspect));
 
   // draw label and number
   const auto inputStr = label + numStr;
