@@ -490,8 +490,9 @@ private:
   uint32_t getFontSize (const TextType type) const;
   // fit text in a constrained line
   std::string truncateText (const std::string& text, const float width) const;
-  // format text for fontawesome use
-  void handleTextDrawing (const sf::Vector2f& position, const std::string& text, const TextType fontSize = TextType::Normal);
+  // format text for rich text use
+  void handleTextDrawing (const sf::Vector2f& position, const std::string& text, const TextType type = TextType::Normal);
+  void richTextManagement (const sf::Vector2f& position, const std::string& text, const TextType type, const std::string& modifierKey);
   // draw a fontawesome icon
   void fontawesomeIcon (const sf::Vector2f& position, const std::string& icon, const uint32_t fontSize);
   // to compute widget name and relative position to the cursor/group

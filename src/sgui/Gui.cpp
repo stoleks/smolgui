@@ -2072,35 +2072,50 @@ void Gui::handleTextDrawing (
   const std::string& text,
   const TextType type)
 {
+  // searches fontawesome unicode in the string, delimited by "<fa>...</fa>" pair
+  richTextManagement (position, text, type, "fa");
+}
+
+/////////////////////////////////////////////////
+void Gui::richTextManagement (
+  const sf::Vector2f& position,
+  const std::string& text,
+  const TextType type,
+  const std::string& modifierKey)
+{
+  // get font size
   const auto fontSize = getFontSize (type);
-  // searches fontawesome unicode in the string, delimited by "|" pair
-  const auto firstMarkerPos = text.find ("|");
-  if (firstMarkerPos != std::string::npos) {
-    const auto secondMarkerPos = text.find ("|", firstMarkerPos + 1);
-    if (secondMarkerPos != std::string::npos) {
+  // search for a modifier mark
+  const auto beginMark = std::string ("<" + modifierKey + ">");
+  const auto beginMarkPos = text.find (beginMark);
+  if (beginMarkPos != std::string::npos) {
+    // look for the second part
+    const auto endMark = std::string ("</" + modifierKey + ">");
+    const auto endMarkPos = text.find (endMark, beginMarkPos);
+    if (endMarkPos != std::string::npos) {
       // draw first part
-      auto firstPart = std::string ("");
       auto firstPartWidth = sf::Vector2f ();
-      if (firstMarkerPos > 0) {
-        firstPart = text.substr (0, firstMarkerPos);
+      if (beginMarkPos > 0) {
+        const auto firstPart = text.substr (0, beginMarkPos);
         firstPartWidth.x = textSize (firstPart, type).x;
         mRender.draw (firstPart, *mFont, {sgui::round (position), mStyle.fontColor, fontSize});
       }
-      // draw fontawesome icon at the right place
-      const auto iconPos = position + firstPartWidth;
-      const auto faIcon = text.substr (firstMarkerPos + 1, secondMarkerPos - firstMarkerPos - 1);
-      fontawesomeIcon (iconPos, faIcon, fontSize);
-      const auto iconWidth = sf::Vector2f (mRender.textSize (faIcon, mFontawesome, fontSize).x, 0.f);
-      // draw second part
-      const auto secondPart = text.substr (secondMarkerPos + 1);
+      // draw modified text at the right position
+      const auto richTextSubPos = beginMarkPos + beginMark.size ();
+      const auto richText = text.substr (richTextSubPos, endMarkPos - richTextSubPos);
+      const auto richTextPos = position + firstPartWidth;
+      fontawesomeIcon (richTextPos, richText, fontSize);
+      const auto richTextWidth = sf::Vector2f (mRender.textSize (richText, mFontawesome, fontSize).x, 0.f);
+      // perform the same step for the rest of the text
+      const auto secondPart = text.substr (endMarkPos + endMark.size ());
       if (secondPart != "") {
-        mRender.draw (secondPart, *mFont, {sgui::round (iconPos + iconWidth), mStyle.fontColor, fontSize});
+        richTextManagement (richTextPos + richTextWidth, secondPart, type, modifierKey);
       }
       return;
     }
   }
 
-  // render plain text if fontawesome is not set or no icons are found
+  // render plain text if no modifier are found
   mRender.draw (text, *mFont, {sgui::round (position), mStyle.fontColor, fontSize});
 }
 

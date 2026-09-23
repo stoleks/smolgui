@@ -20,7 +20,7 @@ int main()
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
   auto mainPanel = sgui::Panel {
-    .title = fmt::format ("Main window with fontawesome |{}| !", ICON_FA_FONT_AWESOME),
+    .title = fmt::format ("Main window with fontawesome <fa>{}</fa> !", ICON_FA_FONT_AWESOME),
     .size = { 1.f, 1.f }
   };
   auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
@@ -44,7 +44,12 @@ int main()
         window.close ();
       }
       gui.text ("Select font size");
-      const auto descr = fmt::format ("Title font |{}| size is {}", ICON_FA_FONT, style.fontSize.title);
+      const auto descr = fmt::format (
+        "Title font <fa>{}</fa> size <fa>{}</fa> is {}",
+        ICON_FA_FONT,
+        ICON_FA_TEXT_HEIGHT,
+        style.fontSize.title
+      );
       gui.slider (style.fontSize.title, 12u, 26u, {.description = descr});
       if (gui.icon (ICON_FA_SQUARE_PLUS, {.description = "Increase normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal + 1);
@@ -52,7 +57,7 @@ int main()
       if (gui.icon (ICON_FA_SQUARE_MINUS, {.description = "Decrease normal font size"})) {
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
-      gui.text (fmt::format ("|{}| Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
+      gui.text (fmt::format ("<fa>{}</fa> Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
       const auto selected = gui.comboBox (combo);
       gui.inputColor (style.fontColor, {.description = "font color"});
       gui.text (selected);
