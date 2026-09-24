@@ -15,15 +15,10 @@ int main()
   auto window = sf::RenderWindow (sf::VideoMode (windowSize), "Minimal Demo");
   // For demo render
   sf::RenderTexture image (windowSize);
-  auto exportSuccess = false;
   // Gui initialization
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
-  auto mainPanel = sgui::Panel {
-    .title = fmt::format ("Main window with fontawesome <fa>{}</fa> !", ICON_FA_FONT_AWESOME),
-    .size = { 1.f, 1.f }
-  };
-  auto combo = std::vector <std::string> { "One", "Two", "Three", "Four" };
+  auto mainPanel = sgui::Panel {.title = fmt::format ("Small demo with fontawesome !")};
   auto style = sgui::Style ();
   while (window.isOpen ())
   {
@@ -46,9 +41,7 @@ int main()
       gui.text ("Select font size");
       const auto descr = fmt::format (
         "Title font <fa>{}</fa> size <fa>{}</fa> is {}",
-        ICON_FA_FONT,
-        ICON_FA_TEXT_HEIGHT,
-        style.fontSize.title
+        ICON_FA_FONT, ICON_FA_TEXT_HEIGHT, style.fontSize.title
       );
       gui.slider (style.fontSize.title, 12u, 26u, {.description = descr});
       if (gui.icon (ICON_FA_SQUARE_PLUS, {.description = "Increase normal font size"})) {
@@ -58,16 +51,12 @@ int main()
         style.fontSize.normal = sgui::clamp (8u, 20u, style.fontSize.normal - 1);
       }
       gui.text (fmt::format ("<fa>{}</fa> Normal font size is {}", ICON_FA_PEN, style.fontSize.normal));
-      const auto selected = gui.comboBox (combo);
       gui.inputColor (style.fontColor, {.description = "font color"});
-      gui.text (selected);
-      const auto pngFile = DemoDir"/minimalDemo.png";
-      gui.text (fmt::format ("Saved to file assets/minimalDemo.png with success {}", exportSuccess));
       if (gui.button ("Save demo in file")) {
-        image.clear ();
+        image.clear (sf::Color::White);
         image.draw (gui);
         image.display ();
-        exportSuccess = image.getTexture ().copyToImage ().saveToFile (pngFile);
+        image.getTexture ().copyToImage ().saveToFile (DemoDir"/minimalDemo.png");
       }
       gui.endWindow ();
     }
