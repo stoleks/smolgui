@@ -11,7 +11,7 @@
 <!-- Node0 -->
 <g id="Node000000" class="node">
 <title>Node0</title>
-<g id="a_Node000000"><a xlink:href="structsgui_1_1_panel.html" target="_top" xlink:title="store panel posiiton, size and some parameters">
+<g id="a_Node000000"><a xlink:href="structsgui_1_1_panel.html" target="_top" xlink:title="store panel position, size and some parameters">
 <polygon fill="white" stroke="#666666" points="63.25,-19.25 0,-19.25 0,0 63.25,0 63.25,-19.25"/>
 <text text-anchor="middle" x="31.62" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">sgui::Panel</text>
 </a>

@@ -29,6 +29,5 @@ var searchData=
   ['size_26',['size',['../classsgui_1_1_object_pool.html#a5af3a1ba62006a40d72e1676d3df965e',1,'sgui::ObjectPool']]],
   ['slider_27',['slider',['../classsgui_1_1_gui.html#a2a53cba198ebf5bcd2ad8e6404fa9aee',1,'sgui::Gui']]],
   ['soundplayer_28',['SoundPlayer',['../classsgui_1_1_sound_player.html#a0aa89373ce4134ada0b5cd32a2c123be',1,'sgui::SoundPlayer::SoundPlayer()=default'],['../classsgui_1_1_sound_player.html#ad398e3d41c7d63e31f1989299725c947',1,'sgui::SoundPlayer::SoundPlayer(const SoundPlayer &amp;)=delete']]],
-  ['style_29',['Style',['../structsgui_1_1_style.html#a588d1c57174f9ea01e87d6943d73f0dd',1,'sgui::Style']]],
-  ['style_30',['style',['../classsgui_1_1_gui.html#ac1cc71f82204abc35f4b29ae799f63af',1,'sgui::Gui::style()'],['../classsgui_1_1_gui.html#a4aec5f45a2b1db7104e814395a9aa607',1,'sgui::Gui::style() const']]]
+  ['style_29',['style',['../classsgui_1_1_gui.html#ac1cc71f82204abc35f4b29ae799f63af',1,'sgui::Gui::style()'],['../classsgui_1_1_gui.html#a4aec5f45a2b1db7104e814395a9aa607',1,'sgui::Gui::style() const']]]
 ];

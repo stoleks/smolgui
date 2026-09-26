@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['panel_0',['Panel',['../structsgui_1_1_panel.html',1,'sgui::Panel'],['../structsgui_1_1_panel.html#afbdd24445283328154a2ca4c5e24f562',1,'sgui::Panel::Panel()=default'],['../structsgui_1_1_panel.html#a8c3dd0bacc5b7c119a4f95bd0cd6725f',1,'sgui::Panel::Panel(const sf::FloatRect &amp;box, const bool vis=true, const bool header=true)'],['../namespacesgui.html#ae07de69e3b62c448b2f45fe985759501ab8da6df14bf06283cbf588df6998722e',1,'sgui::Panel']]],
+  ['panel_0',['Panel',['../structsgui_1_1_panel.html',1,'sgui::Panel'],['../namespacesgui.html#ae07de69e3b62c448b2f45fe985759501ab8da6df14bf06283cbf588df6998722e',1,'sgui::Panel']]],
   ['panel_1',['panel',['../structsgui_1_1_layout_entry.html#a7c81b2b0941ff075114832d9efbf389d',1,'sgui::LayoutEntry::panel'],['../structsgui_1_1_window.html#a67ecb04f658ad0a455b8ff29095418d1',1,'sgui::Window::panel']]],
   ['panel_2eh_2',['Panel.h',['../_panel_8h.html',1,'']]],
   ['parent_3',['parent',['../structsgui_1_1_tooltip.html#a55167c7f42c9099ffebca1135c83c83c',1,'sgui::Tooltip']]],

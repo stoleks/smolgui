@@ -12,6 +12,5 @@ var searchData=
   ['meshfunctions_2eh_9',['MeshFunctions.h',['../_mesh_functions_8h.html',1,'']]],
   ['min_10',['min',['../structsgui_1_1_plot_range.html#aafde5b8ea05173ae4acc30945d01b8cb',1,'sgui::PlotRange']]],
   ['mindistance_11',['minDistance',['../classsgui_1_1_sound_player.html#afee3c58ccbd7d2c44dc5371036cbb5d5',1,'sgui::SoundPlayer']]],
-  ['movable_12',['movable',['../structsgui_1_1_panel.html#a434252310298c39da53cc27c5128b51a',1,'sgui::Panel']]],
-  ['movetolayer_13',['moveToLayer',['../classsgui_1_1_clipping_layers.html#a80585ff60788eec29db014e9c341ec0b',1,'sgui::ClippingLayers']]]
+  ['movetolayer_12',['moveToLayer',['../classsgui_1_1_clipping_layers.html#a80585ff60788eec29db014e9c341ec0b',1,'sgui::ClippingLayers']]]
 ];

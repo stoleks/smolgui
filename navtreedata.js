@@ -41,7 +41,7 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
-        [ "Functions", "functions_func.html", "functions_func" ],
+        [ "Functions", "functions_func.html", null ],
         [ "Variables", "functions_vars.html", null ]
       ] ]
     ] ],
@@ -65,11 +65,11 @@ var NAVTREEINDEX =
 "_icons_font_awesome7_8h.html#ab174a7db0947c08a86825bace488e3b2",
 "_icons_font_awesome7_8h.html#adf529befb74435e398ef7dbd77973d4d",
 "_style_8h.html",
-"classsgui_1_1_object_pool.html#acd92fa50c63223d32511cad113b75b4e",
-"namespacesf.html#a02a20ca6fd0ee1f9a4c4e4bf301e5a3e",
-"structsgui_1_1_text_draw_options.html#a341d47c90b3033c768176bde13f65e9c"
+"classsgui_1_1_object_pool.html#ab629189a7cda81148192855f1876d385",
+"namespacesgui.html#a312b3609e3aadc59cc8ef06e18d64cf4",
+"structsgui_1_1_texture_collage_1_1_image_info.html#abe3808aa99872b02ceeb9a6b975d28c2"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronization';
-var SYNCOFFMSG = 'click to enable panel synchronization';
-var LISTOFALLMEMBERS = 'List of all members';
+const SYNCONMSG = 'click to disable panel synchronization';
+const SYNCOFFMSG = 'click to enable panel synchronization';
+const LISTOFALLMEMBERS = 'List of all members';

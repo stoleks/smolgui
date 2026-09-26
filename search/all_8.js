@@ -1429,10 +1429,17 @@ var searchData=
   ['interpolation_2etpp_1426',['Interpolation.tpp',['../_interpolation_8tpp.html',1,'']]],
   ['inverselerp_1427',['inverseLerp',['../namespacesgui.html#ac26dac412402ee76e70ed352819159fc',1,'sgui']]],
   ['isactive_1428',['isActive',['../classsgui_1_1_gui.html#a5ef2cb52b2a15f7db5925389a03ba5a0',1,'sgui::Gui']]],
-  ['isclipped_1429',['isClipped',['../classsgui_1_1_clipping_layers.html#a06d7cc8e33ea1d8860db00456ae86ade',1,'sgui::ClippingLayers']]],
-  ['isscrolled_1430',['isScrolled',['../structsgui_1_1_panel.html#a76ca67ffae7aaf0dfc4e5bea2fcc7eb6',1,'sgui::Panel']]],
-  ['itembox_1431',['ItemBox',['../namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a986a61b7e99767fd2d6bf7224be47c33',1,'sgui']]],
-  ['itemspacing_1432',['itemSpacing',['../structsgui_1_1_style.html#abc4683f6e6a43cbbc2067dd04366327e',1,'sgui::Style']]],
-  ['itemstate_1433',['ItemState',['../namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f',1,'sgui']]],
-  ['itemstates_2eh_1434',['ItemStates.h',['../_item_states_8h.html',1,'']]]
+  ['isclipped_1429',['isClipped',['../structsgui_1_1_panel.html#a1e67a9de6248903d8660700c9eeb12f8',1,'sgui::Panel::isClipped'],['../classsgui_1_1_clipping_layers.html#a06d7cc8e33ea1d8860db00456ae86ade',1,'sgui::ClippingLayers::isClipped()']]],
+  ['isclosable_1430',['isClosable',['../structsgui_1_1_panel.html#a9191b2fd6e8a45fa6a1e04b621166960',1,'sgui::Panel']]],
+  ['isclosed_1431',['isClosed',['../structsgui_1_1_panel.html#a9d9f7c9968bd4908227f15fef2fb08a4',1,'sgui::Panel']]],
+  ['ismovable_1432',['isMovable',['../structsgui_1_1_panel.html#a96cc4a7bac8979341a361b655a5d255c',1,'sgui::Panel']]],
+  ['isreduced_1433',['isReduced',['../structsgui_1_1_panel.html#a1a7548bf89b0c9b8402d8805f30a8509',1,'sgui::Panel']]],
+  ['isscrollable_1434',['isScrollable',['../structsgui_1_1_panel.html#ac363a48f3dffb0039c98865b29120323',1,'sgui::Panel']]],
+  ['isscrolled_1435',['isScrolled',['../structsgui_1_1_panel.html#a76ca67ffae7aaf0dfc4e5bea2fcc7eb6',1,'sgui::Panel']]],
+  ['istransparent_1436',['isTransparent',['../structsgui_1_1_panel.html#aadc08ee4b648265f4f34640f7b2049c7',1,'sgui::Panel']]],
+  ['isvisible_1437',['isVisible',['../structsgui_1_1_panel.html#a22e6e08b6cf9422c28621aaece9d377a',1,'sgui::Panel']]],
+  ['itembox_1438',['ItemBox',['../namespacesgui.html#ae07de69e3b62c448b2f45fe985759501a986a61b7e99767fd2d6bf7224be47c33',1,'sgui']]],
+  ['itemspacing_1439',['itemSpacing',['../structsgui_1_1_style.html#abc4683f6e6a43cbbc2067dd04366327e',1,'sgui::Style']]],
+  ['itemstate_1440',['ItemState',['../namespacesgui.html#a593fd90d44c353f9344a39c6c365f26f',1,'sgui']]],
+  ['itemstates_2eh_1441',['ItemStates.h',['../_item_states_8h.html',1,'']]]
 ];
