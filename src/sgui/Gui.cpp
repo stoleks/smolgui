@@ -299,6 +299,16 @@ void Gui::endFrame (const float tooltipDelay)
   // display active tooltip
   tooltip (tooltipDelay);
 
+  // FOR DEBUG
+  if (mInputState.code == sf::Keyboard::Key::F2) {
+    auto boxIndex = 0u;
+    auto color = sf::Color (100.f, 100.f, 100.f);
+    for (const auto& hoverBox : mGroupsHoverBoxes) {
+      color.r = lerp (100.f, 255.f, 1.f*boxIndex++ / (1.f*mGroupsHoverBoxes.size()));
+      mColorRender.load (hoverBox.box, 3.f, color);
+    }
+  }
+
   // if left button is not pressed there is no active item
   if (!mInputState.mouseLeftDown) {
     mGuiState.activeItem = NullID;
@@ -464,8 +474,12 @@ bool Gui::beginWindow (
   const Constraints& constraints,
   const WidgetOptions& options)
 {
-  // if window is closed skip everything
-  if (settings.isClosed) return false;
+  // if window is closed skip everything except group to update box size
+  if (settings.isClosed) {
+    beginGroup (options.horizontal, {});
+    endGroup ();
+    return false;
+  }
   mChecker.begin (Impl::GroupType::Window);
   const auto name = initializeActivable ("Window");
 
@@ -538,7 +552,7 @@ bool Gui::beginWindow (
     windowSize.y -= headerHeight;
   }
   const auto windowBox = sf::FloatRect (mCursorPosition, windowSize);
-  beginGroup (options.horizontal, windowBox);
+  beginGroup (options.horizontal, windowBox, settings.isTransparent);
   auto& thisWindow = mGroups.top ();
 
   // if window is reduced skip box drawing
@@ -608,6 +622,7 @@ void Gui::endWindow ()
     }
     endGroup ();
     mCursorPosition = active.box.position;
+    updateSpacing (active.box.size);
     // remove clipping and track window not closed
     removeClipping ();
     mChecker.end (Impl::GroupType::Window);
@@ -627,8 +642,8 @@ void Gui::beginPanel (
 
   // compute position and create a new group
   const auto position = computePosition (settings, constraints);
-  const auto panelSize = settings.size.componentWiseMul (parentGroupSize ());
-  const auto panelBox = sf::FloatRect (position, panelSize);
+  const auto size = settings.size.componentWiseMul (parentGroupSize ());
+  const auto panelBox = sf::FloatRect (position, size);
   const auto clipBox = handleParentClipBox (panelBox);
   beginGroup (options.horizontal, panelBox, settings.isTransparent);
 
@@ -642,7 +657,7 @@ void Gui::beginPanel (
   // draw panel box if requested
   const auto state = interactWithMouse (settings, panelBox, name, options.tooltip);
   if (settings.isVisible) {
-    auto defaultPanel = WidgetAspect {
+    const auto defaultPanel = WidgetAspect {
       .widget = Widget::Panel,
       .slices = Slices::Nine,
       .state = state
@@ -1749,16 +1764,22 @@ void Gui::beginGroup (
   // compute its id
   mCounters.group++;
   group.identifier = mCounters.group;
-  // store its bounding box if its visible
+  // store its bounding box if it is not transparent
   if (!isTransparent) {
     if (!mGroupsHoverBoxes.has (group.identifier)) {
       auto hoverBox = Impl::GroupHoverBox ();
       hoverBox.identifier = group.identifier;
-      hoverBox.box = group.box;
+      hoverBox.box = box;
       mGroupsHoverBoxes.emplace (group.identifier, std::move (hoverBox));
     } else {
       auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
-      hoverBox.box = group.box;
+      hoverBox.box = box;
+    }
+  } else {
+    // remove boxes that are closed, reduced or transparent
+    if (mGroupsHoverBoxes.has (group.identifier)) {
+      auto& hoverBox = mGroupsHoverBoxes.get (group.identifier);
+      hoverBox.box.size = sf::Vector2f {};
     }
   }
   // add it to the stack
