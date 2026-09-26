@@ -965,12 +965,14 @@ bool Gui::icon (
   const WidgetOptions& options)
 {
   // button part
-  const auto size = sf::Vector2f (1.f, 1.f) * textHeight ();
+  const auto size = sf::Vector2f (1.f, 1.f) * textHeight () + sf::Vector2f (0.25f*mPadding.x, 0.f);
   const auto position = computeRelativePosition (options.displacement);
   const auto clicked = clickable (size, options);
   // draw an icon with fontawesome over it
-  const auto shift = sf::Vector2f (0.75f * mPadding.x, 1.5f * mPadding.y);
-  fontawesomeIcon (position + shift, iconName, getFontSize (TextType::Normal) + 2u);
+  const auto fontSize = getFontSize (TextType::Normal) + 2u;
+  const auto iconSize = mRender.textSize (iconName, mFontawesome, fontSize);
+  const auto iconPosition = position + 0.5f * sf::Vector2f {size.x - iconSize.x, 3.f*mPadding.y};
+  fontawesomeIcon (iconPosition, iconName, fontSize);
   return clicked;
 }
 
@@ -1471,7 +1473,7 @@ std::string Gui::comboBox (
   const auto isOpen = mGuiState.comboBoxFocus == name || (mGuiState.activeItem == name);
 
   // close combo box after 500 milliseconds if it is not hovered
-  if (clock > 0.5f && (mGuiState.comboBoxFocus == name)) {
+  if (clock > 0.75f && (mGuiState.comboBoxFocus == name)) {
     mGuiState.comboBoxFocus = NullID;
   }
 
@@ -1485,13 +1487,13 @@ std::string Gui::comboBox (
   // compute each drop list item if combo box is active and not clipped
   auto icon = ICON_FA_SQUARE_CARET_DOWN;
   const auto initialPosition = mainBoxPosition + sf::Vector2f (0.f, itemSize.y);
-  if (isOpen && !mRender.clipping.isClipped (initialPosition)) {
-    const auto itemCount = std::min (std::size_t (6), list.size ());
-    const auto panelSize = normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y});
-    auto panel = Panel { .size = panelSize, .hasHeader = false };
-    // open the window that will contains the combo box item
-    mCursorPosition = initialPosition;
-    beginWindow (panel);
+  const auto isClosed = !isOpen || mRender.clipping.isClipped (initialPosition);
+  const auto itemCount = std::min (std::size_t (6), list.size ());
+  const auto panelSize = normalizeSize ({itemSize.x, static_cast <float> (itemCount)*itemSize.y});
+  auto panel = Panel { .size = panelSize, .hasHeader = false, .isClosed = isClosed };
+  // open the window that will contains the combo box item
+  mCursorPosition = initialPosition;
+  if (beginWindow (panel)) {
     mCursorPosition -= sf::Vector2f (mPadding.x, 2.5f*mPadding.y);
     const auto scrollerWidth = (list.size () > 6) ? defaultSize : 0.f;
     for (const auto& itemName : list) {
@@ -1502,9 +1504,9 @@ std::string Gui::comboBox (
       }
     }
     endWindow ();
-    mCursorPosition = mainBoxPosition;
     icon = ICON_FA_SQUARE_CARET_UP;
   }
+  mCursorPosition = mainBoxPosition;
 
   // draw combo box selected text
   const auto defaultComboItem = WidgetAspect {
