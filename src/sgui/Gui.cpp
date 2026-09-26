@@ -1790,8 +1790,8 @@ sf::Vector2f Gui::computePosition (
   
   // to compute constrained position
   auto pos = panel.position;
-  const auto halfSize = panel.size / 2.f;
-  const auto center = windowSize / 2.f;
+  const auto halfSize = denormalizeSize (panel.size) / 2.f;
+  const auto center = parent.box.position + windowSize / 2.f;
 
   // constrain horizontal position with alignment
   auto parentShift = parent.box.position;
@@ -1801,7 +1801,7 @@ sf::Vector2f Gui::computePosition (
       pos.x = center.x - halfSize.x;
     }
     if (constraint.horizontal == HorizontalAlignment::Right) {
-      pos.x = windowSize.x * (1.f - panel.size.x);
+      pos.x = parent.box.position.x + windowSize.x * (1.f - panel.size.x);
     }
     if (constraint.horizontal == HorizontalAlignment::Left) {
       pos.x = parent.box.position.x;
@@ -1821,7 +1821,7 @@ sf::Vector2f Gui::computePosition (
       pos.y = center.y - halfSize.y;
     }
     if (constraint.vertical == VerticalAlignment::Bottom) {
-      pos.y = windowSize.y * (1.f - panel.size.y);
+      pos.y = parent.box.position.y + windowSize.y * (1.f - panel.size.y);
     }
     if (constraint.vertical == VerticalAlignment::Top) {
       pos.y = parent.box.position.y;
