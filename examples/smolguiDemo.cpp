@@ -57,6 +57,9 @@ int main()
   auto oneLine = texts.get ("textOneLine");
   auto vector = sf::Vector2f ();
   auto vector3 = sf::Vector3f ();
+  auto directory = std::filesystem::current_path ().string ();
+  auto fileSelected = directory;
+  auto fileSelected2 = directory;
   // for customisation examples
   std::vector <std::string> widgetsName {
     "button", "title box", "separation", "slider", "item box", "progress bar"
@@ -128,6 +131,9 @@ int main()
         }
         gui.text (texts.get ("centeredText"), {.horizontal = sgui::HorizontalAlignment::Center});
         gui.separation ();
+        // file browser
+        gui.fileBrowser (directory, fileSelected);
+        gui.fileBrowser (directory, fileSelected2);
         // set function
         const auto phaseMax = 10.f;
         gui.slider (sliderValue, 0.f, phaseMax, {.description = fmt::format ("Slider from 0 to {}, value is {}", phaseMax, sliderValue)});
@@ -202,10 +208,10 @@ int main()
         gui.inputText (oneLine, {}, {.description = texts.get ("textDescription")});
         gui.separation ();
         // input number and color 
-        gui.inputNumber (inputValue,     {.description = "input number with text"});
-        gui.inputVector2 (vector,        {.description = "input vector2"});
-        gui.inputVector3 (vector3,       {.description = "input vector3"});
-        gui.inputColor (style.fontColor, {.description = "font color"});
+        gui.inputNumber  (inputValue,      {.description = "input number with text"});
+        gui.inputVector2 (vector,          {.description = "input vector2"});
+        gui.inputVector3 (vector3,         {.description = "input vector3"});
+        gui.inputColor   (style.fontColor, {.description = "font color"});
         gui.separation ();
         // save layout
         gui.checkBox (compactLayout, {.description = "Compact layout"});

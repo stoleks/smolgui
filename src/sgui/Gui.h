@@ -387,6 +387,14 @@ public:
       const Type min,
       const Type max,
       const WidgetOptions& options = {});
+  
+  ///////////////////////////////////////////////
+  /**
+   * @brief display a file browser
+   */
+  void fileBrowser (
+      std::string& directory,
+      std::string& finalEntry);
 
   ///////////////////////////////////////////////
   /**
@@ -466,6 +474,8 @@ private:
   // to handle shifting value of scroller/slider
   template <typename Type>
   Type sliderValue (const sf::FloatRect& box, const Type min, const Type max, const bool horizontal);
+  // file browser implementation
+  void fileBrowserImplementation ();
   // draw tooltip of the hovered item
   void tooltip (const float apparitionDelay);
   bool tooltipNeedReset ();
@@ -524,6 +534,7 @@ private:
   float mTipAppearClock = 0.f;
   float mTipDisappearClock = 100.f;
   float mTextCursorClock = 0.f;
+  float mFileBrowserClock = 0.f;
   // Scroll intensity
   float mPixelsPerScroll = 40.f;
   // data to keep track of same line call
@@ -555,9 +566,12 @@ private:
   // inputs and gui state
   Impl::InputState mInputState;
   Impl::InternalItemState mGuiState;
+  Panel mBrowserPanel = {};
   // gui internal data
   std::stack <sf::Vector2f> mAnchors;
   std::unordered_map <std::string, sf::Vector2f> mAnchorsWithKeys;
+  std::unordered_map <std::string, std::string&> mActiveFolderBrowser;
+  std::unordered_map <std::string, std::string&> mActiveFileBrowser;
   std::stack <uint32_t> mMenuClippingLayer;
   std::stack <Impl::GroupData> mGroups;
   ObjectPool <Impl::GroupHoverBox> mGroupsHoverBoxes;

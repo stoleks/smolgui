@@ -22,6 +22,7 @@ struct InternalItemState
   std::string hoveredItem = NullID;
   std::string keyboardFocus = NullID;
   std::string comboBoxFocus = NullID;
+  std::string fileBrowserFocus = NullID;
   sf::FloatRect hoveredItemBox;
   Tooltip tooltip;
 };

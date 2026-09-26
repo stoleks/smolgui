@@ -296,6 +296,9 @@ void Gui::beginFrame ()
 /////////////////////////////////////////////////
 void Gui::endFrame (const float tooltipDelay)
 {
+  // display file browser
+  fileBrowserImplementation ();
+
   // display active tooltip
   tooltip (tooltipDelay);
 
@@ -446,6 +449,7 @@ void Gui::updateTimer ()
   mTipAppearClock += dt;
   mTipDisappearClock += dt;
   mTextCursorClock += dt;
+  mFileBrowserClock += dt;
 }
 
 /////////////////////////////////////////////////
@@ -1747,6 +1751,145 @@ float Gui::scrollerBar (
 
   // return shift for further uses
   return shift;
+}
+
+////////////////////////////////////////////////////////////
+void Gui::fileBrowser (std::string& directory, std::string& finalEntry)
+{
+  // initialize widget name and position
+  const auto name = initializeActivable ("FileBrowser");
+
+  // display path as a button
+  if (icon (ICON_FA_FOLDER_OPEN)) {
+    mBrowserPanel.isClosed = false;
+    mGuiState.fileBrowserFocus = name;
+    mFileBrowserClock = 0.f;
+
+    // store directory and final file
+    if (!mActiveFolderBrowser.contains (name)) {
+      mActiveFolderBrowser.insert ({name, directory});
+      mActiveFileBrowser.insert ({name, finalEntry});
+    }
+  }
+  sameLine ();
+  text (finalEntry);
+}
+
+////////////////////////////////////////////////////////////
+void Gui::fileBrowserImplementation ()
+{
+  // wait a little before opening
+  if (mFileBrowserClock < 0.05f) return;
+
+  // check that directory and file exist
+  if (!mActiveFolderBrowser.contains (mGuiState.fileBrowserFocus)
+    || !mActiveFileBrowser.contains (mGuiState.fileBrowserFocus)) {
+    return;
+  }
+  auto& directory = mActiveFolderBrowser.at (mGuiState.fileBrowserFocus);
+  auto& file = mActiveFileBrowser.at (mGuiState.fileBrowserFocus);
+
+  // open file browser on a separate top layer
+  const auto constraints = Constraints {
+    .vertical = VerticalAlignment::Center,
+    .horizontal = HorizontalAlignment::Center
+  };
+  mBrowserPanel.size = {0.75f, 0.75f};
+  if (beginWindow (mBrowserPanel, constraints)) {
+    // select current folder
+    const auto basePosition = mCursorPosition;
+    if (icon (ICON_FA_FOLDER_TREE)) {
+    }
+    sameLine ();
+    if (icon (ICON_FA_FOLDER_PLUS)) {
+    }
+    sameLine ();
+    addSpacing ({0.f, -0.1f});
+    inputText (directory);
+    const auto rootSpacing = mCursorPosition.y - basePosition.y + 1.5f*textHeight ();
+    mCursorPosition.x = basePosition.x;
+    mCursorPosition.y -= 5.8f*textHeight ();
+    const auto volumePosition = mCursorPosition;
+
+    // open a panel for volume browser
+    const auto subPanelHeight = 1.f - normalizeSize ({0.f, rootSpacing}).y;
+    const auto aspect = sgui::WidgetAspect {.widget = sgui::Widget::TextBox};
+    auto volumePanel = sgui::Panel {
+      .position = mCursorPosition,
+      .size = {0.4f, subPanelHeight},
+      .hasHeader = false,
+      .isTransparent = true
+    };
+    const auto maxVolumeWidth = denormalizeSize (volumePanel.size).x;
+    if (beginWindow (volumePanel, {.horizontal = HorizontalAlignment::Left})) {
+      // display root paths
+      const auto rootPath = std::filesystem::current_path ().root_path ();
+      const auto buttonSize = sf::Vector2f {parentGroupSize ().x / textHeight () - 3.f, 1.f};
+      const auto buttonOptions = sgui::WidgetOptions { .size = buttonSize, .aspect = aspect };
+      const auto textMaxWidth = parentGroupSize ().x - 6.f*textHeight ();
+      for (const auto& entry : std::filesystem::directory_iterator (rootPath)) {
+        // allow user to go from folder to folder
+        if (entry.is_directory ()) {
+          const auto entryName = truncateText (entry.path ().filename ().string (), textMaxWidth);
+          const auto folderText = fmt::format ("<fa>{}</fa> {}", ICON_FA_FOLDER_OPEN, entryName);
+          if (button (truncateText (folderText, maxVolumeWidth), buttonOptions)) {
+            directory = entry.path ().string ();
+          }
+        }
+      }
+      endWindow ();
+    }
+
+    // open a panel for directory browser
+    mCursorPosition.y = volumePosition.y;
+    auto foldersPanel = sgui::Panel {
+      .position = mCursorPosition,
+      .size = {0.6f, subPanelHeight},
+      .hasHeader = false,
+      .isTransparent = true
+    };
+    if (beginWindow (foldersPanel, {.horizontal = HorizontalAlignment::Right})) {
+      // go to parent directory
+      const auto buttonSize = sf::Vector2f {parentGroupSize ().x / textHeight () - 3.f, 1.f};
+      const auto buttonOptions = sgui::WidgetOptions { .size = buttonSize, .aspect = aspect };
+      const auto backText = fmt::format ("<fa>{}</fa> ...", ICON_FA_FOLDER_TREE);
+      if (button (backText, buttonOptions)) {
+        directory = std::filesystem::path (directory).parent_path ().string ();
+      }
+      addSpacing ({1.f, 0.f}); // small indentation
+      // display all folders and files in the current directory
+      const auto textMaxWidth = parentGroupSize ().x - 6.f*textHeight ();
+      for (const auto& entry : std::filesystem::directory_iterator (directory)) {
+        // allow user to go from folder to folder
+        const auto entryName = truncateText (entry.path ().filename ().string (), textMaxWidth);
+        if (entry.is_directory ()) {
+          const auto folderText = fmt::format ("<fa>{}</fa> {}", ICON_FA_FOLDER_OPEN, entryName);
+
+          if (button (folderText, buttonOptions)) {
+            directory = entry.path ().string ();
+          }
+        // print files names
+        } else if (button (entryName, buttonOptions)) {
+          file = entryName;
+          mBrowserPanel.isClosed = true;
+        }
+      }
+      endWindow ();
+    }
+
+    // select or close folder/file
+    mCursorPosition.x = basePosition.x;
+    if (icon (ICON_FA_SQUARE_XMARK)) {
+      mBrowserPanel.isClosed = true;
+    }
+    sameLine ();
+    if (icon (ICON_FA_SQUARE_CHECK)) {
+      file = directory;
+      mBrowserPanel.isClosed = true;
+    }
+    // end of browser window
+    endWindow ();
+  }
 }
 
 

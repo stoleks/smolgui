@@ -20,6 +20,7 @@ int main()
   // Window settings and main loop
   auto mainPanel = sgui::Panel {.title = fmt::format ("Small demo with fontawesome !")};
   auto style = sgui::Style ();
+  auto color = sf::Color::White;
   while (window.isOpen ())
   {
     // Inputs
@@ -56,14 +57,16 @@ int main()
         image.clear (sf::Color::White);
         image.draw (gui);
         image.display ();
-        image.getTexture ().copyToImage ().saveToFile (DemoDir"/minimalDemo.png");
+        if (!image.getTexture ().copyToImage ().saveToFile (DemoDir"/minimalDemo.png")) {
+          color = sf::Color::Red;
+        }
       }
       gui.endWindow ();
     }
     gui.endFrame ();
 
     // Drawing
-    window.clear (sf::Color::White);
+    window.clear (color);
     window.draw (gui);
     window.display ();
   }
