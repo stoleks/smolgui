@@ -16,7 +16,9 @@ namespace sgui
 /////////////////////////////////////////////////
 Gui::Gui ()
   : mFontawesome (SguiContentsDir"/fa-7-free-Solid-900.otf")
-{}
+{
+  mColorRender.initializeClippingLayers ();
+}
 
 /////////////////////////////////////////////////
 Gui::Gui (
@@ -41,6 +43,8 @@ void Gui::initialize (
   setTextureAtlas (atlas);
   setStyle (Style ());
   setView (window.getDefaultView ());
+  mColorRender.updateView (window.getDefaultView ());
+  mColorRender.initializeClippingLayers ();
 }
 
 /////////////////////////////////////////////////
@@ -282,6 +286,7 @@ void Gui::beginFrame ()
   // clear all widgets
   mRender.clear ();
   mPlotter.clear ();
+  mColorRender.clear ();
   // reset cursor position
   mCursorPosition = sf::Vector2f ();
   // clear hovered item
@@ -298,7 +303,7 @@ void Gui::endFrame (const float tooltipDelay)
   if (!mInputState.mouseLeftDown) {
     mGuiState.activeItem = NullID;
   }
-  // if right button is released we lost all focus
+  // if right button is released we lose all focus
   if (mInputState.mouseRightReleased) {
     mGuiState.activeItem = NullID;
     mGuiState.keyboardFocus = NullID;
@@ -445,6 +450,7 @@ void Gui::draw (
   // draw widgets and plot
   target.draw (mRender, states);
   target.draw (mPlotter, states);
+  target.draw (mColorRender, states);
   // return to normal target view
   target.setView (targetView);
 }
@@ -2032,6 +2038,7 @@ void Gui::handleKeyInput (
 /////////////////////////////////////////////////
 size_t Gui::utf8Length (const std::string& text) const
 {
+  // compute length of a utf8 character in text, looking for end symbol
   size_t size = 0;
   for (size_t i = 0; i < text.length (); i++) {
     size++;
