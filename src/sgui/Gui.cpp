@@ -17,7 +17,7 @@ namespace sgui
 Gui::Gui ()
   : mFontawesome (SguiContentsDir"/fa-7-free-Solid-900.otf")
 {
-  mColorRender.initializeClippingLayers ();
+  shapeRender.initializeClippingLayers ();
 }
 
 /////////////////////////////////////////////////
@@ -43,8 +43,8 @@ void Gui::initialize (
   setTextureAtlas (atlas);
   setStyle (Style ());
   setView (window.getDefaultView ());
-  mColorRender.updateView (window.getDefaultView ());
-  mColorRender.initializeClippingLayers ();
+  shapeRender.updateView (window.getDefaultView ());
+  shapeRender.initializeClippingLayers ();
 }
 
 /////////////////////////////////////////////////
@@ -286,7 +286,7 @@ void Gui::beginFrame ()
   // clear all widgets
   mRender.clear ();
   mPlotter.clear ();
-  mColorRender.clear ();
+  shapeRender.clear ();
   // reset cursor position
   mCursorPosition = sf::Vector2f ();
   // clear hovered item
@@ -308,7 +308,7 @@ void Gui::endFrame (const float tooltipDelay)
     auto color = sf::Color (100.f, 100.f, 100.f);
     for (const auto& hoverBox : mGroupsHoverBoxes) {
       color.r = lerp (100.f, 255.f, 1.f*boxIndex++ / (1.f*mGroupsHoverBoxes.size()));
-      mColorRender.load (hoverBox.box, 3.f, color);
+      shapeRender.load (hoverBox.box, 3.f, color);
     }
   }
 
@@ -464,7 +464,7 @@ void Gui::draw (
   // draw widgets and plot
   target.draw (mRender, states);
   target.draw (mPlotter, states);
-  target.draw (mColorRender, states);
+  target.draw (shapeRender, states);
   // return to normal target view
   target.setView (targetView);
 }
@@ -1773,6 +1773,7 @@ void Gui::fileBrowser (std::string& directory, std::string& finalEntry)
   }
   sameLine ();
   text (finalEntry);
+  // file browser is opened at the end of the gui to be on top, check endFrame
 }
 
 ////////////////////////////////////////////////////////////
@@ -1816,7 +1817,7 @@ void Gui::fileBrowserImplementation ()
     const auto aspect = sgui::WidgetAspect {.widget = sgui::Widget::TextBox};
     auto volumePanel = sgui::Panel {
       .position = mCursorPosition,
-      .size = {0.4f, subPanelHeight},
+      .size = {0.3f, subPanelHeight},
       .hasHeader = false,
       .isTransparent = true
     };
@@ -1844,7 +1845,7 @@ void Gui::fileBrowserImplementation ()
     mCursorPosition.y = volumePosition.y;
     auto foldersPanel = sgui::Panel {
       .position = mCursorPosition,
-      .size = {0.6f, subPanelHeight},
+      .size = {0.7f, subPanelHeight},
       .hasHeader = false,
       .isTransparent = true
     };
@@ -1864,7 +1865,6 @@ void Gui::fileBrowserImplementation ()
         const auto entryName = truncateText (entry.path ().filename ().string (), textMaxWidth);
         if (entry.is_directory ()) {
           const auto folderText = fmt::format ("<fa>{}</fa> {}", ICON_FA_FOLDER_OPEN, entryName);
-
           if (button (folderText, buttonOptions)) {
             directory = entry.path ().string ();
           }

@@ -441,6 +441,8 @@ public:
    * @brief force cache update
    */
   void forcePlotUpdate ();
+public:
+  PrimitiveShapeRender shapeRender;
 private:
   // draw gui
   void draw (sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -562,7 +564,6 @@ private:
   sf::Font mFontawesome;
   Plotter mPlotter;
   GuiRender mRender;
-  PrimitiveShapeRender mColorRender;
   // inputs and gui state
   Impl::InputState mInputState;
   Impl::InternalItemState mGuiState;
