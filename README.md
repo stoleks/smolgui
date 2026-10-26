@@ -101,12 +101,12 @@ A window is closable, reducable and may have a menu bar, but both have a texture
 To specify their dimensions, you need to make a sgui::Panel and set its absolute pixel position and its relative fractional size. 
 The size is relative to the container in which it is opened, its parent.
 If no container is opened, its parent is simply the SFML window.
-If you don't specify a position or set-it to (0.f, 0.f), the container will be automatically placed after the last widget opened.
+If you don't specify a position or set-it to (0.f, 0.f), the container will be automatically placed after the last widget opened. By default a panel/window is set to the size of its parent.
 ```cpp
 gui.beginFrame ();
 // set two Panel, one for a window that will take all the sfml window, one for a panel that will be half of its parent size
-auto guiWindow = sgui::Panel ({{}, {1.f, 1.f});
-auto childPanel = sgui::Panel ({{}, {0.5f, 0.5f});
+auto guiWindow = sgui::Panel {};
+auto childPanel = sgui::Panel {.size = {0.5f, 0.5f}};
 // open a window 
 if (gui.beginWindow (guiWindow)) {
   gui.text ("Text in the window before the panel");
@@ -118,7 +118,7 @@ if (gui.beginWindow (guiWindow)) {
   gui.endWindow ();
 }
 // open a panel after the window, half the size of the SFML window and at 40 pixels from the top-left corner
-auto freePanel = sgui::Panel ({{40.f 40.f}, {0.5f, 0.5f}});
+auto freePanel = sgui::Panel {.position = {40.f 40.f}, .size = {0.5f, 0.5f}};
 gui.beginPanel (freePanel)
 gui.text ("Text in the free panel");
 gui.endPanel ();
@@ -160,9 +160,10 @@ Here is the complete list of widgets implemented, you should look a the smolgui 
 - comboBox: display a selected std::string and a drop-down list of std::string
 - slider: to change a number between two value
 - plot: to display a function
+- fileBrowser : to browser through file and to select a file/folder
 
-All widgets have a WidgetOptions parameter that allow to add a text description, change its position, add a tooltip.
-Options can also, set its render or change its size, depending on the widget.
+All widgets have a WidgetOptions parameter that allow to add a text description, change its position or add a tooltip.
+Options can also set its render or change its size, depending on the widget.
 
 Complete example code
 -----
@@ -191,7 +192,7 @@ int main()
   // Gui initialization
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
-  auto mainPanel = sgui::Panel {.title = fmt::format ("Small demo with fontawesome !")};
+  auto mainPanel = sgui::Panel {.title = "Small demo with fontawesome !"};
   auto style = sgui::Style ();
   while (window.isOpen ())
   {

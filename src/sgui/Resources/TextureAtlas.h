@@ -12,9 +12,8 @@ namespace sgui
  * @brief Store frames count and textures to ease serialization and for better interface
  */
 struct Frames {
-  Frames () = default;
-  uint32_t count = 1;
-  sf::IntRect texture = {};
+  uint32_t count = 1;       ///< Number of sequent frames
+  sf::IntRect texture = {}; ///< position and size of the first frames
 };
 
 /**

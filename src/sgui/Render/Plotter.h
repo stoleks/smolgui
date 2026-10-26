@@ -12,9 +12,6 @@ namespace sgui
  * @brief plot range for an axis
  */
 struct PlotRange {
-  PlotRange () = default;
-  PlotRange (const float mi, const float ma)
-    : min (mi), max (ma) {}
   float min = 0.f; ///< Minimum of the range
   float max = 1.f; ///< Maximum of the range
 };

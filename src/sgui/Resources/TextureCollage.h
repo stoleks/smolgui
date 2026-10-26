@@ -10,9 +10,6 @@ namespace sgui
  * @brief Options for collage
  */
 struct CollageOptions {
-  CollageOptions () = default;
-  CollageOptions (const sf::Color& c);
-  // data
   bool useMask = false;                   ///< Use a mask to suppress a background color
   sf::Color maskColor = sf::Color::White; ///< Background color to be suppressed
 };

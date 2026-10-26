@@ -7,11 +7,6 @@ namespace sgui
 namespace fs = std::filesystem;
 
 ////////////////////////////////////////////////////////////
-CollageOptions::CollageOptions (const sf::Color& c)
-  : useMask (true), maskColor (c)
-{}
-
-////////////////////////////////////////////////////////////
 TextureCollage::TextureCollage (
   const std::string& directory,
   const CollageOptions& options)

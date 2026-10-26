@@ -27,9 +27,7 @@ void TextureAtlas::add (
   const uint32_t frameCount)
 {
   // store frame count and first frame texture rect
-  auto frames = Frames ();
-  frames.count = frameCount;
-  frames.texture = textureRect;
+  auto frames = Frames {.count = frameCount, .texture = textureRect};
   mTexturesCount += frameCount;
   mAtlas.insert ({entry, std::move (frames)});
 }

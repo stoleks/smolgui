@@ -19,13 +19,6 @@ struct WidgetDrawOptions {
  * @brief Store options for drawing text
  */
 struct TextDrawOptions {
-  TextDrawOptions () = default;
-  /**
-   * @brief Helper constructo
-   */
-  TextDrawOptions (const sf::Vector2f& p, const sf::Color& c, uint32_t s)
-    : position (p), color (c), size (s) {}
-  // data
   sf::Vector2f position = {};         ///< Text position
   sf::Color color = sf::Color::White; ///< Text color
   uint32_t size = 16u;                ///< Font size

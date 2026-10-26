@@ -18,7 +18,7 @@ int main()
   // Gui initialization
   auto gui = sgui::Gui (font, texture, atlas, window);
   // Window settings and main loop
-  auto mainPanel = sgui::Panel {.title = fmt::format ("Small demo with fontawesome !")};
+  auto mainPanel = sgui::Panel {.title = "Small demo with fontawesome !"};
   auto style = sgui::Style ();
   auto color = sf::Color::White;
   while (window.isOpen ())
