@@ -1797,26 +1797,27 @@ void Gui::fileBrowserImplementation ()
   };
   mBrowserPanel.size = {0.75f, 0.75f};
   if (beginWindow (mBrowserPanel, constraints)) {
-    // select current folder
+    // go to previous folder in the hierarchy
     const auto basePosition = mCursorPosition;
     if (icon (ICON_FA_FOLDER_TREE)) {
+      directory = std::filesystem::path (directory).parent_path ().string ();
     }
+    const auto volumePosition = mCursorPosition + sf::Vector2f (0.f, 0.2f*textHeight ());
     sameLine ();
+    // create a new folder in the current directory
     if (icon (ICON_FA_FOLDER_PLUS)) {
+      std::filesystem::create_directory (directory + "/new");
     }
     sameLine ();
     addSpacing ({0.f, -0.1f});
     inputText (directory);
-    const auto rootSpacing = mCursorPosition.y - basePosition.y + 1.5f*textHeight ();
-    mCursorPosition.x = basePosition.x;
-    mCursorPosition.y -= 5.8f*textHeight ();
-    const auto volumePosition = mCursorPosition;
 
     // open a panel for volume browser
-    const auto subPanelHeight = 1.f - normalizeSize ({0.f, rootSpacing}).y;
+    const auto rootSpacing = volumePosition.y - basePosition.y;
+    const auto subPanelHeight = 1.f - normalizeSize ({0.f, rootSpacing + 1.5f*textHeight ()}).y;
     const auto aspect = sgui::WidgetAspect {.widget = sgui::Widget::TextBox};
     auto volumePanel = sgui::Panel {
-      .position = mCursorPosition,
+      .position = volumePosition - basePosition,
       .size = {0.3f, subPanelHeight},
       .hasHeader = false,
       .isTransparent = true
@@ -1842,9 +1843,8 @@ void Gui::fileBrowserImplementation ()
     }
 
     // open a panel for directory browser
-    mCursorPosition.y = volumePosition.y;
     auto foldersPanel = sgui::Panel {
-      .position = mCursorPosition,
+      .position = volumePosition - basePosition,
       .size = {0.7f, subPanelHeight},
       .hasHeader = false,
       .isTransparent = true
